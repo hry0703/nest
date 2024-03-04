@@ -19,11 +19,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 import * as svgCaptcha from 'svg-captcha';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller({
   path: 'user',
   version: '1',
 })
+@ApiTags('用户')
 // @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -93,6 +95,11 @@ export class UserController {
   //   }
 
   @Get('memberCode')
+  @ApiOperation({
+    summary: '根据会员编码查询会员',
+    description: '请求该接口需要amdin权限',
+  })
+  @ApiParam({ name: 'id', description: '用户id', required: true })
   queryMemberCode(@Query() query) {
     console.log('query', query);
     return {

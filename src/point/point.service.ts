@@ -5,7 +5,8 @@ import { UpdatePointDto } from './dto/update-point.dto';
 @Injectable()
 export class PointService {
   create(createPointDto: CreatePointDto) {
-    return 'This action adds a new point';
+    console.log('post-createPointDto', createPointDto);
+    return createPointDto;
   }
 
   findPointAll() {
