@@ -1,0 +1,39 @@
+import { Controller, Get, Inject} from "@nestjs/common";
+// import {LoggerClassService, LoggerService,UseValueService,UseFactory } from "./logger.service";
+import { CommonSerive } from "./common.service";
+import { OtherSerive } from "./other.service";
+
+@Controller()
+export class AppController {
+    constructor(
+        // private loggerClassService:LoggerClassService,
+        // private loggerService:LoggerService,
+        // @Inject('StringToken') private useValueService:UseValueService,
+        // @Inject('FactoryToken') private UseFactory:UseFactory,
+
+        // private commonSerive:CommonSerive
+        private otherSerive:OtherSerive
+    ){}
+    // @Get()
+    // index(args):string{
+    //     // console.log(args,);
+    //     this.loggerClassService.log('index')
+    //     this.loggerService.log('index')
+    //     this.useValueService.log('index')
+    //     this.UseFactory.log('index')
+    //     return 'hello';
+    // }
+
+
+    // @Get('/common')
+    // common():string{
+    //     this.commonSerive.log('common')
+    //     return 'hello common';
+    // }
+
+    @Get('/other')
+    common():string{
+        this.otherSerive.log('common')
+        return 'hello other';
+    }
+}
