@@ -11,8 +11,21 @@ export function Module(metadata:ModuleMetadata):ClassDecorator{
     return (target:Function)=>{
         // 当一个类使用Module装饰器的时候可以添加标识它是一个模块的元数据
         Reflect.defineMetadata('isModule',true,target)
+        //就是把控制器的类和提供者的类和对应的模块进行了关联
+        defineModule(target,metadata.controllers)
         // 给模块类AppModule添加元数据 元数据的名字叫controllers 值是controllers数组[AppController]
         Reflect.defineMetadata('controllers',metadata.controllers,target)
+        // 类上保存了一个providers数组 表示给此模块注入的provider供应者
+        // let providers = (metadata.providers??[]).map(provider=>{
+        //     if(provider instanceof Function){
+        //         return provider
+        //     }else if (provider?.useClass instanceof Function){
+        //         return provider.useClass;
+        //     }else {
+        //         return null;
+        //     }
+        // }).filter(Boolean)
+         defineModule(target,metadata.providers)
         // 给模块类AppModule添加元数据 元数据的名字叫providers 值是providers数组[LoggerService]
         Reflect.defineMetadata('providers',metadata.providers,target)
         // 在类上保存exports
@@ -25,6 +38,12 @@ export function Module(metadata:ModuleMetadata):ClassDecorator{
 export function defineModule(module,targets=[]){
     // 遍历targets数组 为每个元素添加元数据，key是nestModule 值是对应的模块
     targets.forEach(target=>{
-        Reflect.defineMetadata('NestModule',module,target)
+        Reflect.defineMetadata('module',module,target)
     })
+}
+
+export function Global(){
+   return (target:Function)=>{
+        Reflect.defineMetadata('global',true,target)
+   }
 }

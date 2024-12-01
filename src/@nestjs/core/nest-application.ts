@@ -8,8 +8,12 @@ import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common';
 export class NestApplication {
     // 定义一个私有的 express 应用实例
     private readonly app: Express = express();
-    //在此处保存全部的providers key就是provider的token,值就是provider的实例或者说值
-    private readonly providers = new Map();
+    //在此处保存全部的providers的实例 key就是provider的token,值就是provider的实例或者说值
+    private readonly providerInstances = new Map();
+    //此处存放着全局可用的provider的token
+    private readonly globalProviders = new Set();
+    // 记录每个模块里有些哪些providers实例
+    private readonly moduleProviders = new Map();
     // 构造函数，接收一个模块参数
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
@@ -26,18 +30,20 @@ export class NestApplication {
         const imports = Reflect.getMetadata('imports',this.module)??[];
         // 遍历所有导入的模块
         for (const importModule of imports) { 
-            this.registerProvidersFromModule(importModule)
+            this.registerProvidersFromModule(importModule,this.module)
         }
         // 获取当前模块提供者的元数据
         const providers = Reflect.getMetadata('providers',this.module)??[] 
         // 遍历并添加每个提供者
         for (const provider of providers) {
-            this.addProvider(provider)
+            this.addProvider(provider,this.module)
         }
-        console.log('this.providers',this.providers);
+        console.log('this.providers',this.providerInstances);
     }
 
-    private registerProvidersFromModule(module){
+    private registerProvidersFromModule(module,...parentModules){
+        // 获取导入的是不是全局模块
+        const global = Reflect.getMetadata('global',module)
         // 获取导入模块中的providers进行全量注册
         const importedProviders = Reflect.getMetadata('providers',module)??[]
         // 1 有可能导入的模块只导入了一部分 并没有全量导出，所以需要使用exports进行过滤
@@ -47,11 +53,13 @@ export class NestApplication {
             // 2.exports里还有可能是module
             if(this.isModule(exportToken)){
                 // 要执行递归操作
-                this.registerProvidersFromModule(exportToken)
+                this.registerProvidersFromModule(exportToken,module,...parentModules)
             }else {
                 const provider = importedProviders.find(provider=>provider === exportToken || provider.provide === exportToken);
                 if(provider){
-                    this.addProvider(provider)
+                    [module,...parentModules].forEach(module=>{
+                        this.addProvider(provider,module,global)
+                    })
                 }
             }
         }
@@ -60,11 +68,23 @@ export class NestApplication {
     private isModule(exportToken){
         return exportToken && exportToken instanceof Function && Reflect.getMetadata('isModule',exportToken,)
     }
-
-    addProvider(provider){
-        // 为了避免循环依赖 ，每次添加前做个判断 如果map中已经存在则直接返回
+    // 原来的provider都混在一起了 现在需要分开 每个模块都有自己的providers
+    addProvider(provider,module,global=false){
+        
+        // 此providers代表module这个模块的providers的集合
+        const providers = global ? this.globalProviders : this.moduleProviders.get(module) || new Set();
+        if(!this.moduleProviders.has(module)){
+            this.moduleProviders.set(module,providers)
+        }
+        // 获取要注册的provider的token
         const injectToken = provider.provide??provider
-        if(this.providers.has(injectToken)) return 
+        // 如果实例池里已经有此token对应的实例了
+        if(this.providerInstances.has(injectToken)) {
+            // 则直接把此token放入到providers这个集合直接返回
+            providers.add(injectToken);
+            return 
+        } 
+      
         // 如果有provider的token 并且有useClass属性，说明提供的是一个类 需要实例化
         if(provider.provide && provider.useClass){
             // 获取这个类的定义 LoggerService
@@ -74,32 +94,42 @@ export class NestApplication {
             // 创建提供者类的实例
             const classInstance = new clazz(...dependencies);// 因为这个；类可能还会有依赖
             // 把provider的token和类的实例保存到this.providers里
-            this.providers.set(provider.provide,classInstance)
+            this.providerInstances.set(provider.provide,classInstance)
+            providers.add(provider.provide)
         }else if(provider.provide && provider.useValue){
             // 提供的是一个值 则不需要容器帮助实例化了 直接使用此值注册就可以了
-            this.providers.set(provider.provide,provider.useValue)
+            this.providerInstances.set(provider.provide,provider.useValue)
+             providers.add(provider.provide)
         }else if(provider.provide && provider.useFactory){
             const inject = provider.inject??[]// 获取要注入工厂函数的参数
             // 解析出参数的值
             // const injectedValues = inject.map(this.getProviderByToken) // this指向有问题
             // const injectedValues = inject.map((injectToken)=>this.getProviderByToken(injectToken)) // this指向问题 方法一
-            const injectedValues = inject.map((this.getProviderByToken.bind(this))) // this指向问题 方法二 方法三可以将getProviderByToken定义改成箭头函数
+            const injectedValues = inject.map(injectToken=>this.getProviderByToken(injectToken,module)) // this指向问题 方法二 方法三可以将getProviderByToken定义改成箭头函数
             // 执行工厂方法 获取返回的值
             const value= provider.useFactory(...injectedValues)
             // 把token和值注册到map中
-            this.providers.set(provider.provide,value) 
+            this.providerInstances.set(provider.provide,value) 
+             providers.add(provider.provide)
         }else {// 表示只提供了一个类 token是这个类 值是这个类的实例
             const dependencies = this.resolveDependencies(provider)
             const value = new provider(...dependencies)
-            this.providers.set(provider,value)
+            this.providerInstances.set(provider,value)
+            providers.add(provider)
         }
     }
     use(middleware){
         this.app.use(middleware)
     }
 
-    private getProviderByToken(injectedToken){
-       return this.providers.get(injectedToken)??injectedToken
+    private getProviderByToken(injectedToken,module){
+        // 如何通过token在特定的模块下找对应的provider
+        // 先找到此模块对应的token set，再判断此injectToken在不在此set中 如果存在 是可可以返回对应的provider实例
+        if(this.moduleProviders.get(module)?.has(injectedToken) || this.globalProviders.has(injectedToken)){
+            return this.providerInstances.get(injectedToken)
+        }else {
+            return null
+        }
     }
 
     private resolveDependencies(Clazz){
@@ -110,9 +140,10 @@ export class NestApplication {
         const constructorParams = Reflect.getMetadata(DESIGN_PARAMTYPES,Clazz)??[];
         // console.log('constructorParams',constructorParams);
         return constructorParams.map((param,index)=>{
+            const module = Reflect.getMetadata('module',Clazz)
             // 把每个param中的token默认换成对应的provider值
             console.log(index,'injectedTokens',injectedTokens[index],'param',param);
-            return this.getProviderByToken(injectedTokens[index]??param)
+            return this.getProviderByToken(injectedTokens[index]??param,module)
         })
     }
     // 定义 init 方法，初始化应用
