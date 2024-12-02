@@ -1,14 +1,17 @@
 import {AppController} from './app.controller';
 import { UserController } from './user/user.controller';
 import { CoreModule } from "./core.module";
-import { CommonModule } from "./common.module";
-import { OtherModule } from "./other.module";
+// import { CommonModule } from "./common.module";
+// import { OtherModule } from "./other.module";
+import { DynamicConfigModule } from "./dynamicConfig.module";
 
 import { Module } from '@nestjs/common';
 import { CorsMiddleware } from './middleware/cors.middleware';
 // import { LoggerModule } from "./logger.module";
+import { AppSerive } from './app.service';
 @Module({
-    imports:[CommonModule,OtherModule],
+    // imports:[CommonModule,OtherModule],
+    imports:[DynamicConfigModule.forRoot()],
     // controllers:[AppController, UserController],
     controllers:[AppController],
     // providers:[
@@ -32,6 +35,9 @@ import { CorsMiddleware } from './middleware/cors.middleware';
     //         useFactory:(prefix1,prefix2)=>new UseFactory(prefix1,prefix2)
     //     }
     // ]
+    providers:[AppSerive],
+    exports:[AppSerive]
+
 })
 
 export class AppModule {} 

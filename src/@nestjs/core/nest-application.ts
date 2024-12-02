@@ -3,7 +3,7 @@ import express, { Express, Request as ExpressRequest, Response as ExpressRespons
 import { Logger } from './logger';
 import path  from  'path'
 import { LoggerService, UseValueService } from '../../logger.service';
-import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common';
+import { defineModule, DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common';
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -18,10 +18,6 @@ export class NestApplication {
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
-        this.app.use((req,res,next)=>{
-            req.user = {name:'admin',role:'admin'};
-            next()
-        })
         this.initProviders(); // 注入providers
     }
     // 初始化提供者
@@ -30,7 +26,24 @@ export class NestApplication {
         const imports = Reflect.getMetadata('imports',this.module)??[];
         // 遍历所有导入的模块
         for (const importModule of imports) { 
-            this.registerProvidersFromModule(importModule,this.module)
+            // 如果导入的模块有module属性 说明这是一个动态模块
+            if('module' in importModule){
+                const {module,providers,controllers,exports} = importModule;
+                const oldProviders = Reflect.getMetadata('providers',module)
+                const newProviders = [...(oldProviders??[]),...(providers??[])]
+                defineModule(module,newProviders)
+                const oldControllers = Reflect.getMetadata('controllers',module)
+                const newControllers = [...(oldControllers??[]),...(controllers??[])]
+                defineModule(module,newControllers)
+                const oldExports = Reflect.getMetadata('exports',module)
+                const newExports = [...(oldExports??[]),...(exports??[])]
+                Reflect.defineMetadata('providers',newProviders,module)
+                Reflect.defineMetadata('controllers',newControllers,module)
+                Reflect.defineMetadata('exports',newExports,module)
+                 this.registerProvidersFromModule(module,this.module)
+            }else {
+                this.registerProvidersFromModule(importModule,this.module)
+            }
         }
         // 获取当前模块提供者的元数据
         const providers = Reflect.getMetadata('providers',this.module)??[] 

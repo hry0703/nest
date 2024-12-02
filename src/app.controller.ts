@@ -2,6 +2,7 @@ import { Controller, Get, Inject} from "@nestjs/common";
 // import {LoggerClassService, LoggerService,UseValueService,UseFactory } from "./logger.service";
 import { CommonSerive } from "./common.service";
 import { OtherSerive } from "./other.service";
+import { AppSerive } from "./app.service";
 
 @Controller()
 export class AppController {
@@ -12,7 +13,8 @@ export class AppController {
         // @Inject('FactoryToken') private UseFactory:UseFactory,
 
         // private commonSerive:CommonSerive
-        private otherSerive:OtherSerive
+        // private otherSerive:OtherSerive
+        private appSerive:AppSerive
     ){}
     // @Get()
     // index(args):string{
@@ -31,9 +33,15 @@ export class AppController {
     //     return 'hello common';
     // }
 
-    @Get('/other')
-    common():string{
-        this.otherSerive.log('common')
-        return 'hello other';
+    // @Get('/other')
+    // common():string{
+    //     this.otherSerive.log('common')
+    //     return 'hello other';
+    // }
+
+    @Get('config')
+    index(){
+       return this.appSerive.getConfig()
     }
+    
 }
