@@ -18,17 +18,24 @@ export class NestApplication {
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
-        this.initProviders(); // 注入providers
+      
     }
     // 初始化提供者
-    initProviders(){
+    async initProviders(){
         // 获取模块导入的元数据
         const imports = Reflect.getMetadata('imports',this.module)??[];
+       
         // 遍历所有导入的模块
         for (const importModule of imports) { 
+            let importedModule = importModule
+            // 如果导入的是一个promise 说明是个异步的动态模块
+             if(importModule instanceof Promise){
+                importedModule = await importedModule
+             }
             // 如果导入的模块有module属性 说明这是一个动态模块
-            if('module' in importModule){
-                const {module,providers,controllers,exports} = importModule;
+            if('module' in importedModule){
+                const {module,providers,controllers,exports} = importedModule;
+                console.log('d-module',importedModule);
                 const oldProviders = Reflect.getMetadata('providers',module)
                 const newProviders = [...(oldProviders??[]),...(providers??[])]
                 defineModule(module,newProviders)
@@ -42,7 +49,7 @@ export class NestApplication {
                 Reflect.defineMetadata('exports',newExports,module)
                  this.registerProvidersFromModule(module,this.module)
             }else {
-                this.registerProvidersFromModule(importModule,this.module)
+                this.registerProvidersFromModule(importedModule,this.module)
             }
         }
         // 获取当前模块提供者的元数据
@@ -259,7 +266,7 @@ export class NestApplication {
                 case 'Headers':
                     return data? req.headers[data] : req.headers
                 case 'Session':
-                    return data? req.session[data] : req.session
+                    return data? (req as any).session[data] : (req as any).session
                 case 'Ip':
                     return req.ip 
                 case 'Param':
@@ -285,6 +292,7 @@ export class NestApplication {
 
     // 定义 listen 方法，监听指定端口
     async listen(port: number) {
+        await this.initProviders(); // 注入providers
         // 初始化应用
         await this.init();
         // 监听指定端口

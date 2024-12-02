@@ -11,7 +11,7 @@ import { CorsMiddleware } from './middleware/cors.middleware';
 import { AppSerive } from './app.service';
 @Module({
     // imports:[CommonModule,OtherModule],
-    imports:[DynamicConfigModule.forRoot()],
+    imports:[DynamicConfigModule.forRoot('-hry1122')],
     // controllers:[AppController, UserController],
     controllers:[AppController],
     // providers:[
