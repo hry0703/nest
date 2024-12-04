@@ -5,10 +5,11 @@ import { CoreModule } from "./core.module";
 // import { OtherModule } from "./other.module";
 import { DynamicConfigModule } from "./dynamicConfig.module";
 
-import { Module } from '@nestjs/common';
-import { CorsMiddleware } from './middleware/cors.middleware';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+// import { CorsMiddleware } from './middleware/cors.middleware';
 // import { LoggerModule } from "./logger.module";
 import { AppSerive } from './app.service';
+import { loggerMiddleware } from './logger.middleware';
 @Module({
     // imports:[CommonModule,OtherModule],
     imports:[DynamicConfigModule.forRoot('-hry1122')],
@@ -40,7 +41,11 @@ import { AppSerive } from './app.service';
 
 })
 
-export class AppModule {} 
-// export class AppModule implements NestModule{configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(CorsMiddleware).forRoutes('*'); // 应用于所有路由
-//   }} 
+export class AppModule implements NestModule{
+    configure(consumer: MiddlewareConsumer) {
+        //要针对/config路径应用loggerMiddleware中间件
+        consumer
+        .apply(loggerMiddleware)
+        .forRoutes({path:'config',method:RequestMethod.GET}); // 
+    }
+} 

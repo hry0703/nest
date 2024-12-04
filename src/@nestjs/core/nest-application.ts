@@ -3,7 +3,7 @@ import express, { Express, Request as ExpressRequest, Response as ExpressRespons
 import { Logger } from './logger';
 import path  from  'path'
 import { LoggerService, UseValueService } from '../../logger.service';
-import { defineModule, DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common';
+import { defineModule, DESIGN_PARAMTYPES, INJECTED_TOKENS, RequestMethod } from '../common';
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -14,11 +14,62 @@ export class NestApplication {
     private readonly globalProviders = new Set();
     // 记录每个模块里有些哪些providers实例
     private readonly moduleProviders = new Map();
+    // 记录所有的中间件
+    private readonly middlewares = []
     // 构造函数，接收一个模块参数
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
+        this.initMiddlewares()// 初始化中间件配置
       
+    }
+    private initMiddlewares(){
+        // 调用配置中间件的方法 MiddlewareConsumer就是当前的NestApplication的实例
+        this.module.prototype.configure(this);
+    }
+    apply(...midddleware){
+        // 把接收到的中间件放到中间件数组中并且返回当前的实例
+        this.middlewares.push(...midddleware)
+        return this
+    }
+     private getMiddlewareInstance(middleware){
+        if(middleware instanceof Function){
+            return new middleware()
+        }
+        return middleware
+    }
+    forRoutes(...routes){
+        // 遍历路径信息
+        for(const route of routes){
+            // 遍历中间件
+            for(const middleware of this.middlewares){
+                //把route格式化为标准对象 一个是路径一个是请求方法
+                const {routePath,routeMethod}  = this.normalizeRouteInfo(route)
+                // use方法的第一个参数就表示匹配路径 不匹配根本进不来
+                this.app.use(routePath,(req,res,next)=>{
+                    // 如果配置的方法名是all或者方法名完全相同 匹配
+                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method){
+                        const middlewareInstance = this.getMiddlewareInstance(middleware)
+                        middlewareInstance.use(req,res,next)
+                    }else {
+                        next()
+                    }
+                })
+            }
+        }
+    }
+   
+    private normalizeRouteInfo(route){
+        let routePath = ''; // 转化路径
+        let routeMethod = RequestMethod.ALL; // 默认是支持所有的方法
+        if(typeof route  === 'string'){
+            routePath = route
+        }else if ('path' in route){
+            routePath = route.path
+            routeMethod = route.method??RequestMethod.ALL
+        }
+        routePath = path.posix.join('/',routePath)
+        return {routePath,routeMethod}
     }
     // 初始化提供者
     async initProviders(){
