@@ -7,7 +7,7 @@ export class loggerMiddleware implements NestMiddleware {
 
     }
     use(req: Request, res: Response, next: NextFunction) {
-        console.log('loggerMiddleware',this.appSerive.getConfig(), req.originalUrl);
+        console.log('loggerMiddleware执行',this.appSerive.getConfig(), req.originalUrl);
         next()
     }
 }

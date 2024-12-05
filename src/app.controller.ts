@@ -4,7 +4,7 @@ import { CommonSerive } from "./common.service";
 import { OtherSerive } from "./other.service";
 import { AppSerive } from "./app.service";
 
-@Controller()
+@Controller('app')
 export class AppController {
     constructor(
         // private loggerClassService:LoggerClassService,
@@ -48,4 +48,10 @@ export class AppController {
     post(){
        return 'post-cofing'
     }
+
+    @Get('abcde')
+    excludeRoute(){
+       return 'abcde'
+    }
+    
 }

@@ -46,6 +46,10 @@ export class AppModule implements NestModule{
         //要针对/config路径应用loggerMiddleware中间件
         consumer
         .apply(loggerMiddleware)
-        .forRoutes({path:'config',method:RequestMethod.GET}); // 
+        // .forRoutes({path:'config',method:RequestMethod.GET}); // 
+        // .forRoutes('ab*de'); // 
+        .forRoutes(AppController) // 
+        .exclude({path:'app/config',method:RequestMethod.GET})
+        // forRoutes 和 exclude 的顺序不影响结果 因为请求是异步的 请求发起时 forRoutes和exclude已经执行完毕
     }
 } 

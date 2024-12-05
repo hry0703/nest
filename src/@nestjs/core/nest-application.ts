@@ -16,12 +16,19 @@ export class NestApplication {
     private readonly moduleProviders = new Map();
     // 记录所有的中间件
     private readonly middlewares = []
+    // 记录所有要排除的路径
+    private readonly excludedRoutes = []
     // 构造函数，接收一个模块参数
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
        
       
+    }
+    exclude(...routeInfos):this{
+         console.log('exclude');
+        this.excludedRoutes.push(...routeInfos.map(this.normalizeRouteInfo))
+        return this
     }
     private async initMiddlewares(){
         // 调用配置中间件的方法 MiddlewareConsumer就是当前的NestApplication的实例
@@ -33,16 +40,25 @@ export class NestApplication {
         defineModule(this.module,this.middlewares)
         return this
     }
-     private getMiddlewareInstance(middleware){
+   
+    private getMiddlewareInstance(middleware){
         if(middleware instanceof Function){
              const dependencies = this.resolveDependencies(middleware)
              // 怎么拿到的依赖？？
-             console.log('dependencies',dependencies);
+            //  console.log('dependencies',dependencies);
             return new middleware(...dependencies)
         }
         return middleware
     }
+    isExcluded(reqPath:string,method:string){
+        // 遍历要排除的路径 看看哪个排除的路径和当前请求的路径和方法名匹配
+        return this.excludedRoutes.some(routeInfo=>{
+            const {routePath,routeMethod} = routeInfo;
+            return reqPath === routePath && (routeMethod === RequestMethod.ALL|| routeMethod === method)
+        })
+    }
     forRoutes(...routes){
+        console.log('forRoutes');
         // 遍历路径信息
         for(const route of routes){
             // 遍历中间件
@@ -51,6 +67,11 @@ export class NestApplication {
                 const {routePath,routeMethod}  = this.normalizeRouteInfo(route)
                 // use方法的第一个参数就表示匹配路径 不匹配根本进不来
                 this.app.use(routePath,(req,res,next)=>{
+                    // 这里是请求匹配上才会执行的回调 异步的 此时excludedRoutes已初始化完成 所有中间件的forRoutes和exclude的调用顺序不会影响结果
+                    // 如果当前的路径要排出掉 就不走当前的中间件了
+                    if(this.isExcluded(req.originalUrl,req.method)){
+                        return next()
+                    }
                     // 如果配置的方法名是all或者方法名完全相同 匹配
                     if(routeMethod === RequestMethod.ALL || routeMethod === req.method){
                         const middlewareInstance = this.getMiddlewareInstance(middleware)
@@ -61,6 +82,7 @@ export class NestApplication {
                 })
             }
         }
+        return this 
     }
    
     private normalizeRouteInfo(route){
@@ -70,6 +92,10 @@ export class NestApplication {
             routePath = route
         }else if ('path' in route){
             routePath = route.path
+            routeMethod = route.method??RequestMethod.ALL
+        }else if (route instanceof Function){
+            // 如果路由是个控制器则取其 前缀为routePath
+            routePath = Reflect.getMetadata('prefix',route)
             routeMethod = route.method??RequestMethod.ALL
         }
         routePath = path.posix.join('/',routePath)
