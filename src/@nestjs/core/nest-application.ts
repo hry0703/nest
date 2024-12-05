@@ -20,21 +20,25 @@ export class NestApplication {
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
-        this.initMiddlewares()// 初始化中间件配置
+       
       
     }
-    private initMiddlewares(){
+    private async initMiddlewares(){
         // 调用配置中间件的方法 MiddlewareConsumer就是当前的NestApplication的实例
         this.module.prototype.configure(this);
     }
     apply(...midddleware){
         // 把接收到的中间件放到中间件数组中并且返回当前的实例
         this.middlewares.push(...midddleware)
+        defineModule(this.module,this.middlewares)
         return this
     }
      private getMiddlewareInstance(middleware){
         if(middleware instanceof Function){
-            return new middleware()
+             const dependencies = this.resolveDependencies(middleware)
+             // 怎么拿到的依赖？？
+             console.log('dependencies',dependencies);
+            return new middleware(...dependencies)
         }
         return middleware
     }
@@ -86,7 +90,7 @@ export class NestApplication {
             // 如果导入的模块有module属性 说明这是一个动态模块
             if('module' in importedModule){
                 const {module,providers,controllers,exports} = importedModule;
-                console.log('d-module',importedModule);
+                // console.log('d-module',importedModule);
                 const oldProviders = Reflect.getMetadata('providers',module)
                 const newProviders = [...(oldProviders??[]),...(providers??[])]
                 defineModule(module,newProviders)
@@ -213,7 +217,7 @@ export class NestApplication {
         return constructorParams.map((param,index)=>{
             const module = Reflect.getMetadata('module',Clazz)
             // 把每个param中的token默认换成对应的provider值
-            console.log(index,'injectedTokens',injectedTokens[index],'param',param);
+            // console.log(index,'injectedTokens',injectedTokens[index],'param',param);
             return this.getProviderByToken(injectedTokens[index]??param,module)
         })
     }
@@ -344,6 +348,7 @@ export class NestApplication {
     // 定义 listen 方法，监听指定端口
     async listen(port: number) {
         await this.initProviders(); // 注入providers
+        await this.initMiddlewares()// 初始化中间件配置
         // 初始化应用
         await this.init();
         // 监听指定端口

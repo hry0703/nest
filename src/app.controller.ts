@@ -1,4 +1,4 @@
-import { Controller, Get, Inject} from "@nestjs/common";
+import { Controller, Get,Post, Inject} from "@nestjs/common";
 // import {LoggerClassService, LoggerService,UseValueService,UseFactory } from "./logger.service";
 import { CommonSerive } from "./common.service";
 import { OtherSerive } from "./other.service";
@@ -44,4 +44,8 @@ export class AppController {
        return this.appSerive.getConfig()
     }
     
+    @Post('config')
+    post(){
+       return 'post-cofing'
+    }
 }
