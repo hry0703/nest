@@ -3,7 +3,9 @@ import express, { Express, Request as ExpressRequest, Response as ExpressRespons
 import { Logger } from './logger';
 import path  from  'path'
 import { LoggerService, UseValueService } from '../../logger.service';
-import { defineModule, DESIGN_PARAMTYPES, INJECTED_TOKENS, RequestMethod } from '../common';
+import { RequestMethod } from '@nestjs/common';
+import {  DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
+import { defineModule, } from '../common/module.decorator';
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -14,7 +16,7 @@ export class NestApplication {
     private readonly globalProviders = new Set();
     // 记录每个模块里有些哪些providers实例
     private readonly moduleProviders = new Map();
-    // 记录所有的中间件
+    // 记录所有的中间件 可能是中间件的类 可能是中间件的实例 也可能是个函数中间件
     private readonly middlewares = []
     // 记录所有要排除的路径
     private readonly excludedRoutes = []
@@ -74,8 +76,15 @@ export class NestApplication {
                     }
                     // 如果配置的方法名是all或者方法名完全相同 匹配
                     if(routeMethod === RequestMethod.ALL || routeMethod === req.method){
-                        const middlewareInstance = this.getMiddlewareInstance(middleware)
-                        middlewareInstance.use(req,res,next)
+                        // 此处的middleware 可能是个类或者实例或者函数
+                        if('use' in middleware.prototype || 'use' in  middleware){
+                            const middlewareInstance = this.getMiddlewareInstance(middleware)
+                            middlewareInstance.use(req,res,next)
+                        }else if(middleware instanceof Function) {
+                            middleware(req,res,next)
+                        }else {
+                            next()
+                        }
                     }else {
                         next()
                     }
