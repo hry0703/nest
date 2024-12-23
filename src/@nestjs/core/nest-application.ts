@@ -6,6 +6,7 @@ import { LoggerService, UseValueService } from '../../logger.service';
 import { RequestMethod ,GlobalHttpExceptionFilter} from '@nestjs/common';
 import {  DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
+import { APP_FILTER } from '@nestjs/core';
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -31,6 +32,7 @@ export class NestApplication {
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
     }
     useGlobalFilters(...filters){
+        defineModule(this.module,filters.filter(filters=>filters instanceof Function))
         this.globalHttpExceptionFiler.push(...filters)
     }
     exclude(...routeInfos):this{
@@ -142,7 +144,7 @@ export class NestApplication {
                 Reflect.defineMetadata('providers',newProviders,module)
                 Reflect.defineMetadata('controllers',newControllers,module)
                 Reflect.defineMetadata('exports',newExports,module)
-                 this.registerProvidersFromModule(module,this.module)
+                this.registerProvidersFromModule(module,this.module)
             }else {
                 this.registerProvidersFromModule(importedModule,this.module)
             }
@@ -238,6 +240,7 @@ export class NestApplication {
     }
 
     private getProviderByToken(injectedToken,module){
+        console.log('injectedToken',injectedToken,module);
         // 如何通过token在特定的模块下找对应的provider
         // 先找到此模块对应的token set，再判断此injectToken在不在此set中 如果存在 是可可以返回对应的provider实例
         if(this.moduleProviders.get(module)?.has(injectedToken) || this.globalProviders.has(injectedToken)){
@@ -279,6 +282,7 @@ export class NestApplication {
             const controllerPrototype = Reflect.getPrototypeOf(controller); 
             // 获取控制器上绑定的异常过滤器数组
             const controllerFilters = Reflect.getMetadata('filters',Controller)??[];
+            defineModule(this.module,controllerFilters)
             for(const methodName of  Object.getOwnPropertyNames(controllerPrototype)){
                 // 获取原型上的方法 methodName: index constructor
                 const method = controllerPrototype[methodName];
@@ -293,6 +297,7 @@ export class NestApplication {
                 const headers = Reflect.getMetadata('headers',method)??[];
                 // 获取方法上绑定的异常过滤器数组
                 const methodFilters = Reflect.getMetadata('filters',method)??[];
+                defineModule(this.module,methodFilters)
                 // console.log('headers',headers);
                 // 如果方法名不存在则不处理 
                 if(!httpMethod) continue
@@ -413,11 +418,23 @@ export class NestApplication {
         })
       
     }
+    async ininGlobalFilters(){
+        // 获取当前的模块的所有的providers
+        const providers = Reflect.getMetadata('providers',this.module)??[];
+        for (const provider of providers) {
+            if(provider.provide === APP_FILTER){
+               const providerInstance = this.getProviderByToken(APP_FILTER,this.module) 
+               console.log('providerInstance',providerInstance);
+               this.useGlobalFilters(providerInstance)
+            }
+        }
+    }
 
     // 定义 listen 方法，监听指定端口
     async listen(port: number) {
         await this.initProviders(); // 注入providers
         await this.initMiddlewares()// 初始化中间件配置
+        await this.ininGlobalFilters()// 初始化全局过滤器
         // 初始化应用
         await this.init();
         // 监听指定端口

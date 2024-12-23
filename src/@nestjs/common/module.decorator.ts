@@ -18,7 +18,33 @@ export function Module(metadata:ModuleMetadata):ClassDecorator{
         Reflect.defineMetadata('controllers',metadata.controllers,target)
         // 类上保存了一个providers数组 表示给此模块注入的provider供应者、
           // 我得知道此提供者属于哪个模块
-         defineModule(target,metadata.providers)
+        defineModule(target,(metadata.providers??[]).map(provider=>{
+             /**
+              *  // providers:[
+                //     {
+                //         provide:'SUFFIX',
+                //         useValue:'suffix'
+                //     },
+                //     LoggerClassService, // 这样定义provider的话 token就是这个类本身，等价于下面这种写法 // 这种写法最多
+                //     {
+                //         provide:LoggerService,
+                //         useClass:LoggerService // 说明提供的是一个类
+                //     },
+                    
+                //     {// 也是一种定义provider的方法
+                //         provide:'StringToken',// 这是一个token 也称为标志 或者说令牌 也就是一个provider的名字
+                //         useValue:new UseValueService('prefix')// 可以直接提供一个值
+                //     },
+                //     {
+                //         provide:'FactoryToken',
+                //         inject:['prefix1','SUFFIX'], // SUFFIX是个token这里期望实现传入的是 token为SUFFIX的provide的useValue 即suffix
+                //         useFactory:(prefix1,prefix2)=>new UseFactory(prefix1,prefix2)
+                //     }
+                // ]
+              */
+            // 只需要给 LoggerClassService ，LoggerService，添加 module
+            return  provider instanceof Function ? provider : provider.useClass // provider.useClass 上添加module 方便APP_FILTER初始化全局过滤器时找到对应的模块 完成依赖注入
+        }).filter(Boolean))
         // 给模块类AppModule添加元数据 元数据的名字叫providers 值是providers数组[LoggerService]
         Reflect.defineMetadata('providers',metadata.providers,target)
         // 在类上保存exports

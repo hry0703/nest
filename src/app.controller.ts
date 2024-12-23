@@ -8,7 +8,7 @@ import { BadRequestException,RequestTimeoutException } from "@nestjs/common";
 import { CustomExceptionFilter } from "./custom-exception.filter";
 
 @Controller('app')
-@UseFilters(new CustomExceptionFilter()) // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
+// @UseFilters(CustomExceptionFilter) // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
 export class AppController {
     constructor(
         // private loggerClassService:LoggerClassService,
@@ -88,14 +88,14 @@ export class AppController {
     }
 
 
-    @UseFilters(CustomExceptionFilter)  // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
+    // @UseFilters(CustomExceptionFilter)  // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
     @Get('bad-request')
     badRequest(){
         throw new BadRequestException('Something bad happended','Something error occur')
     }
 
     @Get('request-timeout')
-    @UseFilters(new CustomExceptionFilter())  // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
+    // @UseFilters(CustomExceptionFilter)  // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
     requestTimeout(){
         throw new RequestTimeoutException('request-timeout','request-timeout')
     }

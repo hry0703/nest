@@ -11,6 +11,8 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AppSerive } from './app.service';
 import { loggerMiddleware } from './logger.middleware';
 import { loggerFunction } from './logger-function.middleware';
+import { APP_FILTER } from '@nestjs/core';
+import { CustomExceptionFilter } from './custom-exception.filter';
 @Module({
     // imports:[CommonModule,OtherModule],
     imports:[DynamicConfigModule.forRoot('-hry1122')],
@@ -37,7 +39,16 @@ import { loggerFunction } from './logger-function.middleware';
     //         useFactory:(prefix1,prefix2)=>new UseFactory(prefix1,prefix2)
     //     }
     // ]
-    providers:[AppSerive],
+    // providers:[AppSerive],
+    providers:[
+        AppSerive,
+    {
+        provide:'PREFFIX',
+        useValue:'preffix'
+    },{
+        provide:APP_FILTER,
+        useClass:CustomExceptionFilter
+    }],
     exports:[AppSerive]
 
 })

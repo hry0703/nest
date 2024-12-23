@@ -1,4 +1,4 @@
-import { ExceptionFilter,ArgumentsHost,HttpException, BadRequestException,Catch, RequestTimeoutException } from "@nestjs/common";
+import { ExceptionFilter,ArgumentsHost,HttpException, BadRequestException,Catch, RequestTimeoutException, Inject } from "@nestjs/common";
 import { Response ,Request} from 'express'
 
 /**
@@ -7,7 +7,11 @@ import { Response ,Request} from 'express'
  */
 @Catch(BadRequestException,RequestTimeoutException,HttpException)
 export class CustomExceptionFilter implements ExceptionFilter {
+    constructor(@Inject('PREFFIX') private readonly preffix) {
+
+    }
     catch(exception: any, host: ArgumentsHost) {
+        console.log('preffix',this.preffix);
         const ctx = host.switchToHttp()
         const request =  ctx.getRequest<Request>()
         const response =  ctx.getResponse<Response>()
@@ -18,7 +22,6 @@ export class CustomExceptionFilter implements ExceptionFilter {
             timestamp:new Date().toLocaleDateString(),
             path:request.url,
             method:request.method
-
         })
             
     }
