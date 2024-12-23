@@ -13,11 +13,24 @@ import { loggerMiddleware } from './logger.middleware';
 import { loggerFunction } from './logger-function.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception.filter';
+import { App2Controller } from './app2.controller';
+
+
+function logger1(req: Request, res: Response, next: any) {
+    console.log('logger1');
+    next()
+}
+
+function logger2(req: Request, res: Response, next: any) {
+    console.log('logger2');
+    next()
+}
+
 @Module({
     // imports:[CommonModule,OtherModule],
     imports:[DynamicConfigModule.forRoot('-hry1122')],
     // controllers:[AppController, UserController],
-    controllers:[AppController],
+    controllers:[AppController,App2Controller],
     // providers:[
     //     {
     //         provide:'SUFFIX',
@@ -55,14 +68,12 @@ import { CustomExceptionFilter } from './custom-exception.filter';
 
 export class AppModule implements NestModule{
     configure(consumer: MiddlewareConsumer) {
-        //要针对/config路径应用loggerMiddleware中间件
         consumer
-        .apply(loggerMiddleware)
-        // .apply(loggerFunction)
-        // .forRoutes({path:'config',method:RequestMethod.GET}); // 
-        // .forRoutes('ab*de'); // 
-        .exclude({path:'app/config',method:RequestMethod.GET})
-        .forRoutes(AppController) // 
-        // forRoutes 和 exclude 的顺序不影响结果 因为请求是异步的 请求发起时才执行forRoutes内 use的回调 forRoutes和exclude已经执行完毕
+        .apply(logger1)
+        .forRoutes(AppController)
+
+
+        .apply(logger2)
+        .forRoutes(App2Controller)
     }
 } 

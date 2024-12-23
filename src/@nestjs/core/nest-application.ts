@@ -2,11 +2,11 @@
 import express, { Express, Request as ExpressRequest, Response as ExpressResponse, NextFunction } from 'express';
 import { Logger } from './logger';
 import path  from  'path'
-import { LoggerService, UseValueService } from '../../logger.service';
-import { RequestMethod ,GlobalHttpExceptionFilter} from '@nestjs/common';
+import { RequestMethod} from '@nestjs/common';
 import {  DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
 import { APP_FILTER } from '@nestjs/core';
+import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -78,11 +78,11 @@ export class NestApplication {
                 this.app.use(routePath,(req,res,next)=>{
                     // 这里是请求匹配上才会执行的回调 异步的 此时excludedRoutes已初始化完成 所有中间件的forRoutes和exclude的调用顺序不会影响结果
                     // 如果当前的路径要排出掉 就不走当前的中间件了
-                    if(this.isExcluded(req.originalUrl,req.method)){
+                    if(this.isExcluded(req.originalUrl,req.method)){ 
                         return next()
                     }
                     // 如果配置的方法名是all或者方法名完全相同 匹配
-                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method){
+                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method as any){
                         // 此处的middleware 可能是个类或者实例或者函数
                         if('use' in middleware.prototype || 'use' in  middleware){
                             const middlewareInstance = this.getMiddlewareInstance(middleware)
@@ -98,6 +98,16 @@ export class NestApplication {
                 })
             }
         }
+        /**
+         * .apply(logger1)
+        .forRoutes(AppController)
+
+        
+        .apply(logger2)
+        .forRoutes(App2Controller)
+         */
+        // 为了实现 上面的效果（apply和forRoutes 成对存在）,每次执行forRoutes 返回前清除middlewares
+        this.middlewares.length = 0
         return this 
     }
    
@@ -318,9 +328,11 @@ export class NestApplication {
                         })
             }
                     try {
+                        // let a;
+                        // console.log(a.toString());
                         const args = this.resolveParams(controller,methodName,req,res,next,host) 
                         // 执行路由处理函数，获取返回值
-                        const result =  method.call(controller,...args);
+                        const result = await method.call(controller,...args);
                         if(result?.url){
                             return  res.redirect(result.statusCode || 302 ,result.url)
                         }

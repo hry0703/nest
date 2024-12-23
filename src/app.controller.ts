@@ -43,6 +43,11 @@ export class AppController {
     //     return 'hello other';
     // }
 
+    @Get()
+    index1(){
+       return this.appSerive.getPrefix() + ':app'
+    }
+
     @Get('config')
     index(){
        return this.appSerive.getConfig()

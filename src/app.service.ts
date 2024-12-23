@@ -9,6 +9,9 @@ export class AppSerive {
     ){
 
     }
+    getPrefix(){
+        return this.prefix
+    }
 
     getConfig(){
         return this.prefix + this.config.apiKey

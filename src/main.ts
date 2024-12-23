@@ -13,7 +13,7 @@ async function bootstrap() {
         saveUninitialized:false,// 是否保存未初始化的会话
         cookie:{maxAge:1000*60*60*24}// 定义会话的cookie配置 设置cookie的最大存活时间是一天
     }))
-    app.use(loggerFunction) // 这样可以注册全局中间件 可以绑定到注册的每个路由上 但是无法依赖注入 因为需要module中的providers 这里没有
+    // app.use(loggerFunction) // 这样可以注册全局中间件 可以绑定到注册的每个路由上 但是无法依赖注入 因为需要module中的providers 这里没有
     await app.listen(3000)
     
 } 
