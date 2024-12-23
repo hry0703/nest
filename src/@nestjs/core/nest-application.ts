@@ -188,11 +188,15 @@ export class NestApplication {
     // 原来的provider都混在一起了 现在需要分开 每个模块都有自己的providers
     addProvider(provider,module,global=false){
         
-        // 此providers代表module这个模块的providers的集合
+        // providers在global为true的情况下为this.globalProviders Set
+        // providers在global为false的情况下为this.module对应的providers Set
         const providers = global ? this.globalProviders : this.moduleProviders.get(module) || new Set();
-        if(!this.moduleProviders.has(module)){
+        // 不需要判断 因为Set本身就可以去重，里面只会有不一样的值，两次添加相同的值只会添加一次
+        // if(!this.moduleProviders.has(module)){
+        if(!global){
             this.moduleProviders.set(module,providers)
         }
+        // }
         // 获取要注册的provider的token
         const injectToken = provider.provide??provider
         // 如果实例池里已经有此token对应的实例了
