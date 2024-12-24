@@ -3,7 +3,7 @@ import express, { Express, Request as ExpressRequest, Response as ExpressRespons
 import { Logger } from './logger';
 import path  from  'path'
 import { RequestMethod} from '@nestjs/common';
-import {  DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
+import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
 import { APP_FILTER } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
@@ -36,7 +36,7 @@ export class NestApplication {
         this.globalHttpExceptionFiler.push(...filters)
     }
     exclude(...routeInfos):this{
-         console.log('exclude');
+        console.log('exclude');
         this.excludedRoutes.push(...routeInfos.map(this.normalizeRouteInfo))
         return this
     }
@@ -165,7 +165,6 @@ export class NestApplication {
         for (const provider of providers) {
             this.addProvider(provider,this.module)
         }
-        console.log('this.providers',this.providerInstances);
     }
 
     private registerProvidersFromModule(module,...parentModules){
@@ -190,6 +189,8 @@ export class NestApplication {
                 }
             }
         }
+        // 导入的模块中包含的controllers也需要处理
+        this.initController(module);
     }
 
     private isModule(exportToken){
@@ -254,7 +255,6 @@ export class NestApplication {
     }
 
     private getProviderByToken(injectedToken,module){
-        console.log('injectedToken',injectedToken,module);
         // 如何通过token在特定的模块下找对应的provider
         // 先找到此模块对应的token set，再判断此injectToken在不在此set中 如果存在 是可可以返回对应的provider实例
         if(this.moduleProviders.get(module)?.has(injectedToken) || this.globalProviders.has(injectedToken)){
@@ -279,9 +279,9 @@ export class NestApplication {
         })
     }
     // 定义 init 方法，初始化应用
-    async init() {
+    async initController(module) {
         // 取出模块类里所有的控制器，然后做好路由配置
-        let controllers = Reflect.getMetadata('controllers',this.module)||[]
+        let controllers = Reflect.getMetadata('controllers',module)||[]
         // // 记录日志：应用模块依赖已初始化
         Logger.log('AppModule dependencies initialized', 'InstanceLoader');
         // 路由映射的核心是知道 什么样的请求方法什么样的路径对应的哪个处理函数
@@ -440,7 +440,6 @@ export class NestApplication {
         for (const provider of providers) {
             if(provider.provide === APP_FILTER){
                const providerInstance = this.getProviderByToken(APP_FILTER,this.module) 
-               console.log('providerInstance',providerInstance);
                this.useGlobalFilters(providerInstance)
             }
         }
@@ -451,8 +450,7 @@ export class NestApplication {
         await this.initProviders(); // 注入providers
         await this.initMiddlewares()// 初始化中间件配置
         await this.ininGlobalFilters()// 初始化全局过滤器
-        // 初始化应用
-        await this.init();
+        await this.initController(this.module); // 这里初始化APPModule中的Controllers
         // 监听指定端口
         this.app.listen(port, () => {
             // 记录日志：应用正在运行
