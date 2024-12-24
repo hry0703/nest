@@ -1,4 +1,4 @@
-import { Controller, Get,Post, Inject, HttpException, HttpStatus, UseFilters} from "@nestjs/common";
+import { Controller, Get,Post, Inject, HttpException, HttpStatus, UseFilters, Param} from "@nestjs/common";
 // import {LoggerClassService, LoggerService,UseValueService,UseFactory } from "./logger.service";
 import { CommonSerive } from "./common.service";
 import { OtherSerive } from "./other.service";
@@ -6,6 +6,7 @@ import { AppSerive } from "./app.service";
 import { ForbiddenException } from "./fobidden.exception";
 import { BadRequestException,RequestTimeoutException } from "@nestjs/common";
 import { CustomExceptionFilter } from "./custom-exception.filter";
+import { ParseIntPipe } from "@nestjs/common";
 
 @Controller('app')
 // @UseFilters(CustomExceptionFilter) // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
@@ -103,6 +104,12 @@ export class AppController {
     // @UseFilters(CustomExceptionFilter)  // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
     requestTimeout(){
         throw new RequestTimeoutException('request-timeout','request-timeout')
+    }
+
+
+     @Get('number/:id')
+    getNumber(@Param('id', ParseIntPipe) id:number){
+        return ` The number is ${id}`
     }
     
 }

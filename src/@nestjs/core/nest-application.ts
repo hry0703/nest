@@ -330,7 +330,7 @@ export class NestApplication {
                     try {
                         // let a;
                         // console.log(a.toString());
-                        const args = this.resolveParams(controller,methodName,req,res,next,host) 
+                        const args = await this.resolveParams(controller,methodName,req,res,next,host) 
                         // 执行路由处理函数，获取返回值
                         const result = await method.call(controller,...args);
                         if(result?.url){
@@ -398,41 +398,64 @@ export class NestApplication {
          return paramsMetadata.filter(Boolean).find(paramMetadata=>['Res','Response','Next'].includes(paramMetadata.key))
     }
 
-    private resolveParams(instance:any,methodName:string,req:ExpressRequest,res:ExpressResponse,next:NextFunction,host){
+    private async resolveParams(instance:any,methodName:string,req:ExpressRequest,res:ExpressResponse,next:NextFunction,host){
         // 获取参数的元数据
         const paramsMetadata = Reflect.getMetadata('param',instance,methodName)??[];
         // existingParameters [{ parameterIndex: 0, key: 'Req' },<1 empty item>,{ parameterIndex: 2, key: 'Request' }]
-        return paramsMetadata.map(paramMetadata=>{
-            const {key,data,factory} = paramMetadata;
-           
+        return Promise.all(paramsMetadata.map(async paramMetadata=>{
+            const {key,data,factory,pipes } = paramMetadata;
+            let value;
             switch (key) {
                 case 'Req':
                 case 'Request':
-                    return req
+                    value = req
+                    break 
                 case 'Query':
-                    return data? req.query[data] : req.query
+                    value =  data? req.query[data] : req.query
+                    break
                 case 'Headers':
-                    return data? req.headers[data] : req.headers
+                    value =  data? req.headers[data] : req.headers
+                    break
                 case 'Session':
-                    return data? (req as any).session[data] : (req as any).session
+                    value =  data? (req as any).session[data] : (req as any).session
+                    break
                 case 'Ip':
-                    return req.ip 
+                    value =  req.ip 
+                    break
                 case 'Param':
-                    return data? req.params[data] : req.params
+                    value =  data? req.params[data] : req.params
+                    break
                 case 'Body':
-                    return data? req.body[data] : req.body
+                    value =  data? req.body[data] : req.body
+                    break
                 case 'Res':
                 case 'Response':
-                    return res
+                    value =  res
+                    break
                 case 'Next':
-                    return next
+                    value =  next
+                    break
                 case 'DecoratorFactory':
-                    return factory(data,host)
+                    value =  factory(data,host)
+                    break
                 default:
-                    return null
+                    value =  null
+                    break
             }
-        })
-      
+            for(const pipe of [...pipes]){
+                const pipeInstance = this.getPipeInstance(pipe)
+                value = await pipeInstance.transform(value)
+            }
+            return value
+        }))
+    }
+
+    private getPipeInstance(pipe){
+        if(typeof pipe === 'function'){
+            const dependencies = this.resolveDependencies(pipe)
+            return new pipe(...dependencies)
+        }
+        return pipe
     }
     async ininGlobalFilters(){
         // 获取当前的模块的所有的providers
