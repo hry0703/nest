@@ -1,4 +1,4 @@
-import { Controller, Get,Post, Inject, HttpException, HttpStatus, UseFilters, Param} from "@nestjs/common";
+import { Controller, Get,Post, Inject, HttpException, HttpStatus, UseFilters, Param, Query} from "@nestjs/common";
 // import {LoggerClassService, LoggerService,UseValueService,UseFactory } from "./logger.service";
 import { CommonSerive } from "./common.service";
 import { OtherSerive } from "./other.service";
@@ -6,8 +6,11 @@ import { AppSerive } from "./app.service";
 import { ForbiddenException } from "./fobidden.exception";
 import { BadRequestException,RequestTimeoutException } from "@nestjs/common";
 import { CustomExceptionFilter } from "./custom-exception.filter";
-import { ParseIntPipe } from "@nestjs/common";
-
+import { ParseIntPipe,ParseFloatPipe,ParseBoolPipe,ParseArrayPipe,ParseUUIDPipe,ParseEnumPipe,DefaultValuePipe } from "@nestjs/common";
+enum Roles {
+    Admin ='Admin',
+    VIP = 'VIP'
+}
 @Controller('app')
 // @UseFilters(CustomExceptionFilter) // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
 export class AppController {
@@ -107,9 +110,43 @@ export class AppController {
     }
 
 
-     @Get('number/:id')
+    @Get('number/:id')
     getNumber(@Param('id', ParseIntPipe) id:number){
         return ` The number is ${id}`
     }
+
+    @Get('float/:value')
+    getFloat(@Param('value', ParseFloatPipe) value:number){
+        return ` The float is ${value}`
+    }
+    
+
+    @Get('bool/:value')
+    getBool(@Param('value', ParseBoolPipe) value:number){
+        return ` The bool is ${value}`
+    }
+    
+
+    @Get('array/:values')
+    getArray(@Param('values',new ParseArrayPipe({items:String,separator:','})) values:string[]){
+        console.log(values,);
+        return ` The values are ${values}`
+    }
+    
+    @Get('uuid/:id')
+    getUUid(@Param('id',ParseUUIDPipe) id:string){
+        return ` The UUId are ${id}`
+    } 
+    
+    @Get('admin/:role')
+    getRole(@Param('role',new ParseEnumPipe(Roles)) role:string){
+        return ` The role is ${role}`
+    }
+    // http://localhost:3000/app/default?username=username    http://localhost:3000/app/default
+    @Get('default')
+    getDefault(@Query('username',new DefaultValuePipe("Guest")) username:string){
+        return ` The username is ${username}`
+    }
+
     
 }
