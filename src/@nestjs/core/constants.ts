@@ -1,1 +1,2 @@
 export const APP_FILTER = 'APP_FILTER'
+export const DECORATORS_FACTORY = 'DECORATORS_FACTORY'

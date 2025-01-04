@@ -1,3 +1,4 @@
+import { DECORATORS_FACTORY } from '@nestjs/core'
 import 'reflect-metadata'
 export const createParamDecorator = (keyOrFactory:string | Function)=>{
     // target 控制器原型 propertyKey 方法名handleRequest parameterIndex 先走1再走0
@@ -7,7 +8,7 @@ export const createParamDecorator = (keyOrFactory:string | Function)=>{
         const existingParameters = Reflect.getMetadata('param',target,propertykey) || []
         if(keyOrFactory instanceof Function){
             // 如果传过来的是一个函数的话.存放参数索引 key定死为装饰器工程 factory就是用来取值的工厂
-             existingParameters[parameterIndex] = {parameterIndex,key:'DecoratorFactory',factory:keyOrFactory,data,pipes}
+             existingParameters[parameterIndex] = {parameterIndex,key:DECORATORS_FACTORY,factory:keyOrFactory,data,pipes}
         }else {
             // existingParameters.push({parameterIndex,key}) 
             // existingParameters [ { parameterIndex: 1, key: 'Request' } ]

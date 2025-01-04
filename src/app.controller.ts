@@ -7,6 +7,7 @@ import { ForbiddenException } from "./fobidden.exception";
 import { BadRequestException,RequestTimeoutException } from "@nestjs/common";
 import { CustomExceptionFilter } from "./custom-exception.filter";
 import { ParseIntPipe,ParseFloatPipe,ParseBoolPipe,ParseArrayPipe,ParseUUIDPipe,ParseEnumPipe,DefaultValuePipe } from "@nestjs/common";
+import { CustomPipe } from "./custom.pipe";
 enum Roles {
     Admin ='Admin',
     VIP = 'VIP'
@@ -148,5 +149,9 @@ export class AppController {
         return ` The username is ${username}`
     }
 
-    
+     @Get('custom/:value')
+    getCustom(@Param('value',CustomPipe) value:string){
+        return ` The value is ${value}`
+    }
+
 }

@@ -5,7 +5,7 @@ import path  from  'path'
 import { RequestMethod} from '@nestjs/common';
 import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, DECORATORS_FACTORY } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
 
 export class NestApplication {
@@ -435,7 +435,7 @@ export class NestApplication {
                 case 'Next':
                     value =  next
                     break
-                case 'DecoratorFactory':
+                case DECORATORS_FACTORY:
                     value =  factory(data,host)
                     break
                 default:
@@ -444,7 +444,8 @@ export class NestApplication {
             }
             for(const pipe of [...pipes]){
                 const pipeInstance = this.getPipeInstance(pipe)
-                value = await pipeInstance.transform(value)
+                let type = key === DECORATORS_FACTORY ? 'custom' :key.toLowerCase()
+                value = await pipeInstance.transform(value,{type,data})
             }
             return value
         }))
