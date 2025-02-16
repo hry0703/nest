@@ -8,7 +8,7 @@ export class ZodValidationPipe implements PipeTransform<any,any> {
             // value是传进来的值 使用zodSchema进行解析和验证 如果通过则返回解析后的值
             return this.schema.parse(value)
         } catch (error) {
-            console.log('value',value);
+            // console.log('value',value);
             throw new BadRequestException('Validation failed')
         }
     }

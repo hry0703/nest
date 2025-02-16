@@ -11,6 +11,8 @@ import { CustomPipe } from "./custom.pipe";
 import { UsePipes } from "@nestjs/common";
 import { ZodValidationPipe } from "./zod-validation.pipe";
 import { CreateCatDto, createCatSchema } from "./create-cat.dto";
+import { ClassValidationPipe } from "./class-validation.pipe";
+import { CreateUserDto } from "./create-user.dto";
 enum Roles {
     Admin ='Admin',
     VIP = 'VIP'
@@ -164,5 +166,13 @@ export class AppController {
     async createCat(@Body() createCatDto:CreateCatDto){
         console.log('createCatDto',JSON.stringify(createCatDto));
         return 'This action adds a new cat'
+    }
+
+    @Post('create/user')
+    @UsePipes(new ClassValidationPipe())
+    // async createUser(@Body(new ClassValidationPipe()) createUserDto:CreateUserDto){
+    async createUser(@Body() createUserDto:CreateUserDto){
+        console.log('createUserDto',JSON.stringify(createUserDto));
+        return 'This action adds a new user'
     }
 }
