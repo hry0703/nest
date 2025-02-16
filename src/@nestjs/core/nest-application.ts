@@ -7,6 +7,7 @@ import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
 import { APP_FILTER, DECORATORS_FACTORY } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
+import { PipeTransform } from '@nestjs/common';
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -296,6 +297,8 @@ export class NestApplication {
             const controllerPrototype = Reflect.getPrototypeOf(controller); 
             // 获取控制器上绑定的异常过滤器数组
             const controllerFilters = Reflect.getMetadata('filters',Controller)??[];
+            // 获取控制器上绑定的管道数组
+            const controllerPipes = Reflect.getMetadata('pipes',Controller)??[];
             defineModule(this.module,controllerFilters)
             for(const methodName of  Object.getOwnPropertyNames(controllerPrototype)){
                 // 获取原型上的方法 methodName: index constructor
@@ -311,6 +314,9 @@ export class NestApplication {
                 const headers = Reflect.getMetadata('headers',method)??[];
                 // 获取方法上绑定的异常过滤器数组
                 const methodFilters = Reflect.getMetadata('filters',method)??[];
+                // 获取方法上绑定的管道数组
+                const methodPipes = Reflect.getMetadata('pipes',method)??[];
+                const pipes = [...controllerPipes,...methodPipes]
                 defineModule(this.module,methodFilters)
                 // console.log('headers',headers);
                 // 如果方法名不存在则不处理 
@@ -330,7 +336,7 @@ export class NestApplication {
                     try {
                         // let a;
                         // console.log(a.toString());
-                        const args = await this.resolveParams(controller,methodName,req,res,next,host) 
+                        const args = await this.resolveParams(controller,methodName,req,res,next,host,pipes) 
                         // 执行路由处理函数，获取返回值
                         const result = await method.call(controller,...args);
                         if(result?.url){
@@ -398,12 +404,12 @@ export class NestApplication {
          return paramsMetadata.filter(Boolean).find(paramMetadata=>['Res','Response','Next'].includes(paramMetadata.key))
     }
 
-    private async resolveParams(instance:any,methodName:string,req:ExpressRequest,res:ExpressResponse,next:NextFunction,host){
+    private async resolveParams(instance:any,methodName:string,req:ExpressRequest,res:ExpressResponse,next:NextFunction,host,pipes:PipeTransform[]){
         // 获取参数的元数据
         const paramsMetadata = Reflect.getMetadata('param',instance,methodName)??[];
         // existingParameters [{ parameterIndex: 0, key: 'Req' },<1 empty item>,{ parameterIndex: 2, key: 'Request' }]
         return Promise.all(paramsMetadata.map(async paramMetadata=>{
-            const {key,data,factory,pipes } = paramMetadata;
+            const {key,data,factory,pipes:paramPipes } = paramMetadata;
             let value;
             switch (key) {
                 case 'Req':
@@ -442,7 +448,8 @@ export class NestApplication {
                     value =  null
                     break
             }
-            for(const pipe of [...pipes]){
+            console.log(...pipes,...paramPipes)
+            for(const pipe of [...pipes,...paramPipes]){
                 const pipeInstance = this.getPipeInstance(pipe)
                 let type = key === DECORATORS_FACTORY ? 'custom' :key.toLowerCase()
                 value = await pipeInstance.transform(value,{type,data})

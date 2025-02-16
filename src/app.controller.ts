@@ -1,4 +1,4 @@
-import { Controller, Get,Post, Inject, HttpException, HttpStatus, UseFilters, Param, Query} from "@nestjs/common";
+import { Controller, Get,Post, Inject, HttpException, HttpStatus, UseFilters, Param, Query, Body} from "@nestjs/common";
 // import {LoggerClassService, LoggerService,UseValueService,UseFactory } from "./logger.service";
 import { CommonSerive } from "./common.service";
 import { OtherSerive } from "./other.service";
@@ -8,12 +8,16 @@ import { BadRequestException,RequestTimeoutException } from "@nestjs/common";
 import { CustomExceptionFilter } from "./custom-exception.filter";
 import { ParseIntPipe,ParseFloatPipe,ParseBoolPipe,ParseArrayPipe,ParseUUIDPipe,ParseEnumPipe,DefaultValuePipe } from "@nestjs/common";
 import { CustomPipe } from "./custom.pipe";
+import { UsePipes } from "@nestjs/common";
+import { ZodValidationPipe } from "./zod-validation.pipe";
+import { CreateCatDto, createCatSchema } from "./create-cat.dto";
 enum Roles {
     Admin ='Admin',
     VIP = 'VIP'
 }
 @Controller('app')
 // @UseFilters(CustomExceptionFilter) // 异常过滤器可以设置为全局的 也可以设置为控制器级别的  以及方法级别的
+// @UsePipes(new ZodValidationPipe(createCatSchema))
 export class AppController {
     constructor(
         // private loggerClassService:LoggerClassService,
@@ -149,9 +153,16 @@ export class AppController {
         return ` The username is ${username}`
     }
 
-     @Get('custom/:value')
+    @Get('custom/:value')
     getCustom(@Param('value',CustomPipe) value:string){
         return ` The value is ${value}`
     }
 
+
+    @Post('cats')
+    @UsePipes(new ZodValidationPipe(createCatSchema))
+    async createCat(@Body() createCatDto:CreateCatDto){
+        console.log('createCatDto',JSON.stringify(createCatDto));
+        return 'This action adds a new cat'
+    }
 }
