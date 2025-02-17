@@ -3,10 +3,14 @@ import {AppModule} from './app.module';
 import session from 'express-session'
 import { loggerFunction } from './logger-function.middleware';
 import {CustomExceptionFilter } from './custom-exception.filter'
+import { ValidationPipe } from "@nestjs/common";
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     // 异常过滤器可以设置为全局的 也可以设置为控制器级别的 以及方法级别的
     // app.useGlobalFilters(new CustomExceptionFilter())
+
+    // 使用全局管道
+    // app.useGlobalPipes(new ValidationPipe()) // 这种方式无法依赖注入
     app.use(session({
         secret:'your-secret-key', // 用于加密会话的密钥
         resave:true,// 在每次请求结束后是否强制保存会话，即使它没有改变

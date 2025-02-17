@@ -11,13 +11,13 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AppSerive } from './app.service';
 import { loggerMiddleware } from './logger.middleware';
 import { loggerFunction } from './logger-function.middleware';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER,APP_PIPE } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { App2Controller } from './app2.controller';
-
+import { MyPipe } from './my.pipe';
 
 function logger1(req: Request, res: Response, next: any) {
-    console.log('logger1');
+    // console.log('logger1');
     next()
 }
 
@@ -56,8 +56,11 @@ function logger2(req: Request, res: Response, next: any) {
     providers:[
         AppSerive,
     {
-        provide:'PREFFIX',
-        useValue:'preffix'
+        provide:'PREFFIX',  //TODO DynamicConfigModule也存在PREFFIX 源码以这里为准 本地实现以DynamicConfigModule为准需要修改
+        useValue:'preffix-pipe'
+    },{
+        provide:APP_PIPE,
+        useClass:MyPipe  // 这种写法支持 管道的依赖注入
     },{
         provide:APP_FILTER,
         useClass:CustomExceptionFilter

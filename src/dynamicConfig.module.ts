@@ -7,7 +7,7 @@ export interface Config {
     providers:[
         {
             provide:'PREFIX',
-            useValue:'prefix'
+            useValue:'d-prefix'
         }
     ],
     exports:['PREFIX']

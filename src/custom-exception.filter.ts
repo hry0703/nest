@@ -11,7 +11,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
 
     }
     catch(exception: any, host: ArgumentsHost) {
-        console.log('preffix',this.preffix);
+        // console.log('preffix',this.preffix);
         const ctx = host.switchToHttp()
         const request =  ctx.getRequest<Request>()
         const response =  ctx.getResponse<Response>()

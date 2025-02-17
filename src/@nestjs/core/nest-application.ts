@@ -5,7 +5,7 @@ import path  from  'path'
 import { RequestMethod} from '@nestjs/common';
 import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
-import { APP_FILTER, DECORATORS_FACTORY } from '@nestjs/core';
+import { APP_FILTER,APP_PIPE, DECORATORS_FACTORY } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
 import { PipeTransform } from '@nestjs/common';
 
@@ -26,11 +26,17 @@ export class NestApplication {
     private readonly defaultGlobalHttpExceptionFiler = new GlobalHttpExceptionFilter()
     // 这里存放着全局的异常过滤器
     private readonly globalHttpExceptionFiler = []
+    // 这里存放所有的全局管道
+    private readonly golbalPipes: PipeTransform[] = []
 
     // 构造函数，接收一个模块参数
     constructor(protected readonly module: any) {
         this.app.use(express.json())  // 用来把json格式的请求体对象放在req.body上
         this.app.use(express.urlencoded({extended:true})) // 把form表单格式的请求体对象放在req.body上
+    }
+
+    useGlobalPipes(...pipes:PipeTransform[]){
+        this.golbalPipes.push(...pipes)
     }
     useGlobalFilters(...filters){
         defineModule(this.module,filters.filter(filters=>filters instanceof Function))
@@ -448,12 +454,10 @@ export class NestApplication {
                     value =  null
                     break
             }
-            console.log("111",...pipes,...paramPipes)
-            for(const pipe of [...pipes,...paramPipes]){
+            for(const pipe of [...this.golbalPipes,...pipes,...paramPipes]){
                 const pipeInstance = this.getPipeInstance(pipe)
                 let type = key === DECORATORS_FACTORY ? 'custom' :key.toLowerCase()
                 value = await pipeInstance.transform(value,{type,data,metatype})
-                console.log('value-after',value);
             }
             return value
         }))
@@ -477,11 +481,23 @@ export class NestApplication {
         }
     }
 
+     async ininGlobalPipes(){
+        // 获取当前的模块的所有的providers
+        const providers = Reflect.getMetadata('providers',this.module)??[];
+        for (const provider of providers) {
+            if(provider.provide === APP_PIPE){
+               const providerInstance = this.getProviderByToken(APP_PIPE,this.module) 
+               this.useGlobalPipes(providerInstance)
+            }
+        }
+    }
+
     // 定义 listen 方法，监听指定端口
     async listen(port: number) {
         await this.initProviders(); // 注入providers
         await this.initMiddlewares()// 初始化中间件配置
         await this.ininGlobalFilters()// 初始化全局过滤器
+        await this.ininGlobalPipes()// 初始化全局管道
         await this.initController(this.module); // 这里初始化APPModule中的Controllers
         // 监听指定端口
         this.app.listen(port, () => {

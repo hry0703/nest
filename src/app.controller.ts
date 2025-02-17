@@ -169,7 +169,7 @@ export class AppController {
     }
 
     @Post('create/user')
-    @UsePipes(new ClassValidationPipe())
+    // @UsePipes(new ClassValidationPipe()) // 可以设置为全局的 也可以设置为控制器级别的  以及方法级别的 
     // async createUser(@Body(new ClassValidationPipe()) createUserDto:CreateUserDto){
     async createUser(@Body() createUserDto:CreateUserDto){
         console.log('createUserDto',JSON.stringify(createUserDto));
