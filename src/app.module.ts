@@ -15,7 +15,8 @@ import { APP_FILTER,APP_PIPE } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { App2Controller } from './app2.controller';
 import { MyPipe } from './my.pipe';
-
+import { AccountController } from './account.controller';
+import { AuthMiddleware } from './auth.middleware';
 function logger1(req: Request, res: Response, next: any) {
     // console.log('logger1');
     next()
@@ -30,7 +31,7 @@ function logger2(req: Request, res: Response, next: any) {
     // imports:[CommonModule,OtherModule],
     imports:[DynamicConfigModule.forRoot('-hry1122')],
     // controllers:[AppController, UserController],
-    controllers:[AppController,App2Controller],
+    controllers:[AppController,App2Controller,AccountController],
     // providers:[
     //     {
     //         provide:'SUFFIX',
@@ -71,12 +72,18 @@ function logger2(req: Request, res: Response, next: any) {
 
 export class AppModule implements NestModule{
     configure(consumer: MiddlewareConsumer) {
+        // consumer
+        // .apply(logger1)
+        // .forRoutes(AppController)
+
+
+        // .apply(logger2)
+        // .forRoutes(App2Controller)
+
         consumer
-        .apply(logger1)
-        .forRoutes(AppController)
+        .apply(AuthMiddleware)
+        .forRoutes('*')
 
 
-        .apply(logger2)
-        .forRoutes(App2Controller)
     }
 } 
