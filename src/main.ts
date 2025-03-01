@@ -11,6 +11,8 @@ async function bootstrap() {
 
     // 使用全局管道
     // app.useGlobalPipes(new ValidationPipe()) // 这种方式无法依赖注入
+    // 使用全局守卫
+    // app.useGlobalGuards(new AuthGuard2()) // 这种方式无法依赖注入
     app.use(session({
         secret:'your-secret-key', // 用于加密会话的密钥
         resave:true,// 在每次请求结束后是否强制保存会话，即使它没有改变

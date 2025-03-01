@@ -1,6 +1,6 @@
 import 'reflect-metadata'
-export function SetMetadata(metadataKey: string, metadataValue: any) {
-    return (target: object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
+export function SetMetadata(metadataKey: any, metadataValue: any):any {
+    return (target: object |Function, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>):any => {
         if (descriptor) {
             Reflect.defineMetadata(metadataKey, metadataValue, descriptor.value);
             // return descriptor;

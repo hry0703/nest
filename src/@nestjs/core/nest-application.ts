@@ -5,13 +5,14 @@ import path  from  'path'
 import { RequestMethod} from '@nestjs/common';
 import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
-import { APP_FILTER,APP_PIPE, DECORATORS_FACTORY, FORBIDDEN_RESOURCE, Reflector } from '@nestjs/core';
+import { APP_FILTER,APP_PIPE, Reflector } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
 import { PipeTransform } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common';
 import { CanActivate } from '@nestjs/common';
 import { ForbiddenException } from 'src/fobidden.exception';
-
+import {APP_GUARD, DECORATORS_FACTORY, FORBIDDEN_RESOURCE} from './constants'
+import { from } from 'rxjs';
 export class NestApplication {
     // 定义一个私有的 express 应用实例
     private readonly app: Express = express();
@@ -31,6 +32,8 @@ export class NestApplication {
     private readonly globalHttpExceptionFiler = []
     // 这里存放所有的全局管道
     private readonly golbalPipes: PipeTransform[] = []
+     // 这里存放所有的全局守卫
+    private readonly golbalGuards= []
 
     // 构造函数，接收一个模块参数
     constructor(protected readonly module: any) {
@@ -354,7 +357,7 @@ export class NestApplication {
                 const methodGuards = Reflect.getMetadata('guards',method)??[];
         
                 const pipes = [...controllerPipes,...methodPipes]
-                const guards = [...controllerGuards,...methodGuards]
+                const guards = [...this.golbalGuards,...controllerGuards,...methodGuards]
                 defineModule(this.module,methodFilters)
                 // console.log('headers',headers);
                 // 如果方法名不存在则不处理 
@@ -517,7 +520,7 @@ export class NestApplication {
         }
     }
 
-     async ininGlobalPipes(){
+    async ininGlobalPipes(){
         // 获取当前的模块的所有的providers
         const providers = Reflect.getMetadata('providers',this.module)??[];
         for (const provider of providers) {
@@ -528,12 +531,28 @@ export class NestApplication {
         }
     }
 
+    async ininGlobalGuards(){
+        // 获取当前的模块的所有的providers
+        const providers = Reflect.getMetadata('providers',this.module)||[];
+        for (const provider of providers) {
+            if(provider.provide === APP_GUARD){
+               const providerInstance = this.getProviderByToken(APP_GUARD,this.module)
+               this.useGlobalGuards(providerInstance)
+            }
+        }
+    }
+
+    useGlobalGuards(...guards){
+        this.golbalGuards.push(...guards)
+    }
+
     // 定义 listen 方法，监听指定端口
     async listen(port: number) {
         await this.initProviders(); // 注入providers
         await this.initMiddlewares()// 初始化中间件配置
         await this.ininGlobalFilters()// 初始化全局过滤器
         await this.ininGlobalPipes()// 初始化全局管道
+        await this.ininGlobalGuards()// 初始化全局守卫
         await this.initController(this.module); // 这里初始化APPModule中的Controllers
         // 监听指定端口
         this.app.listen(port, () => {

@@ -11,12 +11,13 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AppSerive } from './app.service';
 import { loggerMiddleware } from './logger.middleware';
 import { loggerFunction } from './logger-function.middleware';
-import { APP_FILTER,APP_PIPE } from '@nestjs/core';
+import { APP_FILTER,APP_GUARD,APP_PIPE } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { App2Controller } from './app2.controller';
 import { MyPipe } from './my.pipe';
 import { AccountController } from './account.controller';
 import { AuthMiddleware } from './auth.middleware';
+import { AuthGuard } from './auth.guard';
 function logger1(req: Request, res: Response, next: any) {
     // console.log('logger1');
     next()
@@ -61,7 +62,10 @@ function logger2(req: Request, res: Response, next: any) {
         useValue:'preffix-pipe'
     },{
         provide:APP_PIPE,
-        useClass:MyPipe  // 这种写法支持 管道的依赖注入
+        useClass:MyPipe  // 全局管道的使用 这种写法支持 管道的依赖注入
+    },{
+        provide:APP_GUARD,
+        useClass: AuthGuard  // 全局守卫的使用 这种写法支持 守卫的依赖注入 
     },{
         provide:APP_FILTER,
         useClass:CustomExceptionFilter
