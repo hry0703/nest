@@ -5,9 +5,12 @@ import path  from  'path'
 import { RequestMethod} from '@nestjs/common';
 import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
 import { defineModule, } from '../common/module.decorator';
-import { APP_FILTER,APP_PIPE, DECORATORS_FACTORY } from '@nestjs/core';
+import { APP_FILTER,APP_PIPE, DECORATORS_FACTORY, FORBIDDEN_RESOURCE, Reflector } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
 import { PipeTransform } from '@nestjs/common';
+import { ExecutionContext } from '@nestjs/common';
+import { CanActivate } from '@nestjs/common';
+import { ForbiddenException } from 'src/fobidden.exception';
 
 export class NestApplication {
     // 定义一个私有的 express 应用实例
@@ -134,8 +137,14 @@ export class NestApplication {
         routePath = path.posix.join('/',routePath)
         return {routePath,routeMethod}
     }
+
+    private addDefaultProviders(){
+        // 注册一些系统内部默认的的provider
+        this.addProvider(Reflector,module,true)
+    }
     // 初始化提供者
     async initProviders(){
+        this.addDefaultProviders()
         // 获取模块导入的元数据
         const imports = Reflect.getMetadata('imports',this.module)??[];
        
@@ -251,7 +260,7 @@ export class NestApplication {
             this.providerInstances.set(provider.provide,value) 
              providers.add(provider.provide)
         }else {// 表示只提供了一个类 token是这个类 值是这个类的实例
-            const dependencies = this.resolveDependencies(provider)
+            const dependencies = this.resolveDependencies(provider)            
             const value = new provider(...dependencies)
             this.providerInstances.set(provider,value)
             providers.add(provider)
@@ -285,6 +294,23 @@ export class NestApplication {
             return this.getProviderByToken(injectedTokens[index]??param,module)
         })
     }
+
+    private getGuardsInstance(guard){
+        if(guard instanceof Function){
+             const dependencies = this.resolveDependencies(guard)
+            return new guard(...dependencies)
+        }
+        return guard
+    }
+    async callGuards(guards:CanActivate[],ctx:ExecutionContext){
+        for (const guard of guards) {
+            const guardsInstance = this.getGuardsInstance(guard)
+            const canActivate = await guardsInstance.canActivate(ctx)
+            if(!canActivate){
+                throw new ForbiddenException(FORBIDDEN_RESOURCE)
+            }
+        }
+    }
     // 定义 init 方法，初始化应用
     async initController(module) {
         // 取出模块类里所有的控制器，然后做好路由配置
@@ -305,6 +331,8 @@ export class NestApplication {
             const controllerFilters = Reflect.getMetadata('filters',Controller)??[];
             // 获取控制器上绑定的管道数组
             const controllerPipes = Reflect.getMetadata('pipes',Controller)??[];
+            // 获取控制器上绑定的守卫数组
+            const controllerGuards = Reflect.getMetadata('guards',Controller)??[];
             defineModule(this.module,controllerFilters)
             for(const methodName of  Object.getOwnPropertyNames(controllerPrototype)){
                 // 获取原型上的方法 methodName: index constructor
@@ -322,7 +350,11 @@ export class NestApplication {
                 const methodFilters = Reflect.getMetadata('filters',method)??[];
                 // 获取方法上绑定的管道数组
                 const methodPipes = Reflect.getMetadata('pipes',method)??[];
+                // 获取方法上绑定的守卫数组
+                const methodGuards = Reflect.getMetadata('guards',method)??[];
+        
                 const pipes = [...controllerPipes,...methodPipes]
+                const guards = [...controllerGuards,...methodGuards]
                 defineModule(this.module,methodFilters)
                 // console.log('headers',headers);
                 // 如果方法名不存在则不处理 
@@ -332,16 +364,20 @@ export class NestApplication {
                 // console.log('methodName',method);
                 // 配置路由，当客户端以httpMethod方法请求routePath路径的时候，会由对应的函数进行处理
                 this.app[httpMethod.toLowerCase()](routePath,async (req:ExpressRequest,res:ExpressResponse,next:NextFunction)=>{
-                     const host = { // 因为next不仅支持http 还支持graphql 微服务 websocket
+                    const host = { // 因为next不仅支持http 还支持graphql 微服务 websocket
                         switchToHttp:()=>({
                             getRequest:()=>req,
                             getResponse:()=>res,
                             getNext:()=>next,
                         })
-            }
+                    }
+                    const context:ExecutionContext = {
+                        ...host,
+                        getClass:()=>Controller,
+                        getHandler:()=>method,    
+                    } as any as ExecutionContext     
                     try {
-                        // let a;
-                        // console.log(a.toString());
+                       await this.callGuards(guards,context)
                         const args = await this.resolveParams(controller,methodName,req,res,next,host,pipes) 
                         // 执行路由处理函数，获取返回值
                         const result = await method.call(controller,...args);
