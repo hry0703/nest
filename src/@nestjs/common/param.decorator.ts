@@ -8,7 +8,7 @@ export const createParamDecorator = (keyOrFactory:string | Function)=>{
         const existingParameters = Reflect.getMetadata('param',target,propertykey) || []
         // 从原型的方法属性上获取到参数类型的数组
         const metatype = Reflect.getMetadata('design:paramtypes',target,propertykey)[parameterIndex]
-        console.log("metatype",metatype);
+        // console.log("metatype",metatype);
         if(keyOrFactory instanceof Function){
             // 如果传过来的是一个函数的话.存放参数索引 key定死为装饰器工程 factory就是用来取值的工厂
              existingParameters[parameterIndex] = {parameterIndex,key:DECORATORS_FACTORY,factory:keyOrFactory,data,pipes,metatype}

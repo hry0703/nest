@@ -18,6 +18,7 @@ import { MyPipe } from './my.pipe';
 import { AccountController } from './account.controller';
 import { AuthMiddleware } from './auth.middleware';
 import { AuthGuard } from './auth.guard';
+import { PayController } from './pay.controller';
 function logger1(req: Request, res: Response, next: any) {
     // console.log('logger1');
     next()
@@ -32,7 +33,7 @@ function logger2(req: Request, res: Response, next: any) {
     // imports:[CommonModule,OtherModule],
     imports:[DynamicConfigModule.forRoot('-hry1122')],
     // controllers:[AppController, UserController],
-    controllers:[AppController,App2Controller,AccountController],
+    controllers:[AppController,App2Controller,AccountController,PayController],
     // providers:[
     //     {
     //         provide:'SUFFIX',

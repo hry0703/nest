@@ -17,7 +17,7 @@ export class AuthMiddleware implements NestMiddleware {
        // 如果使用的是JWT的话
        // const token -> user -> req.uesr = 
         (req as any).user = { id:1,name:'nick',roles:[req.query.roles]}
-        console.log('AuthMiddleware执行',req);
+        // console.log('AuthMiddleware执行',req);
         next()
     }
 }
