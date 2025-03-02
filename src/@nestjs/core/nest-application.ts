@@ -12,7 +12,7 @@ import { ExecutionContext } from '@nestjs/common';
 import { CanActivate } from '@nestjs/common';
 import { ForbiddenException } from 'src/fobidden.exception';
 import {APP_GUARD, DECORATORS_FACTORY, FORBIDDEN_RESOURCE} from './constants'
-import { from } from 'rxjs';
+import { from, mergeMap, Observable, of } from 'rxjs';
 export class NestApplication {
     // 定义一个私有的 express 应用实例
     private readonly app: Express = express();
@@ -314,6 +314,29 @@ export class NestApplication {
             }
         }
     }
+    getInterceptorsInstance(interceptor){
+        if(typeof interceptor === 'function'){
+            const dependencies = this.resolveDependencies(interceptor)
+            return new interceptor(...dependencies)
+        }
+        return interceptor
+    }
+    callInterceptors(controller,method,args,interceptors,context,host,pipes){
+        const nextFn = (i=0):Observable<any> =>{
+            if(i >= interceptors.length){
+                let result = method.call(controller,...args)
+                return result instanceof Promise ? from(result) : of(result)
+            }
+            const handler = {
+                handle:()=>nextFn(i+1)
+            }
+            const interceptorInstance = this.getInterceptorsInstance(interceptors[i])
+            const result = interceptorInstance.intercept(context,handler)
+            return from(result).pipe(mergeMap(res=> res instanceof Observable? res : of(res)))
+        }
+        return nextFn()
+    }
+
     // 定义 init 方法，初始化应用
     async initController(module) {
         // 取出模块类里所有的控制器，然后做好路由配置
@@ -336,6 +359,8 @@ export class NestApplication {
             const controllerPipes = Reflect.getMetadata('pipes',Controller)??[];
             // 获取控制器上绑定的守卫数组
             const controllerGuards = Reflect.getMetadata('guards',Controller)??[];
+            // 获取控制器上绑定的拦截器数组
+            const controllerInterceptors = Reflect.getMetadata('interceptors',Controller)??[];
             defineModule(this.module,controllerFilters)
             for(const methodName of  Object.getOwnPropertyNames(controllerPrototype)){
                 // 获取原型上的方法 methodName: index constructor
@@ -355,9 +380,12 @@ export class NestApplication {
                 const methodPipes = Reflect.getMetadata('pipes',method)??[];
                 // 获取方法上绑定的守卫数组
                 const methodGuards = Reflect.getMetadata('guards',method)??[];
+                // 获取方法上绑定的拦截器数组
+                const methodInterceptors = Reflect.getMetadata('interceptors',method)??[];
         
                 const pipes = [...controllerPipes,...methodPipes]
                 const guards = [...this.golbalGuards,...controllerGuards,...methodGuards]
+                const interceptors = [...controllerInterceptors,...methodInterceptors]
                 defineModule(this.module,methodFilters)
                 // console.log('headers',headers);
                 // 如果方法名不存在则不处理 
@@ -380,34 +408,43 @@ export class NestApplication {
                         getHandler:()=>method,    
                     } as any as ExecutionContext     
                     try {
-                       await this.callGuards(guards,context)
-                        const args = await this.resolveParams(controller,methodName,req,res,next,host,pipes) 
-                        // 执行路由处理函数，获取返回值
-                        const result = await method.call(controller,...args);
-                        if(result?.url){
-                            return  res.redirect(result.statusCode || 302 ,result.url)
-                        }
-                        if(statusCode){
-                            res.statusCode = statusCode
-                        }else if(httpMethod === 'post'){
-                            res.statusCode = 201
-                        }
-                         
-                        // 判断如果需要重定向 则直接重定向到指定的redirectUrl
-                        if(redirectUrl){
-                        return  res.redirect(redirectStatusCode || 302,redirectUrl,)
-                        }
-                        // 判断controller的methodName方法里有没有使用Response或者Res参数装饰器，如果用了则不发响应
-                        const responseMeta = this.getResponseMetadata(controller,methodName);
-                        // console.log('responseMeta',responseMeta);
-                        // 没有注入Response或者Res参数装饰器 或者 注入了但是传递了passthrough参数  都会由Nest.js来返回响应
-                        if(!responseMeta || responseMeta?.data?.passthrough){
-                            headers.forEach(({name,value}) => {
-                                res.setHeader(name,value)
-                            });
-                            // 把返回值序列化发回给客户端
-                            res.send(result)
-                        }
+                        await this.callGuards(guards,context)
+                        const args = await this.resolveParams(controller,methodName,context,host,pipes) 
+                        this.callInterceptors(controller,method,args,interceptors,context,host,pipes).subscribe({
+                            next:(result)=>{
+                                // 执行路由处理函数，获取返回值
+                                console.log('subscribe.result',result);
+                                // const result = await method.call(controller,...args);
+                                if(result?.url){
+                                    return  res.redirect(result.statusCode || 302 ,result.url)
+                                }
+                                if(statusCode){
+                                    res.statusCode = statusCode
+                                }else if(httpMethod === 'post'){
+                                    res.statusCode = 201
+                                }
+                                
+                                // 判断如果需要重定向 则直接重定向到指定的redirectUrl
+                                if(redirectUrl){
+                                return  res.redirect(redirectStatusCode || 302,redirectUrl,)
+                                }
+                                // 判断controller的methodName方法里有没有使用Response或者Res参数装饰器，如果用了则不发响应
+                                const responseMeta = this.getResponseMetadata(controller,methodName);
+                                // console.log('responseMeta',responseMeta);
+                                // 没有注入Response或者Res参数装饰器 或者 注入了但是传递了passthrough参数  都会由Nest.js来返回响应
+                                if(!responseMeta || responseMeta?.data?.passthrough){
+                                    headers.forEach(({name,value}) => {
+                                        res.setHeader(name,value)
+                                    });
+                                    // 把返回值序列化发回给客户端
+                                    res.send(result)
+                                }
+                            },
+                            error:error=> this.callExceptionFilters(error,host,methodFilters,controllerFilters),
+                            complete:()=>{
+                                Logger.log(`Request processing completed`, 'RouterResolver');
+                            }
+                        })
                     } catch (error) {
                         await this.callExceptionFilters(error,host,methodFilters,controllerFilters)
                     }
@@ -449,7 +486,11 @@ export class NestApplication {
          return paramsMetadata.filter(Boolean).find(paramMetadata=>['Res','Response','Next'].includes(paramMetadata.key))
     }
 
-    private async resolveParams(instance:any,methodName:string,req:ExpressRequest,res:ExpressResponse,next:NextFunction,host,pipes:PipeTransform[]){
+    private async resolveParams(instance:any,methodName:string,context,host,pipes:PipeTransform[]){
+        const {getRequest,getResponse,getNext} = context.switchToHttp()
+        const req = getRequest()
+        const res = getResponse()
+        const next = getNext()
         // 获取参数的元数据
         const paramsMetadata = Reflect.getMetadata('param',instance,methodName)??[];
         // existingParameters [{ parameterIndex: 0, key: 'Req' },<1 empty item>,{ parameterIndex: 2, key: 'Request' }]
