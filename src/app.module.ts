@@ -11,7 +11,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AppSerive } from './app.service';
 import { loggerMiddleware } from './logger.middleware';
 import { loggerFunction } from './logger-function.middleware';
-import { APP_FILTER,APP_GUARD,APP_PIPE } from '@nestjs/core';
+import { APP_FILTER,APP_GUARD,APP_INTERCEPTOR,APP_PIPE } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { App2Controller } from './app2.controller';
 import { MyPipe } from './my.pipe';
@@ -19,6 +19,8 @@ import { AccountController } from './account.controller';
 import { AuthMiddleware } from './auth.middleware';
 import { AuthGuard } from './auth.guard';
 import { PayController } from './pay.controller';
+import { Logger5Interceptor } from './interceptors/logger5.interceptor';
+import { Logger6Interceptor } from './interceptors/logger6.interceptor';
 function logger1(req: Request, res: Response, next: any) {
     // console.log('logger1');
     next()
@@ -70,7 +72,13 @@ function logger2(req: Request, res: Response, next: any) {
     },{
         provide:APP_FILTER,
         useClass:CustomExceptionFilter
-    }],
+    },{
+        provide:APP_INTERCEPTOR,
+        useClass: Logger6Interceptor  // 全局拦截器的使用 这种写法支持 拦截器的依赖注入 
+    },{
+        provide:APP_INTERCEPTOR,
+        useClass: Logger5Interceptor  // 全局拦截器的使用 这种写法支持 拦截器的依赖注入 
+    },],
     exports:[AppSerive]
 
 })

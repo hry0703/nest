@@ -1,5 +1,5 @@
 import { NestInterceptor } from "@nestjs/common";
-import { ExecutionContext } from "./@nestjs/common";
+import { ExecutionContext } from "@nestjs/common";
 import { Observable, tap } from "rxjs";
 
 export class Logger1Interceptor implements NestInterceptor {

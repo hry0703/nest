@@ -20,7 +20,9 @@
         "noFallthroughCasesInSwitch": false,
         "baseUrl": "./",
         "paths": {
-            "@nestjs/*": ["src/@nestjs/*"]
+            "@nestjs/*": [
+                "src/@nestjs/*"
+            ]
         }
     }
 }

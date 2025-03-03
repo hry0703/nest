@@ -4,6 +4,8 @@ import session from 'express-session'
 import { loggerFunction } from './logger-function.middleware';
 import {CustomExceptionFilter } from './custom-exception.filter'
 import { ValidationPipe } from "@nestjs/common";
+import { Logger5Interceptor } from './interceptors/logger5.interceptor'
+import { Logger6Interceptor } from './interceptors/logger6.interceptor'
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     // 异常过滤器可以设置为全局的 也可以设置为控制器级别的 以及方法级别的
@@ -13,6 +15,10 @@ async function bootstrap() {
     // app.useGlobalPipes(new ValidationPipe()) // 这种方式无法依赖注入
     // 使用全局守卫
     // app.useGlobalGuards(new AuthGuard2()) // 这种方式无法依赖注入
+
+    // 使用全局拦截器
+    // app.useGlobalInterceptors(new Logger6Interceptor()) // 这种方式无法依赖注入
+    // app.useGlobalInterceptors(new Logger5Interceptor())
     app.use(session({
         secret:'your-secret-key', // 用于加密会话的密钥
         resave:true,// 在每次请求结束后是否强制保存会话，即使它没有改变
