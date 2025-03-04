@@ -13,6 +13,7 @@ import { CanActivate } from '@nestjs/common';
 import { ForbiddenException } from 'src/fobidden.exception';
 import {APP_GUARD, APP_INTERCEPTOR, DECORATORS_FACTORY, FORBIDDEN_RESOURCE} from './constants'
 import { from, mergeMap, Observable, of } from 'rxjs';
+import { ArgumentsHost } from '@nestjs/common';
 export class NestApplication {
     // 定义一个私有的 express 应用实例
     private readonly app: Express = express();
@@ -84,7 +85,7 @@ export class NestApplication {
         }
         return middleware
     }
-    isExcluded(reqPath:string,method:string){
+    isExcluded(reqPath:string,method: RequestMethod){
         // 遍历要排除的路径 看看哪个排除的路径和当前请求的路径和方法名匹配
         return this.excludedRoutes.some(routeInfo=>{
             const {routePath,routeMethod} = routeInfo;
@@ -102,11 +103,11 @@ export class NestApplication {
                 this.app.use(routePath,(req,res,next)=>{
                     // 这里是请求匹配上才会执行的回调 异步的 此时excludedRoutes已初始化完成 所有中间件的forRoutes和exclude的调用顺序不会影响结果
                     // 如果当前的路径要排出掉 就不走当前的中间件了
-                    if(this.isExcluded(req.originalUrl,req.method)){ 
+                    if(this.isExcluded(req.originalUrl,req.method as RequestMethod)){ 
                         return next()
                     }
                     // 如果配置的方法名是all或者方法名完全相同 匹配
-                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method as any){
+                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method as RequestMethod){
                         // 此处的middleware 可能是个类或者实例或者函数
                         if('use' in middleware.prototype || 'use' in  middleware){
                             const middlewareInstance = this.getMiddlewareInstance(middleware)
@@ -390,7 +391,7 @@ export class NestApplication {
             for(const methodName of  Object.getOwnPropertyNames(controllerPrototype)){
                 // 获取原型上的方法 methodName: index constructor
                 const method = controllerPrototype[methodName];
-                console.log('methodName',methodName);
+                // console.log('methodName',methodName);
                 // 取得此函数上绑定的方法名的元数据
                 const httpMethod = Reflect.getMetadata('method',method);
                 // 取得此函数上绑定的路径的元数据
@@ -420,18 +421,18 @@ export class NestApplication {
                 // console.log('methodName',method);
                 // 配置路由，当客户端以httpMethod方法请求routePath路径的时候，会由对应的函数进行处理
                 this.app[httpMethod.toLowerCase()](routePath,async (req:ExpressRequest,res:ExpressResponse,next:NextFunction)=>{
-                    const host = { // 因为next不仅支持http 还支持graphql 微服务 websocket
+                    const host:ArgumentsHost = { // 因为next不仅支持http 还支持graphql 微服务 websocket
                         switchToHttp:()=>({
-                            getRequest:()=>req,
-                            getResponse:()=>res,
-                            getNext:()=>next,
+                            getRequest:<T>()=>req as T,
+                            getResponse:<T>()=>res as T,
+                            getNext:<T>()=>next as T,
                         })
                     }
                     const context:ExecutionContext = {
                         ...host,
                         getClass:()=>Controller,
                         getHandler:()=>method,    
-                    } as any as ExecutionContext     
+                    } 
                     try {
                         await this.callGuards(guards,context)
                         const args = await this.resolveParams(controller,methodName,context,host,pipes) 
@@ -551,6 +552,9 @@ export class NestApplication {
                     break
                 case 'Next':
                     value =  next
+                    break
+                case 'UploadedFile':
+                    value =  req.file
                     break
                 case DECORATORS_FACTORY:
                     value =  factory(data,host)

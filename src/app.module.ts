@@ -21,6 +21,7 @@ import { AuthGuard } from './auth.guard';
 import { PayController } from './pay.controller';
 import { Logger5Interceptor } from './interceptors/logger5.interceptor';
 import { Logger6Interceptor } from './interceptors/logger6.interceptor';
+import { UploadController } from './upload.controller';
 function logger1(req: Request, res: Response, next: any) {
     // console.log('logger1');
     next()
@@ -35,7 +36,7 @@ function logger2(req: Request, res: Response, next: any) {
     // imports:[CommonModule,OtherModule],
     imports:[DynamicConfigModule.forRoot('-hry1122')],
     // controllers:[AppController, UserController],
-    controllers:[AppController,App2Controller,AccountController,PayController],
+    controllers:[AppController,App2Controller,AccountController,PayController,UploadController],
     // providers:[
     //     {
     //         provide:'SUFFIX',
@@ -59,26 +60,31 @@ function logger2(req: Request, res: Response, next: any) {
     // ]
     // providers:[AppSerive],
     providers:[
-        AppSerive,
-    {
-        provide:'PREFFIX',  //TODO DynamicConfigModule也存在PREFFIX 源码以这里为准 本地实现以DynamicConfigModule为准需要修改
-        useValue:'preffix-pipe'
-    },{
-        provide:APP_PIPE,
-        useClass:MyPipe  // 全局管道的使用 这种写法支持 管道的依赖注入
-    },{
-        provide:APP_GUARD,
-        useClass: AuthGuard  // 全局守卫的使用 这种写法支持 守卫的依赖注入 
-    },{
-        provide:APP_FILTER,
-        useClass:CustomExceptionFilter
-    },{
-        provide:APP_INTERCEPTOR,
-        useClass: Logger6Interceptor  // 全局拦截器的使用 这种写法支持 拦截器的依赖注入 
-    },{
-        provide:APP_INTERCEPTOR,
-        useClass: Logger5Interceptor  // 全局拦截器的使用 这种写法支持 拦截器的依赖注入 
-    },],
+        AppSerive
+        // {
+        //     provide:'PREFFIX',  //TODO DynamicConfigModule也存在PREFFIX 源码以这里为准 本地实现以DynamicConfigModule为准需要修改
+        //     useValue:'preffix-pipe'
+        // },{
+        //     provide:APP_PIPE,
+        //     useClass:MyPipe  // 全局管道的使用 这种写法支持 管道的依赖注入
+        // },
+        // {
+        //     provide:APP_GUARD,
+        //     useClass: AuthGuard  // 全局守卫的使用 这种写法支持 守卫的依赖注入 
+        // },
+        // {
+        //     provide:APP_FILTER,
+        //     useClass:CustomExceptionFilter
+        // },
+        // {
+        //     provide:APP_INTERCEPTOR,
+        //     useClass: Logger6Interceptor  // 全局拦截器的使用 这种写法支持 拦截器的依赖注入 
+        // },
+        // {
+        //     provide:APP_INTERCEPTOR,
+        //     useClass: Logger5Interceptor  // 全局拦截器的使用 这种写法支持 拦截器的依赖注入 
+        // }
+    ],
     exports:[AppSerive]
 
 })
@@ -93,9 +99,9 @@ export class AppModule implements NestModule{
         // .apply(logger2)
         // .forRoutes(App2Controller)
 
-        consumer
-        .apply(AuthMiddleware)
-        .forRoutes('*')
+        // consumer
+        // .apply(AuthMiddleware)
+        // .forRoutes('*')
 
 
     }

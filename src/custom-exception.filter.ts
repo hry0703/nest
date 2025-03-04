@@ -7,9 +7,9 @@ import { Response ,Request} from 'express'
  */
 @Catch(BadRequestException,RequestTimeoutException,HttpException)
 export class CustomExceptionFilter implements ExceptionFilter {
-    constructor(@Inject('PREFFIX') private readonly preffix) {
+    // constructor(@Inject('PREFFIX') private readonly preffix) {
 
-    }
+    // }
     catch(exception: any, host: ArgumentsHost) {
         // console.log('preffix',this.preffix);
         const ctx = host.switchToHttp()
