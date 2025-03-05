@@ -22,6 +22,8 @@ import { PayController } from './pay.controller';
 import { Logger5Interceptor } from './interceptors/logger5.interceptor';
 import { Logger6Interceptor } from './interceptors/logger6.interceptor';
 import { UploadController } from './upload.controller';
+import { MulterModule } from "@nestjs/platform-express";
+
 function logger1(req: Request, res: Response, next: any) {
     // console.log('logger1');
     next()
@@ -34,7 +36,11 @@ function logger2(req: Request, res: Response, next: any) {
 
 @Module({
     // imports:[CommonModule,OtherModule],
-    imports:[DynamicConfigModule.forRoot('-hry1122')],
+    imports:[
+        DynamicConfigModule.forRoot('-hry1122'),
+        MulterModule.register({
+        dest:'./upload'
+    }),CoreModule],
     // controllers:[AppController, UserController],
     controllers:[AppController,App2Controller,AccountController,PayController,UploadController],
     // providers:[

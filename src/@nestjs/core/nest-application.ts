@@ -342,6 +342,7 @@ export class NestApplication {
         }
     }
     getInterceptorsInstance(interceptor){
+        debugger
         if(typeof interceptor === 'function'){
             const dependencies = this.resolveDependencies(interceptor)
             return new interceptor(...dependencies)
@@ -495,6 +496,7 @@ export class NestApplication {
 
 
     private callExceptionFilters(error,host,methodFilters,controllerFilters){
+        console.error(error)
         //  按方法过滤器 控制器过滤器 用户配置全局过滤器 默认全局过滤器的顺序进行便利 找到第一个能处理这个错误的过滤器进行处理就可以了
         const allFilters = [...methodFilters,...controllerFilters,...this.globalHttpExceptionFiler,this.defaultGlobalHttpExceptionFiler];
         for(const filter of allFilters ){
