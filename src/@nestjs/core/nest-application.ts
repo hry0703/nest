@@ -559,6 +559,9 @@ export class NestApplication {
                 case 'UploadedFile':
                     value =  req.file
                     break
+                case 'UploadedFiles':
+                    value =  req.files
+                    break
                 case DECORATORS_FACTORY:
                     value =  factory(data,host)
                     break

@@ -25,3 +25,27 @@ export function FileInterceptor(fieldName: string) {
   }
   return new FileInterceptor()
 }
+
+export function FilesInterceptor(fieldName: string,maxCount?:number) {
+  @Injectable()
+  class FilesInterceptor implements NestInterceptor {
+    // 实现了NestInterceptor里面的intercept方法
+    async intercept(context: ExecutionContext, next: CallHandler) {
+      const request = context.switchToHttp().getRequest<Request>();
+      const response = context.switchToHttp().getResponse<Response>();
+      // 当需要处理单个字段的单个文件上传的时候可以使用single(filedName)得到一个Express中间件函数
+      const upload = multer().array(fieldName,maxCount)
+    //   console.log('upload',request);
+      
+      // 使用Promise包装multer的单文件 上传中间件
+      await new Promise<void>((resolve,reject)=>{
+        upload(request,response,(err)=>{
+            err?reject(err): resolve() // 处理上传的文件 赋值给req.files
+        })
+      })
+      // 等异步上传完后再调用next.handle()继续向后执行处理请求
+      return next.handle();
+    }
+  }
+  return new FilesInterceptor()
+}

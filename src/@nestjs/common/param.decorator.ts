@@ -40,5 +40,6 @@ export const Response = createParamDecorator('Response')
 export const Res = createParamDecorator('Res')
 export const Next = createParamDecorator('Next')
 export const UploadedFile = createParamDecorator('UploadedFile')
+export const UploadedFiles = createParamDecorator('UploadedFiles')
 
 
