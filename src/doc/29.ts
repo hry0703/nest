@@ -1,5 +1,5 @@
 // import { map } from 'rxjs'
-import { of, map, Observable } from 'rxjs'
+import { of, map, Observable, mergeMap } from 'rxjs'
 // mergeMap 是 RxJS 中的一个操作符，用于将每个源值映射为一个新的可观察对象，然后将这些对象合并到单一输出的可观察对象。
 
 // class Observable {
@@ -23,28 +23,28 @@ import { of, map, Observable } from 'rxjs'
 //     })
 // }
 
-function mergeMap(project) {
-    //返回一个可接收源可观察对象的函数
-    return function(source){
-        // 返回一个新的可观察对象
-        return new Observable((observer) => {
-            source.subscribe({
-                next(value) {
-                    const innerValue = project(value)
-                    innerValue.subscribe({
-                        next:(innerValue)=>observer.next(innerValue),
-                    })
-                },
-                complete() {
-                    observer.complete()
-                },
-                error(err) {
-                    observer.error(err)
-                }
-            })
-        })
-    }
-}
+// function mergeMap(project) {
+//     //返回一个可接收源可观察对象的函数
+//     return function(source){
+//         // 返回一个新的可观察对象
+//         return new Observable((observer) => {
+//             source.subscribe({
+//                 next(value) {
+//                     const innerValue = project(value)
+//                     innerValue.subscribe({
+//                         next:(innerValue)=>observer.next(innerValue),
+//                     })
+//                 },
+//                 complete() {
+//                     observer.complete()
+//                 },
+//                 error(err) {
+//                     observer.error(err)
+//                 }
+//             })
+//         })
+//     }
+// }
 
 
 of(1,2,3).pipe(

@@ -347,11 +347,14 @@ export class NestApplication {
         }
         return interceptor
     }
-    callInterceptors(controller,method,args,interceptors,context,host,pipes){
+    callInterceptors(controller,method,interceptors,context,host,pipes){
         const nextFn = (i=0):Observable<any> =>{
             if(i >= interceptors.length){
-                let result = method.call(controller,...args)
-                return result instanceof Promise ? from(result) : of(result)
+                return from(this.resolveParams(controller,method.name,context,host,pipes)).pipe(mergeMap(args=>{
+                    let result = method.call(controller,...args)
+                    return result instanceof Promise ? from(result) : of(result)
+                })) 
+               
             }
             const handler = {
                 handle:()=>nextFn(i+1)
@@ -435,8 +438,7 @@ export class NestApplication {
                     } 
                     try {
                         await this.callGuards(guards,context)
-                        const args = await this.resolveParams(controller,methodName,context,host,pipes) 
-                        this.callInterceptors(controller,method,args,interceptors,context,host,pipes).subscribe({
+                        this.callInterceptors(controller,method,interceptors,context,host,pipes).subscribe({
                             next:(result)=>{
                                 // 执行路由处理函数，获取返回值
                                 console.log('subscribe.result',result);
