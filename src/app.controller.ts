@@ -7,11 +7,11 @@ import { ForbiddenException } from "./fobidden.exception";
 import { BadRequestException,RequestTimeoutException } from "@nestjs/common";
 import { CustomExceptionFilter } from "./custom-exception.filter";
 import { ParseIntPipe,ParseFloatPipe,ParseBoolPipe,ParseArrayPipe,ParseUUIDPipe,ParseEnumPipe,DefaultValuePipe } from "@nestjs/common";
-import { CustomPipe } from "./custom.pipe";
+import { CustomPipe } from "./pipes/custom.pipe";
 import { UsePipes } from "@nestjs/common";
-import { ZodValidationPipe } from "./zod-validation.pipe";
+import { ZodValidationPipe } from "./pipes/zod-validation.pipe";
 import { CreateCatDto, createCatSchema } from "./create-cat.dto";
-import { ClassValidationPipe } from "./class-validation.pipe";
+import { ClassValidationPipe } from "./pipes/class-validation.pipe";
 import { CreateUserDto } from "./create-user.dto";
 enum Roles {
     Admin ='Admin',

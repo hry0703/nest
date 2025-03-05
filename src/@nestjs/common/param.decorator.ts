@@ -1,8 +1,13 @@
-import { DECORATORS_FACTORY } from '@nestjs/core'
+import { DECORATORS_FACTORY } from '../core'
 import 'reflect-metadata'
 export const createParamDecorator = (keyOrFactory:string | Function)=>{
     // target 控制器原型 propertyKey 方法名handleRequest parameterIndex 先走1再走0
     return (data?:any,...pipes:any[])=>(target:any,propertykey:string,parameterIndex:number)=>{
+        // 如果data不是字符串 说明她
+        if(data && typeof data !== 'string'){
+            pipes = [data,...pipes]
+            data = null
+        }
         // 给控制器类的原型的propertyKey也就是handleRequest方法属性上添加元数据
         //属性名是params:handleRequest 值是一个数组，数组里放置数据表示哪个位置使用了哪个装饰器
         const existingParameters = Reflect.getMetadata('param',target,propertykey) || []

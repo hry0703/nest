@@ -14,7 +14,7 @@ import { loggerFunction } from './logger-function.middleware';
 import { APP_FILTER,APP_GUARD,APP_INTERCEPTOR,APP_PIPE } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { App2Controller } from './app2.controller';
-import { MyPipe } from './my.pipe';
+import { MyPipe } from './pipes/my.pipe';
 import { AccountController } from './account.controller';
 import { AuthMiddleware } from './auth.middleware';
 import { AuthGuard } from './auth.guard';

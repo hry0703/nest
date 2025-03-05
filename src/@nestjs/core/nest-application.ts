@@ -14,6 +14,7 @@ import { ForbiddenException } from 'src/fobidden.exception';
 import {APP_GUARD, APP_INTERCEPTOR, DECORATORS_FACTORY, FORBIDDEN_RESOURCE} from './constants'
 import { from, mergeMap, Observable, of } from 'rxjs';
 import { ArgumentsHost } from '@nestjs/common';
+import { RpcArgumentsHost, WsArgumentsHost } from '@nestjs/common/interfaces';
 export class NestApplication {
     // 定义一个私有的 express 应用实例
     private readonly app: Express = express();
@@ -103,11 +104,11 @@ export class NestApplication {
                 this.app.use(routePath,(req,res,next)=>{
                     // 这里是请求匹配上才会执行的回调 异步的 此时excludedRoutes已初始化完成 所有中间件的forRoutes和exclude的调用顺序不会影响结果
                     // 如果当前的路径要排出掉 就不走当前的中间件了
-                    if(this.isExcluded(req.originalUrl,req.method as RequestMethod)){ 
+                    if(this.isExcluded(req.originalUrl,req.method as unknown as RequestMethod)){ 
                         return next()
                     }
                     // 如果配置的方法名是all或者方法名完全相同 匹配
-                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method as RequestMethod){
+                    if(routeMethod === RequestMethod.ALL || routeMethod === req.method as unknown as RequestMethod){
                         // 此处的middleware 可能是个类或者实例或者函数
                         if('use' in middleware.prototype || 'use' in  middleware){
                             const middlewareInstance = this.getMiddlewareInstance(middleware)
@@ -424,18 +425,18 @@ export class NestApplication {
                 // console.log('methodName',method);
                 // 配置路由，当客户端以httpMethod方法请求routePath路径的时候，会由对应的函数进行处理
                 this.app[httpMethod.toLowerCase()](routePath,async (req:ExpressRequest,res:ExpressResponse,next:NextFunction)=>{
-                    const host:ArgumentsHost = { // 因为next不仅支持http 还支持graphql 微服务 websocket
-                        switchToHttp:()=>({
-                            getRequest:<T>()=>req as T,
-                            getResponse:<T>()=>res as T,
-                            getNext:<T>()=>next as T,
-                        })
+                    const host = {
+                        switchToHttp: () => ({
+                            getRequest: <T>() => req as T,
+                            getResponse: <T>() => res as T,
+                            getNext: <T>() => next as T,
+                        }),
                     }
                     const context:ExecutionContext = {
                         ...host,
                         getClass:()=>Controller,
                         getHandler:()=>method,    
-                    } 
+                    }  as any as ExecutionContext
                     try {
                         await this.callGuards(guards,context)
                         this.callInterceptors(controller,method,interceptors,context,host,pipes).subscribe({
