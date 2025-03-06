@@ -60,7 +60,7 @@ export function defineProvidersModule(target,providers=[]){
 }
 
 export function defineModule(module,targets=[]){
-    // 遍历targets数组 为每个元素添加元数据，key是nestModule 值是对应的模块
+    // 遍历targets数组 为每个元素添加元数据，key是module 值是对应的模块
     targets.forEach(target=>{
         Reflect.defineMetadata('module',module,target)
     })

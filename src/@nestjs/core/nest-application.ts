@@ -245,22 +245,20 @@ export class NestApplication {
         const exports= Reflect.getMetadata('exports',module)??[]
         for(let importedProvider of importedProviders){
             // 获取次provider的token
-            const exportToken = importedProvider.provide ?? importedProvider
-            // 如果exports里有此provider的token 说明此provider是要导出的
-            if(exports.includes(exportToken)){
-                if(this.isModule(exports)){
-                    this.registerProvidersFromModule(exportToken,module,...parentModules)
-                }else {
-                    [module,...parentModules].forEach(module=>{
-                        this.processProvider(importedProvider,module)
-                    })
-                }
-            } else {
-                 this.processProvider(importedProvider,module)
-            }  
+            const providerToken = importedProvider.provide ?? importedProvider
+            if(exports.includes(providerToken)){
+                [module,...parentModules].forEach(module=>{
+                    this.processProvider(importedProvider,module)
+                })
+            }else {
+                this.processProvider(importedProvider,module)
+            } 
         }
-
-
+        for(let exportToken of exports){
+            if(this.isModule(exportToken)){
+                this.registerProvidersFromModule(exportToken,module,...parentModules)
+            }
+        }
         // 导入的模块中包含的controllers也需要处理
         this.initController(module);
     }
