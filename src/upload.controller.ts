@@ -63,7 +63,7 @@ export class UploadController {
   }
 
 
-   @Post('no-files') // 要求http编码格式是form-data 但是不允许上传文件
+  @Post('no-files') // 要求http编码格式是form-data 但是不允许上传文件
   @UseInterceptors(NoFilesInterceptor()) 
   @UseInterceptors(FileInterceptor('file')) 
   async noFiles() {

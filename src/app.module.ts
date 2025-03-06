@@ -37,10 +37,12 @@ function logger2(req: Request, res: Response, next: any) {
 @Module({
     // imports:[CommonModule,OtherModule],
     imports:[
-        DynamicConfigModule.forRoot('-hry1122'),
+        // DynamicConfigModule.forRoot('-hry1122'),
         MulterModule.register({
-        dest:'./upload'
-    }),CoreModule],
+            dest:'./upload'
+        }),
+        // CoreModule
+    ],
     // controllers:[AppController, UserController],
     controllers:[AppController,App2Controller,AccountController,PayController,UploadController],
     // providers:[

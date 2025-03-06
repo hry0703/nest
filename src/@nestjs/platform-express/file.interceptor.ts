@@ -13,7 +13,6 @@ export function FileInterceptor(fieldName: string) {
       const response = context.switchToHttp().getResponse<Response>();
       // 当需要处理单个字段的单个文件上传的时候可以使用single(filedName)得到一个Express中间件函数
       const upload = this.multerConfigService.getMulterInstance().single(fieldName)
-    //   console.log('upload',request);
       
       // 使用Promise包装multer的单文件 上传中间件
       await new Promise<void>((resolve,reject)=>{

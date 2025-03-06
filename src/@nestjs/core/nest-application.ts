@@ -4,7 +4,7 @@ import { Logger } from './logger';
 import path  from  'path'
 import { RequestMethod} from '@nestjs/common';
 import { DESIGN_PARAMTYPES, INJECTED_TOKENS } from '../common/constant';
-import { defineModule, } from '../common/module.decorator';
+import { defineModule, defineProvidersModule, } from '../common/module.decorator';
 import { APP_FILTER,APP_PIPE, Reflector } from '@nestjs/core';
 import {GlobalHttpExceptionFilter} from '../common/http-exception.filter'
 import { PipeTransform } from '@nestjs/common';
@@ -156,7 +156,7 @@ export class NestApplication {
 
     private addDefaultProviders(){
         // 注册一些系统内部默认的的provider
-        this.addProvider(Reflector,module,true)
+        this.addProvider(Reflector,module)
     }
     // 初始化提供者
     async initProviders(){
@@ -174,13 +174,14 @@ export class NestApplication {
             // 如果导入的模块有module属性 说明这是一个动态模块
             if('module' in importedModule){
                 const {module,providers,controllers,exports} = importedModule;
-                // console.log('d-module',importedModule);
-                const oldProviders = Reflect.getMetadata('providers',module)
-                const newProviders = [...(oldProviders??[]),...(providers??[])]
-                defineModule(module,newProviders)
                 const oldControllers = Reflect.getMetadata('controllers',module)
                 const newControllers = [...(oldControllers??[]),...(controllers??[])]
                 defineModule(module,newControllers)
+                // console.log('d-module',importedModule);
+                const oldProviders = Reflect.getMetadata('providers',module)
+                const newProviders = [...(oldProviders??[]),...(providers??[])]
+                defineProvidersModule(module,newProviders)
+                // console.log('newProviders', Reflect.getMetadata('module',newProviders[1]))
                 const oldExports = Reflect.getMetadata('exports',module)
                 const newExports = [...(oldExports??[]),...(exports??[])]
                 Reflect.defineMetadata('providers',newProviders,module)
@@ -209,32 +210,57 @@ export class NestApplication {
               instanceMap.set(useClass,instance)
            }
         }else {
-            this.addProvider(provider,module,false)
+            this.addProvider(provider,module)
         }
     }
 
+
+    // 注册模块的providers
     private registerProvidersFromModule(module,...parentModules){
-        // 获取导入的是不是全局模块
-        const global = Reflect.getMetadata('global',module)
-        // 获取导入模块中的providers进行全量注册
+        // // 获取导入的是不是全局模块
+        // const global = Reflect.getMetadata('global',module)
+        // // 获取导入模块中的所有的providers进行全量注册
+        // const importedProviders = Reflect.getMetadata('providers',module)??[]
+        // // 1 有可能导入的模块只导入了一部分 并没有全量导出，所以需要使用exports进行过滤
+        // const exports = Reflect.getMetadata('exports',module)??[]
+        // // 遍历导出exports数组
+        // for (const exportToken of exports) {
+        //     // 2.exports里还有可能是module
+        //     if(this.isModule(exportToken)){
+        //         // 要执行递归操作
+        //         this.registerProvidersFromModule(exportToken,module,...parentModules)
+        //     }else {
+        //         const provider = importedProviders.find(provider=>provider === exportToken || provider.provide === exportToken);
+        //         if(provider){
+        //             [module,...parentModules].forEach(module=>{
+        //                 this.addProvider(provider,module)
+        //             })
+        //         }
+        //     }
+        // }
+
+
+        // 获取此模块的所有providers
         const importedProviders = Reflect.getMetadata('providers',module)??[]
-        // 1 有可能导入的模块只导入了一部分 并没有全量导出，所以需要使用exports进行过滤
-        const exports = Reflect.getMetadata('exports',module)??[]
-        // 遍历导出exports数组
-        for (const exportToken of exports) {
-            // 2.exports里还有可能是module
-            if(this.isModule(exportToken)){
-                // 要执行递归操作
-                this.registerProvidersFromModule(exportToken,module,...parentModules)
-            }else {
-                const provider = importedProviders.find(provider=>provider === exportToken || provider.provide === exportToken);
-                if(provider){
+        const exports= Reflect.getMetadata('exports',module)??[]
+        for(let importedProvider of importedProviders){
+            // 获取次provider的token
+            const exportToken = importedProvider.provide ?? importedProvider
+            // 如果exports里有此provider的token 说明此provider是要导出的
+            if(exports.includes(exportToken)){
+                if(this.isModule(exports)){
+                    this.registerProvidersFromModule(exportToken,module,...parentModules)
+                }else {
                     [module,...parentModules].forEach(module=>{
-                        this.addProvider(provider,module,global)
+                        this.processProvider(importedProvider,module)
                     })
                 }
-            }
+            } else {
+                 this.processProvider(importedProvider,module)
+            }  
         }
+
+
         // 导入的模块中包含的controllers也需要处理
         this.initController(module);
     }
@@ -243,8 +269,8 @@ export class NestApplication {
         return exportToken && exportToken instanceof Function && Reflect.getMetadata('isModule',exportToken,)
     }
     // 原来的provider都混在一起了 现在需要分开 每个模块都有自己的providers
-    addProvider(provider,module,global=false){
-        
+    addProvider(provider,module){
+        const global = Reflect.getMetadata('global',provider)??false
         // providers在global为true的情况下为this.globalProviders Set
         // providers在global为false的情况下为this.module对应的providers Set
         const providers = global ? this.globalProviders : this.moduleProviders.get(module) || new Set();
@@ -342,7 +368,6 @@ export class NestApplication {
         }
     }
     getInterceptorsInstance(interceptor){
-        debugger
         if(typeof interceptor === 'function'){
             const dependencies = this.resolveDependencies(interceptor)
             return new interceptor(...dependencies)
@@ -418,6 +443,7 @@ export class NestApplication {
                 const guards = [...this.golbalGuards,...controllerGuards,...methodGuards]
                 const interceptors = [...this.golbalInterceptors,...controllerInterceptors,...methodInterceptors]
                 defineModule(this.module,methodFilters)
+                defineModule(this.module,interceptors)
                 // console.log('headers',headers);
                 // 如果方法名不存在则不处理 
                 if(!httpMethod) continue

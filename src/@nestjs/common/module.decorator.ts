@@ -18,7 +18,19 @@ export function Module(metadata:ModuleMetadata):ClassDecorator{
         Reflect.defineMetadata('controllers',metadata.controllers,target)
         // 类上保存了一个providers数组 表示给此模块注入的provider供应者、
           // 我得知道此提供者属于哪个模块
-        defineModule(target,(metadata.providers??[]).map(provider=>{
+        defineProvidersModule(target,metadata.providers)
+        // 给模块类AppModule添加元数据 元数据的名字叫providers 值是providers数组[LoggerService]
+        Reflect.defineMetadata('providers',metadata.providers,target)
+        // 在类上保存exports
+        Reflect.defineMetadata('exports',metadata.exports,target)
+        // 在类上保存imports
+        Reflect.defineMetadata('imports',metadata.imports,target)
+    }
+}
+
+
+export function defineProvidersModule(target,providers=[]){
+    defineModule(target,(providers??[]).map(provider=>{
              /**
               *  // providers:[
                 //     {
@@ -44,14 +56,7 @@ export function Module(metadata:ModuleMetadata):ClassDecorator{
               */
             //需要实例化的才需要添加module 方便依赖注入 比如上面只需要给 LoggerClassService ，LoggerService，添加 module
             return  provider instanceof Function ? provider : provider.useClass // provider.useClass 上添加module 方便APP_FILTER初始化全局过滤器时找到对应的模块 完成依赖注入
-        }).filter(Boolean))
-        // 给模块类AppModule添加元数据 元数据的名字叫providers 值是providers数组[LoggerService]
-        Reflect.defineMetadata('providers',metadata.providers,target)
-        // 在类上保存exports
-        Reflect.defineMetadata('exports',metadata.exports,target)
-        // 在类上保存imports
-        Reflect.defineMetadata('imports',metadata.imports,target)
-    }
+    }).filter(Boolean))
 }
 
 export function defineModule(module,targets=[]){
