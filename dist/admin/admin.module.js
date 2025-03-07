@@ -9,12 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminModule = void 0;
 const common_1 = require("@nestjs/common");
 const dashboard_controller_1 = require("./controllers/dashboard.controller");
+const user_controller_1 = require("./controllers/user.controller");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
 exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
-        controllers: [dashboard_controller_1.DashboardController]
+        controllers: [dashboard_controller_1.DashboardController, user_controller_1.UserController],
     })
 ], AdminModule);
 //# sourceMappingURL=admin.module.js.map
