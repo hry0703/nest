@@ -1,3 +1,6 @@
+## node版本
+nvm use 20.11.1
+
 ## CMS
 - Admin后台管理模块 admin
 - API接口模块 api
@@ -8,6 +11,11 @@
 nest generate module admin
 nest generate module api
 nest generate module shared
+
+// 创建controller  --no-spec 不生成测试文件 --flat 不生成目录   
+// 不加--flat 会生成在controllers下生成dashboard目录再生成controllers/dashboard/dashboard.controller.ts
+// 加--flat 会生成在controllers下生成dashboard.controller.ts
+generate controller admin/controllers/dashboard --no-spec --flat  
 ```
 
 ## admin
