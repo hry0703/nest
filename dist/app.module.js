@@ -18,7 +18,7 @@ let AppModule = class AppModule {
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [admin_module_1.AdminModule, api_module_1.ApiModule, shared_module_1.SharedModule],
+        imports: [shared_module_1.SharedModule, admin_module_1.AdminModule, api_module_1.ApiModule,],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
