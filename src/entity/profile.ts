@@ -15,11 +15,11 @@ export class Profile {
     @UpdateDateColumn()
     updateAt: Date;
 
-    @OneToOne(()=>User,(user)=>user.profile,{
-        cascade:true,
-        onDelete:'RESTRICT',
-        onUpdate:'RESTRICT'
-    })
+    // @OneToOne(()=>User,(user)=>user.profile,{
+    //     cascade:true,
+    //     onDelete:'RESTRICT',
+    //     onUpdate:'RESTRICT'
+    // })
     @JoinColumn()
     user:User
 
