@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./user";
 @Entity()
 export class Role {
     @PrimaryGeneratedColumn()
@@ -8,13 +7,16 @@ export class Role {
     @Column({length:50})
     name: string;
 
+    @Column({length:50})
+    email: string;
+
+    @Column({type:'int'})
+    age: number;
+
     @CreateDateColumn()
     createAt: Date;
 
     @UpdateDateColumn()
     updateAt: Date;
-    
-    @ManyToMany(()=>User,user=>user.roles)
-    users:User[]
 
 }
