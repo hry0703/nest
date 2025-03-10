@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const path_1 = require("path");
 const express_handlebars_1 = require("express-handlebars");
+const common_1 = require("@nestjs/common");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
@@ -27,6 +28,7 @@ async function bootstrap() {
             maxAge: 1000 * 60 * 60 * 24 * 7
         }
     }));
+    app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

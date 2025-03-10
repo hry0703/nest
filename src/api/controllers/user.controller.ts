@@ -7,7 +7,7 @@ export class UserController {
     constructor(private readonly userService: UserService){}
     @Post()
     async create(@Body() createUserDto: CreateUserDto){
-        // console.log('create',createUserDto)
+        console.log('create',createUserDto)
         return this.userService.create(createUserDto);
     }
 

@@ -5,6 +5,8 @@ import * as session from 'express-session';
 import {NestExpressApplication} from '@nestjs/platform-express';
 import { join } from 'path';
 import {engine} from 'express-handlebars';
+import { Transform } from 'class-transformer';
+import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
  
     // NestExpressApplication 表示 底层用的是express
@@ -37,6 +39,9 @@ async function bootstrap() {
       maxAge:1000* 60 * 60 * 24 * 7 // 7天
     }
   }));
+
+
+  app.useGlobalPipes(new ValidationPipe({transform:true})); // transform 把普通对象转为类的实例
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
