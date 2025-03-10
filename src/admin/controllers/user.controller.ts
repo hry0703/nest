@@ -9,10 +9,4 @@ export class UserController {
     const users = await this.userService.findAll();
     return { users };
   }
-
-  @Get('one')
-  async index(@Query('id') id: number) {
-    const user = await this.userService.findOne(id);
-    return { user };
-  }
 }

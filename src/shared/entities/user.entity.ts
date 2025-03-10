@@ -18,7 +18,7 @@ export class User {
   @Column({ default: false }) // 是否超级管理员
   is_super: boolean;
   @Column({ default: 100 }) // 排序编号
-  sort: boolean;
+  sort: number;
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
   @Column({
