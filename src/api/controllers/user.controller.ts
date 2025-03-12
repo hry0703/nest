@@ -54,7 +54,7 @@ export class UserController {
     // [Nest] 进程号  - 时间戳                    日志级别 Context          message
     // [Nest] 95052  - 03/12/2025, 5:51:57 PM   ERROR   [UserController] 这是Nest内置的日志记录器
     // this.logger.error('这是Nest内置的日志记录器');
-    this.winstonLogger.error('winstonLogger | 日志');
+    // this.winstonLogger.error('winstonLogger | 日志');
     // this.loggerService.error('这是Nest内置的日志记录器')
     return this.userService.findAll();
   }

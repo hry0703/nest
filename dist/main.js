@@ -10,15 +10,14 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
-    console.log('app.get(LOGGER_CONFIG)', app.get('LOGGER_CONFIG'));
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'views'));
     app.engine('hbs', (0, express_handlebars_1.engine)({
         extname: '.hbs',
         runtimeOptions: {
             allowProtoPropertiesByDefault: true,
-            allowProtoMethodsByDefault: true
-        }
+            allowProtoMethodsByDefault: true,
+        },
     }));
     app.set('view engine', 'hbs');
     app.use(cookieParser());
@@ -27,8 +26,8 @@ async function bootstrap() {
         resave: true,
         saveUninitialized: true,
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24 * 7
-        }
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+        },
     }));
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     const cofig = new swagger_1.DocumentBuilder()
@@ -39,7 +38,7 @@ async function bootstrap() {
         .addCookieAuth('connect.sid')
         .addBearerAuth({
         type: 'http',
-        scheme: 'bearer'
+        scheme: 'bearer',
     })
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, cofig);

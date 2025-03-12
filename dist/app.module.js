@@ -15,7 +15,6 @@ const api_module_1 = require("./api/api.module");
 const shared_module_1 = require("./shared/shared.module");
 const logger_module_1 = require("./logger/logger.module");
 const nest_winston_1 = require("nest-winston");
-const chalk_1 = require("chalk");
 const winston = require("winston");
 const { combine, timestamp, printf } = winston.format;
 let AppModule = class AppModule {
@@ -28,7 +27,7 @@ exports.AppModule = AppModule = __decorate([
                 transports: [
                     new winston.transports.Console({
                         format: combine(timestamp({ format: 'YYYY-MM-DD hh:mm:ss' }), printf(({ level, message, timestamp, context }) => {
-                            return ` [Nest] ${chalk_1.default.blue(process.pid)}  - ${timestamp} ${level}  [${context}]  ${message}`;
+                            return ` [Nest] ${process.pid}  - ${timestamp} ${level}  [${context}]  ${message}`;
                         })),
                     }),
                     new winston.transports.File({
