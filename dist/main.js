@@ -9,7 +9,8 @@ const express_handlebars_1 = require("express-handlebars");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
+    console.log('app.get(LOGGER_CONFIG)', app.get('LOGGER_CONFIG'));
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'views'));
     app.engine('hbs', (0, express_handlebars_1.engine)({

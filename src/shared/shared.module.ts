@@ -25,7 +25,7 @@ import { IsUserNameUniqueConstraint } from './validators/user-validator';
           ...configurationService.mysqlConfig,
           autoLoadEntities: true, // 自动加载所有的实体 一个实体对应数据库的一张表
           synchronize: true, // 保持代码和数据库的一致
-          logging: true, // 打印内部真正执行的sql语句
+          logging: false, // 打印内部真正执行的sql语句
         };
       },
     }),

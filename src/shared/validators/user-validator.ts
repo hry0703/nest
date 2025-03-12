@@ -50,7 +50,7 @@ let userRepository:any = null
 export class IsUserNameUniqueConstraint implements ValidatorConstraintInterface {
     // 这里依赖注入 需要在shared.module中导入到providers里才行
     constructor(@InjectRepository(User) protected repository:Repository<User>){
-        console.log('repository',repository);
+        // console.log('repository',repository);
         if(!userRepository){
             userRepository = repository
         }

@@ -13,12 +13,13 @@ const app_service_1 = require("./app.service");
 const admin_module_1 = require("./admin/admin.module");
 const api_module_1 = require("./api/api.module");
 const shared_module_1 = require("./shared/shared.module");
+const logger_module_1 = require("./logger/logger.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [shared_module_1.SharedModule, admin_module_1.AdminModule, api_module_1.ApiModule,],
+        imports: [logger_module_1.LoggerModule, shared_module_1.SharedModule, admin_module_1.AdminModule, api_module_1.ApiModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

@@ -35,7 +35,7 @@ exports.SharedModule = SharedModule = __decorate([
                         ...configurationService.mysqlConfig,
                         autoLoadEntities: true,
                         synchronize: true,
-                        logging: true,
+                        logging: false,
                     };
                 },
             }),

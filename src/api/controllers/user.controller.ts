@@ -1,4 +1,4 @@
-import { applyDecorators, Body, ClassSerializerInterceptor, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { applyDecorators, Body, ClassSerializerInterceptor, Controller, Delete, Get, HttpException, HttpStatus, LoggerService, Param, ParseIntPipe, Post, Put, SerializeOptions, UseInterceptors,Logger, Inject } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from 'src/shared/dtos/user.dto';
 import { User } from 'src/shared/entities/user.entity';
@@ -15,11 +15,19 @@ import { UserVo } from 'src/shared/vo/user.vo';
 @UseInterceptors(ClassSerializerInterceptor) // ‌ClassSerializerInterceptor‌是NestJS框架提供的一个拦截器，用于在控制器返回响应前自动转换响应对象中的属性。它能够将响应对象中的实体对象转换为普通的JavaScript对象，以便在响应中排除敏感或不必要的属性，增加数据的安全性‌
 @ApiTags('用户')
 export class UserController {
-    constructor(private readonly userService: UserService){}
+    private readonly logger = new Logger(UserController.name) // 内置的ConsoleLogger
+    constructor(
+        private readonly userService: UserService,
+        // private readonly loggerService: LoggerService
+    ){}
 
     @Get()
     @ApiFindAll()
     async findAll(){
+        // [Nest] 进程号  - 时间戳                    日志级别 Context          message
+        // [Nest] 95052  - 03/12/2025, 5:51:57 PM   ERROR   [UserController] 这是Nest内置的日志记录器
+        this.logger.error('这是Nest内置的日志记录器')
+        // this.loggerService.error('这是Nest内置的日志记录器')
         return this.userService.findAll();
     }
 

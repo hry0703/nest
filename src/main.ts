@@ -5,13 +5,22 @@ import * as session from 'express-session';
 import {NestExpressApplication} from '@nestjs/platform-express';
 import { join } from 'path';
 import {engine} from 'express-handlebars';
-import { Transform } from 'class-transformer';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { MyLogger } from './my-logger';
+import { ExtendedConsoleLogger } from './extended-console-logger';
 async function bootstrap() {
- 
     // NestExpressApplication 表示 底层用的是express
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule,{
+    // logger:false // 禁用日志
+    // logger:['error','warn'] // 启用特定的体制记录级别 只在这种指定类型的级别的日志才打印
+    // logger:console // 自定义log方法
+    // logger:new MyLogger() // 自定义log方法
+    // logger:new ExtendedConsoleLogger() // 自定义log方法
+    // bufferLogs:true,// 日志缓存 在useLogger完成后打印缓存的日志
+  }); 
+  console.log('app.get(LOGGER_CONFIG)',app.get('LOGGER_CONFIG')); // 获取provide_token对应的服务 即注入的依赖
+//   app.useLogger(app.get(MyLogger)) // 和 bufferLogs:true 搭配使用
   // 配置静态文件根目录 该目录下文件可直接访问  http://localhost:3000/1.txt
   app.useStaticAssets(join(__dirname, '..', 'public'));
   // 配置模版根目录
@@ -55,7 +64,7 @@ async function bootstrap() {
   })
   .build()
   // 使用配置对象创建Swagger文档
-  const document  = SwaggerModule.createDocument(app,cofig)
+  const document = SwaggerModule.createDocument(app,cofig)
   // 设置Swagger模块的路径和文档对象 将Swagger绑定到api-doc路径上
   SwaggerModule.setup('api-doc',app,document)
 
