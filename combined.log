@@ -1,0 +1,6 @@
+{"level":"info","message":"这是一条info日志"}
+{"level":"warn","message":"这是一条warn日志"}
+{"level":"error","message":"这是一条error日志"}
+2025-03-12T13:20:57.428Z info 这是一条info日志
+2025-03-12T13:21:55.707Z info 这是一条info日志
+2025-03-12T13:22:05.494Z error 这是一条info日志
