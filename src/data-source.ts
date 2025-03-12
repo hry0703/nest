@@ -13,6 +13,6 @@ export const AppDataSource = new DataSource({
   database: 'orm',
   synchronize: true, // 是否自动同步实体与数据库的表结构 开发时为true 生产时为false
   logging: false, // 是否打印sql日志
-  entities: [Category], // 实体类数组 指定的是要用到的实体类
-//   entities: ["entity/*.ts"], // 实体类数组 指定的是要用到的实体类
+//   entities: [Category], // 实体类数组 指定的是要用到的实体类
+  entities: ["**/entity/*.ts"], // 实体类数组 指定的是要用到的实体类
 })
