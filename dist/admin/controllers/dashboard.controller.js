@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashboardController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 let DashboardController = class DashboardController {
     dashboard() {
         return { title: "dashboard title" };
@@ -25,6 +26,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "dashboard", null);
 exports.DashboardController = DashboardController = __decorate([
+    (0, swagger_1.ApiTags)('报表'),
     (0, common_1.Controller)('dashboard')
 ], DashboardController);
 //# sourceMappingURL=dashboard.controller.js.map

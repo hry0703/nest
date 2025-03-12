@@ -1,5 +1,7 @@
 import { Controller, Get, Render } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('报表')
 @Controller('dashboard')
 export class DashboardController {
     @Get()

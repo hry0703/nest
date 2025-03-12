@@ -7,6 +7,7 @@ import { join } from 'path';
 import {engine} from 'express-handlebars';
 import { Transform } from 'class-transformer';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
  
     // NestExpressApplication 表示 底层用的是express
@@ -32,16 +33,32 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.use(session({
-    secret: 'secret-key',
-    resave:true,
-    saveUninitialized:true,
-    cookie:{
+    secret: 'secret-key', //用于签名 session ID 的密钥
+    resave:true,// 是否在每次请求时保存 session，即使 session 没有更改
+    saveUninitialized:true,// 是否为尚未初始化的 session 创建新的 session 对象
+    cookie:{ // 设置 cookie 的属性
       maxAge:1000* 60 * 60 * 24 * 7 // 7天
     }
   }));
-
-
   app.useGlobalPipes(new ValidationPipe({transform:true})); // transform 把普通对象转为类的实例
+
+ // 创建一个新的documentBuild实例 用于配置swagger文档
+  const cofig = new DocumentBuilder()
+  .setTitle('CMS API')
+  .setDescription('CMS API Description')
+  .setVersion('1.0')
+  .addTag('CMS')
+  .addCookieAuth('connect.sid') // 添加cookie认证方式 cookie的名称为connect.sid
+  .addBearerAuth({ // 添加Bearer认证方式 在请求头里添加Authorization:Bearer token
+    type:'http',
+    scheme:'bearer'
+  })
+  .build()
+  // 使用配置对象创建Swagger文档
+  const document  = SwaggerModule.createDocument(app,cofig)
+  // 设置Swagger模块的路径和文档对象 将Swagger绑定到api-doc路径上
+  SwaggerModule.setup('api-doc',app,document)
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

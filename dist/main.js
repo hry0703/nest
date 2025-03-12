@@ -7,6 +7,7 @@ const session = require("express-session");
 const path_1 = require("path");
 const express_handlebars_1 = require("express-handlebars");
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
@@ -29,6 +30,19 @@ async function bootstrap() {
         }
     }));
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
+    const cofig = new swagger_1.DocumentBuilder()
+        .setTitle('CMS API')
+        .setDescription('CMS API Description')
+        .setVersion('1.0')
+        .addTag('CMS')
+        .addCookieAuth('connect.sid')
+        .addBearerAuth({
+        type: 'http',
+        scheme: 'bearer'
+    })
+        .build();
+    const document = swagger_1.SwaggerModule.createDocument(app, cofig);
+    swagger_1.SwaggerModule.setup('api-doc', app, document);
     await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
