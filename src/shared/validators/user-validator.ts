@@ -43,18 +43,25 @@ export function StartsWith(prefix:string[],validationOptions?:ValidationOptions)
     }
 }
 
+// 暂时解决方案 注入作用域问题 后续解决
+let userRepository:any = null
 @Injectable()
 @ValidatorConstraint({ name: 'IsUserNameUniqueConstraint', async:true })
 export class IsUserNameUniqueConstraint implements ValidatorConstraintInterface {
+    // 这里依赖注入 需要在shared.module中导入到providers里才行
     constructor(@InjectRepository(User) protected repository:Repository<User>){
         console.log('repository',repository);
+        if(!userRepository){
+            userRepository = repository
+        }
         
     }
-    async validate(value: any, validationArguments?: ValidationArguments) {
-        // todo this.repository 未注入成功
-        // const result = await this.repository.findOneBy({username:value})
-        // return !result
-        return true
+    validate = async (value: any, validationArguments?: ValidationArguments)=> {
+        console.log('this',this);
+        const result = await userRepository.findOneBy({username:value})
+        console.log('result',result);
+        
+        return !result
     }
     defaultMessage(validationArguments?: ValidationArguments): string {
           console.log('defaultMessage',validationArguments);
