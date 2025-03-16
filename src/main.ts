@@ -5,10 +5,11 @@ import * as session from 'express-session';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { engine } from 'express-handlebars';
-import { ValidationPipe } from '@nestjs/common';
+// import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MyLogger } from './my-logger';
 import { ExtendedConsoleLogger } from './extended-console-logger';
+import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 async function bootstrap() {
   // NestExpressApplication 表示 底层用的是express
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -54,7 +55,12 @@ async function bootstrap() {
       },
     }),
   );
-  app.useGlobalPipes(new ValidationPipe({ transform: true })); // transform 把普通对象转为类的实例
+
+  //   app.useGlobalPipes(new ValidationPipe({ transform: true })); // transform 把普通对象转为类的实例
+  app.useGlobalPipes(new I18nValidationPipe({ transform: true }));
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({ detailedErrors: true }), // 将I18nValidationPipe抛出的异常转为多语言
+  );
 
   // 创建一个新的documentBuild实例 用于配置swagger文档
   const cofig = new DocumentBuilder()

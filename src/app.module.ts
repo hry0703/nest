@@ -7,9 +7,30 @@ import { SharedModule } from './shared/shared.module';
 import { LoggerModule } from './logger/logger.module';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
+import * as path from 'path';
+import {
+  AcceptLanguageResolver,
+  QueryResolver,
+  I18nModule,
+  CookieResolver,
+  HeaderResolver,
+} from 'nestjs-i18n';
 const { combine, timestamp, printf } = winston.format;
 @Module({
   imports: [
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        new QueryResolver(['lang', 'l']), // url传递查询字符串 /app?lang=zh 或者 /app?l=zh
+        AcceptLanguageResolver, // headers:{"accept-language":"zh-CN,zh;q=0.9"}
+        // new HeaderResolver(['x-custom-lang']), // headers:{"x-custom-lang":"zh-CN"}
+        // new CookieResolver(), // cookie:x-custom-lang=zh
+      ],
+    }),
     WinstonModule.forRoot({
       transports: [
         new winston.transports.Console({

@@ -16,6 +16,8 @@ const shared_module_1 = require("./shared/shared.module");
 const logger_module_1 = require("./logger/logger.module");
 const nest_winston_1 = require("nest-winston");
 const winston = require("winston");
+const path = require("path");
+const nestjs_i18n_1 = require("nestjs-i18n");
 const { combine, timestamp, printf } = winston.format;
 let AppModule = class AppModule {
 };
@@ -23,6 +25,17 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            nestjs_i18n_1.I18nModule.forRoot({
+                fallbackLanguage: 'en',
+                loaderOptions: {
+                    path: path.join(__dirname, '/i18n/'),
+                    watch: true,
+                },
+                resolvers: [
+                    new nestjs_i18n_1.QueryResolver(['lang', 'l']),
+                    nestjs_i18n_1.AcceptLanguageResolver,
+                ],
+            }),
             nest_winston_1.WinstonModule.forRoot({
                 transports: [
                     new winston.transports.Console({
