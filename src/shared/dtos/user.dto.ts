@@ -80,11 +80,13 @@ export class CreateUserDto {
 
   @ApiProperty({ description: '是否超级管理员', example: true })
   @IsBoolean()
+  @IsOptional()
   @Type(() => Boolean)
   is_super: boolean;
 
   @ApiProperty({ description: '排序', example: 100 })
   @IsNumber()
+  @IsOptional()
   sort: number;
 }
 

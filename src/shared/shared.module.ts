@@ -5,11 +5,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserService } from './services/user.service';
 import { IsUserNameUniqueConstraint } from './validators/user-validator';
+import { UtilityService } from './services/utility.service';
 
 @Global()
 @Module({
-  providers: [IsUserNameUniqueConstraint,ConfigurationService, UserService],
-  exports: [IsUserNameUniqueConstraint,ConfigurationService, UserService],
+  providers: [
+    IsUserNameUniqueConstraint,
+    ConfigurationService,
+    UserService,
+    UtilityService,
+  ],
+  exports: [
+    IsUserNameUniqueConstraint,
+    ConfigurationService,
+    UserService,
+    UtilityService,
+  ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件
     ConfigModule.forRoot({

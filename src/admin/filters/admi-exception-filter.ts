@@ -26,7 +26,7 @@ export class AdminExceptionFilter implements ExceptionFilter {
         status = exceptionBody.statusCode;
       }
     } else if (exception instanceof I18nValidationException) {
-      console.log('exception', exception);
+      //   console.log('exception', exception);
       const errors = exception.errors;
       message = errors
         .map((error) => this.formatErrorMessage(error, request.i18nLang))

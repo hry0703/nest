@@ -14,14 +14,25 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const user_service_1 = require("./services/user.service");
 const user_validator_1 = require("./validators/user-validator");
+const utility_service_1 = require("./services/utility.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
 exports.SharedModule = SharedModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
-        providers: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService],
-        exports: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService],
+        providers: [
+            user_validator_1.IsUserNameUniqueConstraint,
+            configuration_service_1.ConfigurationService,
+            user_service_1.UserService,
+            utility_service_1.UtilityService,
+        ],
+        exports: [
+            user_validator_1.IsUserNameUniqueConstraint,
+            configuration_service_1.ConfigurationService,
+            user_service_1.UserService,
+            utility_service_1.UtilityService,
+        ],
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
