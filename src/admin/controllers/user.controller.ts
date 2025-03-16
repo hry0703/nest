@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Param,
@@ -76,6 +77,12 @@ export class UserController {
       delete updateUserDto.password;
     }
     await this.userService.update(id, updateUserDto);
+    return { success: true };
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    await this.userService.delete(id);
     return { success: true };
   }
 }
