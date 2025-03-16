@@ -18,8 +18,12 @@ const nest_winston_1 = require("nest-winston");
 const winston = require("winston");
 const path = require("path");
 const nestjs_i18n_1 = require("nestjs-i18n");
+const methodOverride_1 = require("./shared/middleware/methodOverride");
 const { combine, timestamp, printf } = winston.format;
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer.apply(methodOverride_1.default).forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([

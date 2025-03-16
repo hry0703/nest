@@ -3,7 +3,7 @@ import {
   ApiHideProperty,
   ApiProperty,
   ApiPropertyOptional,
-  PartialType,
+  PartialType as PartialTypeFromSwagger,
 } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -24,6 +24,7 @@ import {
   StartsWithAsync,
   StartsWithConstraint,
 } from 'src/shared/validators/user-validator';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { i18nValidationMessage } from 'nestjs-i18n';
 function passwordValidators() {
   return applyDecorators(
@@ -95,7 +96,18 @@ export class CreateUserDto {
 }
 
 // PartialType  指定类中的所有属性可选  eg:创建用户时所有参数必填 更新时除了id 其他参数都选填
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+export class UpdateUserDto extends PartialTypeFromSwagger(
+  OmitType(PartialType(CreateUserDto), ['username', 'password']),
+) {
   @ApiProperty({ description: '用户id', example: 1 })
   id: number;
+
+  @ApiProperty({ description: '用户名称', example: 'uuser_001' })
+  @IsString()
+  @IsOptional()
+  username: string;
+
+  @ApiHideProperty() // 表示这是一个隐藏字段不会出现在swagger文档中、
+  @IsOptional()
+  password?: string;
 }

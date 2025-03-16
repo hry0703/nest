@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './admin/admin.module';
@@ -15,6 +15,7 @@ import {
   CookieResolver,
   HeaderResolver,
 } from 'nestjs-i18n';
+import methodOverride from './shared/middleware/methodOverride';
 const { combine, timestamp, printf } = winston.format;
 @Module({
   imports: [
@@ -55,4 +56,8 @@ const { combine, timestamp, printf } = winston.format;
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(methodOverride).forRoutes('*');
+  }
+}
