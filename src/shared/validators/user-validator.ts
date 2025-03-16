@@ -69,7 +69,7 @@ export class IsUserNameUniqueConstraint
   }
   validate = async (value: any, validationArguments?: ValidationArguments) => {
     // console.log('this',this);
-    const result = await userRepository.findOneBy({ username: value });
+    const result = await this.repository.findOneBy({ username: value });
     // console.log('result',result);
 
     return !result;

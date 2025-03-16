@@ -8,8 +8,10 @@ const path_1 = require("path");
 const express_handlebars_1 = require("express-handlebars");
 const swagger_1 = require("@nestjs/swagger");
 const nestjs_i18n_1 = require("nestjs-i18n");
+const class_validator_1 = require("class-validator");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
+    (0, class_validator_1.useContainer)(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'views'));
     app.engine('hbs', (0, express_handlebars_1.engine)({

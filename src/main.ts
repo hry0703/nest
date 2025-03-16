@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MyLogger } from './my-logger';
 import { ExtendedConsoleLogger } from './extended-console-logger';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
+import { useContainer } from 'class-validator';
 async function bootstrap() {
   // NestExpressApplication 表示 底层用的是express
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -20,6 +21,10 @@ async function bootstrap() {
     // logger:new ExtendedConsoleLogger() // 自定义log方法
     // bufferLogs:true,// 日志缓存 在useLogger完成后打印缓存的日志
   });
+
+  // fallbackOnErrors: true 失败时 返回错误信息
+  useContainer(app.select(AppModule), { fallbackOnErrors: true }); // 使用class-validator 的注入容器 否则无法使用class-validator的注入容器-》  IsUserNameUniqueConstraint中无法使用userRepository问题
+
   //   console.log('app.get(LOGGER_CONFIG)',app.get('LOGGER_CONFIG')); // 获取provide_token对应的服务 即注入的依赖
   //   app.useLogger(app.get(MyLogger)) // 和 bufferLogs:true 搭配使用
   // 配置静态文件根目录 该目录下文件可直接访问  http://localhost:3000/1.txt

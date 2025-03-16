@@ -55,7 +55,11 @@ export class CreateUserDto {
   // @Validate(StartsWithConstraint,['user__'],{/**message:"custom message"*/ }) // class-validator 官方文档写法
   // @StartsWith(['user_'],{message:'用户名必须以user_开头'}) // StartsWith等于是自己手写了Validate装饰器
   // @StartsWithAsync()   // 异步版
-  @Validate(IsUserNameUniqueConstraint) // 异步版
+  @Validate(IsUserNameUniqueConstraint, [], {
+    message: i18nValidationMessage('validation.isUserNameUnique', {
+      field: 'username',
+    }),
+  }) // 异步版
   username: string;
 
   // @ApiProperty({description:'密码',example:'123456'})
