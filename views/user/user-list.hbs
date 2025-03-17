@@ -5,6 +5,7 @@
         <tr>
             <td>用户名</td>
             <td>邮箱</td>
+            <td>状态</td>
             <td>操作</td>
         </tr>
     </thead>
@@ -14,9 +15,16 @@
             <td>{{this.username}}</td>
             <td>{{this.email}}</td>
             <td>
-                <a href="/admin/users/{{this.id}}/edit" class="btn btn-warning btn-sm">修改</a>
+                <span class="status-toggle" data-id="{{this.id}}" data-status="{{this.status}}">
+                    {{#if this.status}}
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                    {{else}}
+                    <i class="bi bi-x-circle-fill text-danger"></i>
+                    {{/if}}
+                </span>
             </td>
             <td>
+                <a href="/admin/users/{{this.id}}/edit" class="btn btn-warning btn-sm">修改</a>
                 <a class="btn btn-danger btn-sm" onclick="deleteUser({{this.id}})">删除</a>
             </td>
         </tr>
@@ -27,14 +35,36 @@
     function deleteUser(id) {
         if (confirm('确认删除用户吗？')) {
             $.ajax({
-                url:`/admin/users/${id}`,
-                type:'DELETE',
-                success:function(data){
-                    if(data.success){
+                url: `/admin/users/${id}`,
+                type: 'DELETE',
+                success: function (data) {
+                    if (data.success) {
                         location.reload()
                     }
                 }
             })
         }
     }
+    $(function () {
+        $('.status-toggle').on('click', function () {
+            let $this = $(this)
+            let userId = $this.data('id')
+            let currentStatus = $this.data('status')
+            console.log('userId', userId)
+            const newStatus = currentStatus === 1 ? 0 : 1
+            $.ajax({
+                url: `/admin/users/${userId}`,
+                type: 'PUT',
+                headers: { 'accept': 'application/json' },
+                "contentType": 'application/json',
+                data: JSON.stringify({ status: newStatus }),
+                success: function (data) {
+                    if (data.success) {
+                        $this.data('status', newStatus)
+                        $this.html(`<i class="bi ${newStatus ? 'bi-check-circle-fill' : 'bi-x-circle-fill'} ${newStatus ? "text-success" : 'text-danger'}"></i>`)
+                    }
+                }
+            })
+        })
+    })
 </script>
