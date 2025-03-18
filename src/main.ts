@@ -11,6 +11,7 @@ import { MyLogger } from './my-logger';
 import { ExtendedConsoleLogger } from './extended-console-logger';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
+import * as helpers from 'src/shared/helpers';
 async function bootstrap() {
   // NestExpressApplication 表示 底层用的是express
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -36,6 +37,7 @@ async function bootstrap() {
     'hbs',
     engine({
       extname: '.hbs',
+      helpers,
       runtimeOptions: {
         allowProtoPropertiesByDefault: true, // 允许使用原型prototype上的属性
         allowProtoMethodsByDefault: true, // 允许使用原型prototype上的方法
