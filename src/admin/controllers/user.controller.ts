@@ -33,7 +33,7 @@ export class UserController {
   @Render('user/user-list')
   async findAll() {
     const users = await this.userService.findAll();
-    console.log('users', users);
+    // console.log('users', users);
     return { users };
   }
 
@@ -66,12 +66,15 @@ export class UserController {
   }
 
   @Put(':id')
+  @Redirect('/admin/users')
   async update( 
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
     @Headers('accept') accept: string,
     @Res({passthrough:true}) res: Response,
   ) {
+    console.log(1);
+    
     if (updateUserDto.password) {
       updateUserDto.password = await this.utilityService.hashPassword(
         updateUserDto.password,

@@ -6,6 +6,7 @@
             <td>用户名</td>
             <td>邮箱</td>
             <td>状态</td>
+            <td>排序</td>
             <td>操作</td>
         </tr>
     </thead>
@@ -22,6 +23,13 @@
                     <i class="bi bi-x-circle-fill text-danger"></i>
                     {{/if}}
                 </span>
+            </td>
+            <td>
+                <span class="sort-text" data-id="{{this.id}}">
+                    {{this.sort}}
+                </span>
+                <input type="number" class="form-control sort-input d-none" value="{{this.sort}}" data-id="{{this.id}}"
+                    style="width: 80px;">
             </td>
             <td>
                 <a href="/admin/users/{{this.id}}/edit" class="btn btn-warning btn-sm">修改</a>
@@ -46,6 +54,30 @@
         }
     }
     $(function () {
+        $('.sort-text').on('dblclick', function () {
+            let $this = $(this)
+            let userId = $this.data('id')
+            $this.addClass('d-none')
+            $(`.sort-input[data-id=${userId}]`).removeClass('d-none')
+        }),
+        $('.sort-input').on('click', function () {
+            let $this = $(this)
+            let userId = $this.data('id')
+            let newSort = $this.val();
+            $this.addClass('d-none')
+            $.ajax({
+                url: `/admin/users/${userId}`,
+                type: 'PUT',
+                headers: { 'accept': 'application/json' },
+                "contentType": 'application/json',
+                data: JSON.stringify({ sort: newSort }),
+                success: function (data) {
+                    if (data.success) {
+                        $(`.sort-text[data-id=${userId}]`).removeClass('d-none').text(newSort)
+                    }
+                }
+            })
+        }),
         $('.status-toggle').on('click', function () {
             let $this = $(this)
             let userId = $this.data('id')
