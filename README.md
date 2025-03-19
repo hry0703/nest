@@ -48,6 +48,10 @@ nest g generateList tag 标签 --collection=D:/aproject/2024nest/cms-generator
 nest g generateList article 文章 --collection=D:/aproject/2024nest/cms-generator
 nest g generateTree category 分类 --collection=D:/aproject/2024nest/cms-generator
 
+nest g resource role 生成一套module controller service entity
+
+
+
 
 从性能上来说
 redis>mongodb>mysql
@@ -58,3 +62,8 @@ mysql>mongodb>redis
 redis>mongodb>mysql
 
 
+
+##快捷生成
+npm i cms-resource
+
+nest g cms-resource role --collection=./node_modules/cms-resource

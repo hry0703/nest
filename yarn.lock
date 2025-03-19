@@ -10,6 +10,18 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
+"@angular-devkit/core@18.2.15", "@angular-devkit/core@^18.2.0":
+  version "18.2.15"
+  resolved "https://mirrors.tencent.com/npm/@angular-devkit/core/-/core-18.2.15.tgz"
+  integrity sha512-GjfNjGwh1YG+bXXx7V95XRlJEaHb2sEyRmMyn31iLF9IZIR9So/tXkyHlSEiu/kv0/lzQYN6T4NeBxn7sHxBqw==
+  dependencies:
+    ajv "8.17.1"
+    ajv-formats "3.0.1"
+    jsonc-parser "3.3.1"
+    picomatch "4.0.2"
+    rxjs "7.8.1"
+    source-map "0.7.4"
+
 "@angular-devkit/core@19.1.8":
   version "19.1.8"
   resolved "https://mirrors.tencent.com/npm/@angular-devkit/core/-/core-19.1.8.tgz"
@@ -65,6 +77,17 @@
     "@angular-devkit/core" "19.2.0"
     jsonc-parser "3.3.1"
     magic-string "0.30.17"
+    ora "5.4.1"
+    rxjs "7.8.1"
+
+"@angular-devkit/schematics@^18.2.0":
+  version "18.2.15"
+  resolved "https://mirrors.tencent.com/npm/@angular-devkit/schematics/-/schematics-18.2.15.tgz"
+  integrity sha512-qbdS1NgcsO1/85efTFQ8WZMFK84EAe/fsiK5XwmWFJCH9+vvXO5zbOTz4IrANlfpCDbhHY1ojOdszzGLz18kNg==
+  dependencies:
+    "@angular-devkit/core" "18.2.15"
+    jsonc-parser "3.3.1"
+    magic-string "0.30.11"
     ora "5.4.1"
     rxjs "7.8.1"
 
@@ -889,12 +912,12 @@
 
 "@napi-rs/nice-android-arm-eabi@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-android-arm-eabi/-/nice-android-arm-eabi-1.0.1.tgz#9a0cba12706ff56500df127d6f4caf28ddb94936"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-android-arm-eabi/-/nice-android-arm-eabi-1.0.1.tgz#9a0cba12706ff56500df127d6f4caf28ddb94936"
   integrity sha512-5qpvOu5IGwDo7MEKVqqyAxF90I6aLj4n07OzpARdgDRfz8UbBztTByBp0RC59r3J1Ij8uzYi6jI7r5Lws7nn6w==
 
 "@napi-rs/nice-android-arm64@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-android-arm64/-/nice-android-arm64-1.0.1.tgz#32fc32e9649bd759d2a39ad745e95766f6759d2f"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-android-arm64/-/nice-android-arm64-1.0.1.tgz#32fc32e9649bd759d2a39ad745e95766f6759d2f"
   integrity sha512-GqvXL0P8fZ+mQqG1g0o4AO9hJjQaeYG84FRfZaYjyJtZZZcMjXW5TwkL8Y8UApheJgyE13TQ4YNUssQaTgTyvA==
 
 "@napi-rs/nice-darwin-arm64@1.0.1":
@@ -904,67 +927,67 @@
 
 "@napi-rs/nice-darwin-x64@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-darwin-x64/-/nice-darwin-x64-1.0.1.tgz#f1b1365a8370c6a6957e90085a9b4873d0e6a957"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-darwin-x64/-/nice-darwin-x64-1.0.1.tgz#f1b1365a8370c6a6957e90085a9b4873d0e6a957"
   integrity sha512-jXnMleYSIR/+TAN/p5u+NkCA7yidgswx5ftqzXdD5wgy/hNR92oerTXHc0jrlBisbd7DpzoaGY4cFD7Sm5GlgQ==
 
 "@napi-rs/nice-freebsd-x64@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-freebsd-x64/-/nice-freebsd-x64-1.0.1.tgz#4280f081efbe0b46c5165fdaea8b286e55a8f89e"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-freebsd-x64/-/nice-freebsd-x64-1.0.1.tgz#4280f081efbe0b46c5165fdaea8b286e55a8f89e"
   integrity sha512-j+iJ/ezONXRQsVIB/FJfwjeQXX7A2tf3gEXs4WUGFrJjpe/z2KB7sOv6zpkm08PofF36C9S7wTNuzHZ/Iiccfw==
 
 "@napi-rs/nice-linux-arm-gnueabihf@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-arm-gnueabihf/-/nice-linux-arm-gnueabihf-1.0.1.tgz#07aec23a9467ed35eb7602af5e63d42c5d7bd473"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-arm-gnueabihf/-/nice-linux-arm-gnueabihf-1.0.1.tgz#07aec23a9467ed35eb7602af5e63d42c5d7bd473"
   integrity sha512-G8RgJ8FYXYkkSGQwywAUh84m946UTn6l03/vmEXBYNJxQJcD+I3B3k5jmjFG/OPiU8DfvxutOP8bi+F89MCV7Q==
 
 "@napi-rs/nice-linux-arm64-gnu@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-arm64-gnu/-/nice-linux-arm64-gnu-1.0.1.tgz#038a77134cc6df3c48059d5a5e199d6f50fb9a90"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-arm64-gnu/-/nice-linux-arm64-gnu-1.0.1.tgz#038a77134cc6df3c48059d5a5e199d6f50fb9a90"
   integrity sha512-IMDak59/W5JSab1oZvmNbrms3mHqcreaCeClUjwlwDr0m3BoR09ZiN8cKFBzuSlXgRdZ4PNqCYNeGQv7YMTjuA==
 
 "@napi-rs/nice-linux-arm64-musl@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-arm64-musl/-/nice-linux-arm64-musl-1.0.1.tgz#715d0906582ba0cff025109f42e5b84ea68c2bcc"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-arm64-musl/-/nice-linux-arm64-musl-1.0.1.tgz#715d0906582ba0cff025109f42e5b84ea68c2bcc"
   integrity sha512-wG8fa2VKuWM4CfjOjjRX9YLIbysSVV1S3Kgm2Fnc67ap/soHBeYZa6AGMeR5BJAylYRjnoVOzV19Cmkco3QEPw==
 
 "@napi-rs/nice-linux-ppc64-gnu@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-ppc64-gnu/-/nice-linux-ppc64-gnu-1.0.1.tgz#ac1c8f781c67b0559fa7a1cd4ae3ca2299dc3d06"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-ppc64-gnu/-/nice-linux-ppc64-gnu-1.0.1.tgz#ac1c8f781c67b0559fa7a1cd4ae3ca2299dc3d06"
   integrity sha512-lxQ9WrBf0IlNTCA9oS2jg/iAjQyTI6JHzABV664LLrLA/SIdD+I1i3Mjf7TsnoUbgopBcCuDztVLfJ0q9ubf6Q==
 
 "@napi-rs/nice-linux-riscv64-gnu@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-riscv64-gnu/-/nice-linux-riscv64-gnu-1.0.1.tgz#b0a430549acfd3920ffd28ce544e2fe17833d263"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-riscv64-gnu/-/nice-linux-riscv64-gnu-1.0.1.tgz#b0a430549acfd3920ffd28ce544e2fe17833d263"
   integrity sha512-3xs69dO8WSWBb13KBVex+yvxmUeEsdWexxibqskzoKaWx9AIqkMbWmE2npkazJoopPKX2ULKd8Fm9veEn0g4Ig==
 
 "@napi-rs/nice-linux-s390x-gnu@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-s390x-gnu/-/nice-linux-s390x-gnu-1.0.1.tgz#5b95caf411ad72a965885217db378c4d09733e97"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-s390x-gnu/-/nice-linux-s390x-gnu-1.0.1.tgz#5b95caf411ad72a965885217db378c4d09733e97"
   integrity sha512-lMFI3i9rlW7hgToyAzTaEybQYGbQHDrpRkg+1gJWEpH0PLAQoZ8jiY0IzakLfNWnVda1eTYYlxxFYzW8Rqczkg==
 
 "@napi-rs/nice-linux-x64-gnu@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-x64-gnu/-/nice-linux-x64-gnu-1.0.1.tgz#a98cdef517549f8c17a83f0236a69418a90e77b7"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-x64-gnu/-/nice-linux-x64-gnu-1.0.1.tgz#a98cdef517549f8c17a83f0236a69418a90e77b7"
   integrity sha512-XQAJs7DRN2GpLN6Fb+ZdGFeYZDdGl2Fn3TmFlqEL5JorgWKrQGRUrpGKbgZ25UeZPILuTKJ+OowG2avN8mThBA==
 
 "@napi-rs/nice-linux-x64-musl@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-linux-x64-musl/-/nice-linux-x64-musl-1.0.1.tgz#5e26843eafa940138aed437c870cca751c8a8957"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-linux-x64-musl/-/nice-linux-x64-musl-1.0.1.tgz#5e26843eafa940138aed437c870cca751c8a8957"
   integrity sha512-/rodHpRSgiI9o1faq9SZOp/o2QkKQg7T+DK0R5AkbnI/YxvAIEHf2cngjYzLMQSQgUhxym+LFr+UGZx4vK4QdQ==
 
 "@napi-rs/nice-win32-arm64-msvc@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-win32-arm64-msvc/-/nice-win32-arm64-msvc-1.0.1.tgz#bd62617d02f04aa30ab1e9081363856715f84cd8"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-win32-arm64-msvc/-/nice-win32-arm64-msvc-1.0.1.tgz#bd62617d02f04aa30ab1e9081363856715f84cd8"
   integrity sha512-rEcz9vZymaCB3OqEXoHnp9YViLct8ugF+6uO5McifTedjq4QMQs3DHz35xBEGhH3gJWEsXMUbzazkz5KNM5YUg==
 
 "@napi-rs/nice-win32-ia32-msvc@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-win32-ia32-msvc/-/nice-win32-ia32-msvc-1.0.1.tgz#b8b7aad552a24836027473d9b9f16edaeabecf18"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-win32-ia32-msvc/-/nice-win32-ia32-msvc-1.0.1.tgz#b8b7aad552a24836027473d9b9f16edaeabecf18"
   integrity sha512-t7eBAyPUrWL8su3gDxw9xxxqNwZzAqKo0Szv3IjVQd1GpXXVkb6vBBQUuxfIYaXMzZLwlxRQ7uzM2vdUE9ULGw==
 
 "@napi-rs/nice-win32-x64-msvc@1.0.1":
   version "1.0.1"
-  resolved "https://registry.npmmirror.com/@napi-rs/nice-win32-x64-msvc/-/nice-win32-x64-msvc-1.0.1.tgz#37d8718b8f722f49067713e9f1e85540c9a3dd09"
+  resolved "https://mirrors.tencent.com/npm/@napi-rs/nice-win32-x64-msvc/-/nice-win32-x64-msvc-1.0.1.tgz#37d8718b8f722f49067713e9f1e85540c9a3dd09"
   integrity sha512-JlF+uDcatt3St2ntBG8H02F1mM45i5SF9W+bIKiReVE6wiy3o16oBP/yxt+RZ+N6LbCImJXJ6bXNO2kn9AXicg==
 
 "@napi-rs/nice@^1.0.1":
@@ -1194,47 +1217,47 @@
 
 "@swc/core-darwin-x64@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-darwin-x64/-/core-darwin-x64-1.11.7.tgz#79871970698868f08c986d5ed1099dd441add24e"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-darwin-x64/-/core-darwin-x64-1.11.7.tgz#79871970698868f08c986d5ed1099dd441add24e"
   integrity sha512-1diWpJqwX1XmOghf9ENFaeRaTtqLiqlZIW56RfOqmeZ7tPp3qS7VygWb9akptBsO5pEA5ZwNgSerD6AJlQcjAw==
 
 "@swc/core-linux-arm-gnueabihf@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.11.7.tgz#cf48e89c78154796a973b544d458d83e650ece64"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.11.7.tgz#cf48e89c78154796a973b544d458d83e650ece64"
   integrity sha512-MV8+hLREf0NN23NuSKemsjFaWjl/HnqdOkE7uhXTnHzg8WTwp6ddVtU5Yriv15+d/ktfLWPVAOhLHQ4gzaoa8A==
 
 "@swc/core-linux-arm64-gnu@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.11.7.tgz#d478d5c824565e5692c5715716d126f2d469c928"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.11.7.tgz#d478d5c824565e5692c5715716d126f2d469c928"
   integrity sha512-5GNs8ZjHQy/UTSnzzn+gm1RCUpCYo43lsxYOl8mpcnZSfxkNFVpjfylBv0QuJ5qhdfZ2iU55+v4iJCwCMtw0nA==
 
 "@swc/core-linux-arm64-musl@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.11.7.tgz#f0922a71e7e11d6c7f3942cb6ebd2864d6bbed5c"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.11.7.tgz#f0922a71e7e11d6c7f3942cb6ebd2864d6bbed5c"
   integrity sha512-cTydaYBwDbVV5CspwVcCp9IevYWpGD1cF5B5KlBdjmBzxxeWyTAJRtKzn8w5/UJe/MfdAptarpqMPIs2f33YEQ==
 
 "@swc/core-linux-x64-gnu@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.11.7.tgz#dbcfa1f0327ca2c187ea61dfb7469dad1f815a7d"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.11.7.tgz#dbcfa1f0327ca2c187ea61dfb7469dad1f815a7d"
   integrity sha512-YAX2KfYPlbDsnZiVMI4ZwotF3VeURUrzD+emJgFf1g26F4eEmslldgnDrKybW7V+bObsH22cDqoy6jmQZgpuPQ==
 
 "@swc/core-linux-x64-musl@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.11.7.tgz#f6cc8de75f778864d8ce310e834c9a027ebb8a49"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.11.7.tgz#f6cc8de75f778864d8ce310e834c9a027ebb8a49"
   integrity sha512-mYT6FTDZyYx5pailc8xt6ClS2yjKmP8jNHxA9Ce3K21n5qkKilI5M2N7NShwXkd3Ksw3F29wKrg+wvEMXTRY/A==
 
 "@swc/core-win32-arm64-msvc@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.11.7.tgz#9a4106abaf3a5fc1d3c909ab46288306c8047e54"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.11.7.tgz#9a4106abaf3a5fc1d3c909ab46288306c8047e54"
   integrity sha512-uLDQEcv0BHcepypstyxKkNsW6KfLyI5jVxTbcxka+B2UnMcFpvoR87nGt2JYW0grO2SNZPoFz+UnoKL9c6JxpA==
 
 "@swc/core-win32-ia32-msvc@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.11.7.tgz#fc872ae6e716da0c90ebe6203b7d28baea449ff3"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.11.7.tgz#fc872ae6e716da0c90ebe6203b7d28baea449ff3"
   integrity sha512-wiq5G3fRizdxAJVFcon7zpyfbfrb+YShuTy+TqJ4Nf5PC0ueMOXmsmeuyQGApn6dVWtGCyymYQYt77wHeQajdA==
 
 "@swc/core-win32-x64-msvc@1.11.7":
   version "1.11.7"
-  resolved "https://registry.npmmirror.com/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.11.7.tgz#164376daaf488cfa49db4ffe749d22585c984897"
+  resolved "https://mirrors.tencent.com/npm/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.11.7.tgz#164376daaf488cfa49db4ffe749d22585c984897"
   integrity sha512-/zQdqY4fHkSORxEJ2cKtRBOwglvf/8gs6Tl4Q6VMx2zFtFpIOwFQstfY5u8wBNN2Z+PkAzyUCPoi8/cQFK8HLQ==
 
 "@swc/core@^1.10.7":
@@ -2445,6 +2468,16 @@ clone@^1.0.2:
   version "1.0.4"
   resolved "https://mirrors.tencent.com/npm/clone/-/clone-1.0.4.tgz"
   integrity sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==
+
+cms-resource@^0.0.7:
+  version "0.0.7"
+  resolved "https://mirrors.tencent.com/npm/cms-resource/-/cms-resource-0.0.7.tgz"
+  integrity sha512-cWO8JIEJQu9102aMmvptz3weOoE+xdV/WT6ZZkcc6VA85RK0SlG5tW96eihDhgnjWS/JD484WJnlVltU29USQw==
+  dependencies:
+    "@angular-devkit/core" "^18.2.0"
+    "@angular-devkit/schematics" "^18.2.0"
+    pluralize "^8.0.0"
+    typescript "~5.5.2"
 
 co@^4.6.0:
   version "4.6.0"
@@ -4550,6 +4583,13 @@ lru.min@^1.0.0:
   resolved "https://mirrors.tencent.com/npm/lru.min/-/lru.min-1.1.1.tgz"
   integrity sha512-FbAj6lXil6t8z4z3j0E5mfRlPzxkySotzUHwRXjlpRh10vc6AI6WN62ehZj82VG7M20rqogJ0GLwar2Xa05a8Q==
 
+magic-string@0.30.11:
+  version "0.30.11"
+  resolved "https://mirrors.tencent.com/npm/magic-string/-/magic-string-0.30.11.tgz"
+  integrity sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==
+  dependencies:
+    "@jridgewell/sourcemap-codec" "^1.5.0"
+
 magic-string@0.30.17:
   version "0.30.17"
   resolved "https://mirrors.tencent.com/npm/magic-string/-/magic-string-0.30.17.tgz"
@@ -5134,7 +5174,7 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-pluralize@8.0.0:
+pluralize@8.0.0, pluralize@^8.0.0:
   version "8.0.0"
   resolved "https://mirrors.tencent.com/npm/pluralize/-/pluralize-8.0.0.tgz"
   integrity sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==
@@ -5704,16 +5744,7 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0":
-  version "4.2.3"
-  resolved "https://mirrors.tencent.com/npm/string-width/-/string-width-4.2.3.tgz"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://mirrors.tencent.com/npm/string-width/-/string-width-4.2.3.tgz"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -5745,14 +5776,7 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
-  version "6.0.1"
-  resolved "https://mirrors.tencent.com/npm/strip-ansi/-/strip-ansi-6.0.1.tgz"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://mirrors.tencent.com/npm/strip-ansi/-/strip-ansi-6.0.1.tgz"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -6135,6 +6159,11 @@ typescript@^5.7.3:
   resolved "https://mirrors.tencent.com/npm/typescript/-/typescript-5.8.2.tgz"
   integrity sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==
 
+typescript@~5.5.2:
+  version "5.5.4"
+  resolved "https://mirrors.tencent.com/npm/typescript/-/typescript-5.5.4.tgz"
+  integrity sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==
+
 uglify-js@^3.1.4:
   version "3.19.3"
   resolved "https://mirrors.tencent.com/npm/uglify-js/-/uglify-js-3.19.3.tgz"
@@ -6360,7 +6389,7 @@ wordwrap@^1.0.0:
   resolved "https://mirrors.tencent.com/npm/wordwrap/-/wordwrap-1.0.0.tgz"
   integrity sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://mirrors.tencent.com/npm/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -6373,15 +6402,6 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://mirrors.tencent.com/npm/wrap-ansi/-/wrap-ansi-6.2.0.tgz"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://mirrors.tencent.com/npm/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"

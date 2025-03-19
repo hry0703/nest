@@ -18,7 +18,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from 'src/shared/dtos/user.dto';
 import { UserService } from 'src/shared/services/user.service';
-import { AdminExceptionFilter } from '../filters/admi-exception-filter';
+import { AdminExceptionFilter } from '../filters/admin-exception-filter';
 import { UtilityService } from 'src/shared/services/utility.service';
 import { query, Response } from 'express';
 import { ParseOptionalIntPipe } from 'src/shared/pipes/parse-optional-int.pipe';

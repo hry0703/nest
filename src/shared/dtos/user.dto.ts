@@ -26,6 +26,11 @@ import {
 } from 'src/shared/validators/user-validator';
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { i18nValidationMessage } from 'nestjs-i18n';
+import {
+  IdValidators,
+  StatusValidators,
+  SortValidators,
+} from '../decorators/dto.decorator';
 function passwordValidators() {
   return applyDecorators(
     IsString(),
@@ -79,8 +84,7 @@ export class CreateUserDto {
   email: string;
 
   @ApiProperty({ description: '状态', example: 1 })
-  @IsNumber()
-  @Type(() => Number) // 强制类型转换 ‘1’->1
+  @StatusValidators()
   status: number;
 
   @ApiProperty({ description: '是否超级管理员', example: true })
@@ -90,8 +94,7 @@ export class CreateUserDto {
   is_super: boolean;
 
   @ApiProperty({ description: '排序', example: 100 })
-  @IsNumber()
-  @IsOptional()
+  @SortValidators()
   sort: number;
 }
 
@@ -99,7 +102,7 @@ export class CreateUserDto {
 export class UpdateUserDto extends PartialTypeFromSwagger(
   OmitType(PartialType(CreateUserDto), ['username', 'password']),
 ) {
-  @ApiProperty({ description: '用户id', example: 1 })
+  @IdValidators()
   id: number;
 
   @ApiProperty({ description: '用户名称', example: 'uuser_001' })
@@ -110,4 +113,48 @@ export class UpdateUserDto extends PartialTypeFromSwagger(
   @ApiHideProperty() // 表示这是一个隐藏字段不会出现在swagger文档中、
   @IsOptional()
   password?: string;
+}
+
+function PasswordValidators() {
+  return applyDecorators(
+    IsString(), //validation.minLength|{"field":"password","length":6}
+    IsNotEmpty({
+      message: i18nValidationMessage('validation.isNotEmpty', {
+        field: 'password',
+      }),
+    }),
+    MinLength(6, {
+      message: i18nValidationMessage('validation.minLength', {
+        field: 'password',
+        length: 6,
+      }),
+    }),
+    MaxLength(8, {
+      message: i18nValidationMessage('validation.maxLength', {
+        field: 'password',
+        length: 8,
+      }),
+    }),
+  );
+}
+function EmailValidators() {
+  return applyDecorators(
+    IsEmail(),
+    IsNotEmpty({
+      message: i18nValidationMessage('validation.isNotEmpty', {
+        field: 'email',
+      }),
+    }),
+  );
+}
+function MobileValidators() {
+  return applyDecorators(IsString(), IsOptional());
+}
+
+function IsSuperValidators() {
+  return applyDecorators(
+    IsBoolean(),
+    IsOptional(),
+    Type(() => Boolean),
+  );
 }
