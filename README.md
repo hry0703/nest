@@ -41,6 +41,9 @@ tsc
 
 schematics .:generateFiles --name=role --path=角色 --dry-run=true 干运行 不写入文件
 schematics .:generateFiles --name=role --path=角色 --no-dry-run 
+
+                     name  path
+nest g generateFiles role 角色 --collection=/Users/edenhuang/study/nest/cms-generator --dry-run=false
 ```
 
 package.json中schematics字段指示该包是一个schematics集合
@@ -85,3 +88,6 @@ export function generateFiles(_options: any): Rule {
 
 npm i --save-dev @types/pluralize
 npm i pluralize
+
+
+

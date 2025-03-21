@@ -5,21 +5,108 @@ const schematics_1 = require("@angular-devkit/schematics");
 const core_1 = require("@angular-devkit/core");
 const path = require("path");
 const pluralize_1 = require("pluralize");
+const ts = require("typescript");
 function generateFiles(options) {
     //  schematics .:generateFiles --name=role --path=角色 --dry-run=true
     console.log('generateFiles', options); // generateFiles { name: 'role', path: '角色' }
     return (_tree, _context) => {
         const entityName = options.name;
-        const sourceTemplateRules = (0, schematics_1.apply)((0, schematics_1.url)('./files'), [
-            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({ entityName }, core_1.strings), { //向模版里传入方法
+        const title = options.path;
+        const sourceTemplateRules = (0, schematics_1.apply)((0, schematics_1.url)('./files/src'), [
+            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({
+                entityName,
+                title
+            }, core_1.strings), { //向模版里传入方法
                 plural: //向模版里传入方法
-                pluralize_1.plural })),
-            (0, schematics_1.move)(path.normalize('target'))
+                    pluralize_1.plural
+            })),
+            (0, schematics_1.move)(path.normalize('src'))
+        ]);
+        const viewTemplateRules = (0, schematics_1.apply)((0, schematics_1.url)('./files/views'), [
+            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({
+                entityName,
+                title
+            }, core_1.strings), { //向模版里传入方法
+                plural: //向模版里传入方法
+                    pluralize_1.plural
+            })),
+            (0, schematics_1.move)(path.normalize('views'))
         ]);
         return (0, schematics_1.chain)([
-            (0, schematics_1.mergeWith)(sourceTemplateRules)
+            (0, schematics_1.mergeWith)(sourceTemplateRules),
+            (0, schematics_1.mergeWith)(viewTemplateRules),
+            updateAdminModule(entityName)
         ]);
     };
+}
+// 此方法用于更新src/admin/admin.module.ts文件
+function updateAdminModule(entityName) {
+    return (tree, _context) => {
+        // 要修改的文件路径
+        const adminModulePath = 'src/admin/admin.module.ts';
+        // 读取并解析文件的内容为TS源文件
+        const sourceFile = getSourceFile(tree, adminModulePath);
+        console.log('sourceFile', sourceFile);
+        // 如果成功找到了要修改的源文件
+        if (sourceFile) {
+            // 获取实体类的名称（用于代码）和名称的破折号形式（用于文件名）Role role
+            const { classifiedName, dasherizeName } = getClassifiedAndDasherizeName(entityName);
+            // 定义更新操作
+            const updates = [
+                addImportToModule(`${classifiedName}Controller`, `./controllers/${dasherizeName}.Controller`),
+                // addToModuleArray(`controllers`,`${classifiedName}Controllers`)
+            ];
+            // 应用更新保存变更到AdminModule文件
+            applyTransformationsAndSave(tree, adminModulePath, sourceFile, updates);
+        }
+        return tree;
+    };
+}
+// 应用变更并保存文件
+function applyTransformationsAndSave(tree, filePath, sourceFile, transformations) {
+    // 应用变更并获取更新后的源文件
+    const updatedSourceFile = ts.transform(sourceFile, transformations).transformed[0];
+    // 将更新后的文件内容写入指定的路径
+    tree.overwrite(filePath, ts.createPrinter().printFile(updatedSourceFile));
+}
+// 在文件中添加import语句
+function addImportToModule(imporName, importPath) {
+    //     import { Module } from '@nestjs/common';
+    //     import { DashboardController } from './controllers/dashboard.controller';
+    //     import { UserController } from './controllers/user.controller';
+    //    + import { RoleController } from './controllers/role.controller';
+    //     @Module({
+    //     controllers: [DashboardController, UserController, + RoleController],
+    //     })
+    //     export class AdminModule {}
+    // 返回一个转换工厂的函数 用于添加导入语句
+    // TransformerFactory 是一个高阶函数 接受一个ts.TransformationContext并返回另一个处理SourceFile的函数
+    return (_context) => (rootNode) => {
+        // 找到文件中的最后一个import语句
+        const lastImport = (rootNode.statements.filter(ts.isImportDeclaration)).pop();
+        // 创建新的import语句
+        // modifiers 修饰符 importClause 导入的内容 moduleSpecifier 模块路径
+        const newImport = ts.factory.createImportDeclaration(undefined, ts.factory.createImportClause(false, undefined, ts.factory.createNamedImports([ts.factory.createImportSpecifier(false, undefined, ts.factory.createIdentifier(imporName))])), ts.factory.createStringLiteral(importPath));
+        const updatedStatements = ts.factory.createNodeArray([
+            ...rootNode.statements.slice(0, rootNode.statements.indexOf(lastImport) + 1),
+            newImport,
+            ...rootNode.statements.slice(rootNode.statements.indexOf(lastImport) + 1),
+        ]);
+        return ts.factory.updateSourceFile(rootNode, updatedStatements);
+    };
+}
+function getClassifiedAndDasherizeName(name) {
+    return {
+        classifiedName: core_1.strings.classify(name), // 获取类名形式
+        dasherizeName: core_1.strings.dasherize(name), // 获取类名形式
+    };
+}
+// 读取并解析文件的内容为TS源文件对象
+function getSourceFile(tree, filePath) {
+    var _a;
+    // 读取指定路径的文件内容 并转换为字符串
+    const content = (_a = tree.read(filePath)) === null || _a === void 0 ? void 0 : _a.toString('utf-8');
+    return ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
 }
 /**
  * Rule 是 Angular DevKit 提供的一种用于描述和执行操作的机制。
@@ -34,4 +121,20 @@ function generateFiles(options) {
  * apply 应用一系列的规则到文件树中 返回一个转换后的文件树
  * mergeWith 将生成的文件树与目标文件树合并 返回一个合并后的文件树
  * chain 将多个规则组按顺序进行串联执行
+ */
+
+
+
+
+/**
+ * 1.定义要修改的文件路径
+ * 2.读取指定路径的文件内容，并转换为字符串
+ * 3.根据源代码字符串创建对应AST抽象语法树 ts.SourceFile
+ * 4.定义TS转换工厂函数 函数的参数就是AST语法树的根节点
+ *   1.找到文件中的最后一个import语句
+ *   2.创建新的import语句 import { RoleController } from "./controllers/role.Controller";
+ *   3.创建新的语句数组，插入最后的import语句和新的import语句
+ *   3.更新源文件中的statements数组 四条变五条
+ * 5.应用更新并拿到更新后的源文件内容
+ * 6.将更新后的文件内容写入指定的路径
  */
