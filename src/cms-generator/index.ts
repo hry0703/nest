@@ -14,7 +14,7 @@ export function generateFiles(options: GenerateFilesSchema): Rule {
     const entityName = options.name;
     
     const sourceTemplateRules = apply(
-      url('./files'),
+      url('./files/src'),
       [
         applyTemplates({
           entityName,
