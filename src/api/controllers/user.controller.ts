@@ -26,7 +26,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { CreateUserDto, UpdateUserDto } from 'src/shared/dtos/user.dto';
+import { CreateUserDto, UpdateUserDto } from 'src/shared/dto/user.dto';
 import { User } from 'src/shared/entities/user.entity';
 import { UserService } from 'src/shared/services/user.service';
 import { Result } from 'src/shared/vo/result';

@@ -15,24 +15,18 @@ const user_entity_1 = require("./entities/user.entity");
 const user_service_1 = require("./services/user.service");
 const user_validator_1 = require("./validators/user-validator");
 const utility_service_1 = require("./services/utility.service");
+const role_entity_1 = require("./entities/role.entity");
+const role_service_1 = require("./services/role.service");
+const access_entity_1 = require("./entities/access.entity");
+const access_service_1 = require("./services/access.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
 exports.SharedModule = SharedModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
-        providers: [
-            user_validator_1.IsUserNameUniqueConstraint,
-            configuration_service_1.ConfigurationService,
-            user_service_1.UserService,
-            utility_service_1.UtilityService,
-        ],
-        exports: [
-            user_validator_1.IsUserNameUniqueConstraint,
-            configuration_service_1.ConfigurationService,
-            user_service_1.UserService,
-            utility_service_1.UtilityService,
-        ],
+        providers: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService],
+        exports: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService],
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
@@ -50,7 +44,7 @@ exports.SharedModule = SharedModule = __decorate([
                     };
                 },
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, role_entity_1.Role, access_entity_1.Access]),
         ],
     })
 ], SharedModule);

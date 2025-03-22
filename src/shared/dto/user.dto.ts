@@ -10,20 +10,13 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
-  isNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
   Validate,
 } from 'class-validator';
-import {
-  IsUserNameUniqueConstraint,
-  StartsWith,
-  StartsWithAsync,
-  StartsWithConstraint,
-} from 'src/shared/validators/user-validator';
+import { IsUserNameUniqueConstraint } from 'src/shared/validators/user-validator';
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import {
