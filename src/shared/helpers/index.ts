@@ -3,3 +3,7 @@ export * from './range';
 export * from './inc';
 export * from './dec';
 export * from './multiply';
+export * from './json';
+export * from './fromNow';
+export * from './mapTold';
+export * from './def';

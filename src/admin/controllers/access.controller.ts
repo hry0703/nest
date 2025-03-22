@@ -37,8 +37,9 @@ export class AccessController {
 
   @Get('create')
   @Render('access/access-form')
-  createForm() {
-    return { access: {} };
+  async createForm() {
+    const accessTree = await this.accessService.findAll();
+    return { access: {}, accessTree };
   }
 
   @Post()
@@ -51,9 +52,15 @@ export class AccessController {
   @Get(':id/edit')
   @Render('access/access-form')
   async editForm(@Param('id', ParseIntPipe) id: number) {
-    const access = await this.accessService.findOne({ where: { id } });
+    const accessTree = await this.accessService.findAll();
+    const access = await this.accessService.findOne({
+      where: { id },
+      relations: ['parent', 'children'],
+    });
+    console.log('access', access);
+    console.log('accessTree', accessTree);
     if (!access) throw new HttpException('Access not Found', 404);
-    return { access };
+    return { access, accessTree };
   }
 
   @Put(':id')
