@@ -13,30 +13,69 @@ function generateFiles(options) {
         const entityName = options.name;
         const title = options.path;
         const sourceTemplateRules = (0, schematics_1.apply)((0, schematics_1.url)('./files/src'), [
-            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({
-                entityName,
-                title
-            }, core_1.strings), { //向模版里传入方法
+            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({ entityName,
+                title }, core_1.strings), { //向模版里传入方法
                 plural: //向模版里传入方法
-                    pluralize_1.plural
-            })),
+                pluralize_1.plural })),
             (0, schematics_1.move)(path.normalize('src'))
         ]);
         const viewTemplateRules = (0, schematics_1.apply)((0, schematics_1.url)('./files/views'), [
-            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({
-                entityName,
-                title
-            }, core_1.strings), { //向模版里传入方法
+            (0, schematics_1.applyTemplates)(Object.assign(Object.assign({ entityName,
+                title }, core_1.strings), { //向模版里传入方法
                 plural: //向模版里传入方法
-                    pluralize_1.plural
-            })),
+                pluralize_1.plural })),
             (0, schematics_1.move)(path.normalize('views'))
         ]);
         return (0, schematics_1.chain)([
             (0, schematics_1.mergeWith)(sourceTemplateRules),
             (0, schematics_1.mergeWith)(viewTemplateRules),
-            updateAdminModule(entityName)
+            updateAdminModule(entityName),
+            updateSharedModule(entityName)
         ]);
+    };
+}
+// 此方法用于更新src/admin/admin.module.ts文件
+function updateSharedModule(entityName) {
+    return (tree, _context) => {
+        // 要修改的文件路径
+        const adminModulePath = 'src/shared/shared.module.ts';
+        // 读取并解析文件的内容为TS源文件
+        const sourceFile = getSourceFile(tree, adminModulePath);
+        // 如果成功找到了要修改的源文件
+        if (sourceFile) {
+            // 获取实体类的名称（用于代码）和名称的破折号形式（用于文件名）Role role
+            const { classifiedName, dasherizeName } = getClassifiedAndDasherizeName(entityName);
+            // 定义更新操作
+            const updates = [
+                addImportToModule(`${classifiedName}`, `./entities/${dasherizeName}.entity`),
+                addImportToModule(`${classifiedName}Service`, `./services/${dasherizeName}.service`),
+                addToModuleArray(`providers`, `${classifiedName}Service`),
+                addToModuleArray(`exports`, `${classifiedName}Service`),
+                addToMethodArray(`forFeature`, classifiedName)
+            ];
+            // 应用更新保存变更到AdminModule文件
+            applyTransformationsAndSave(tree, adminModulePath, sourceFile, updates);
+        }
+        return tree;
+    };
+}
+function addToMethodArray(mothodName, resourceName) {
+    return (context) => (rootNode) => {
+        // 定义一个访问者函数 用于遍历AST节点
+        function visitor(node) {
+            if (ts.isCallExpression(node)
+                && ts.isPropertyAccessExpression(node.expression)
+                && node.expression.name.text === mothodName
+                && node.arguments.length === 1
+                && ts.isArrayLiteralExpression(node.arguments[0])) {
+                // 找到forFeature方法
+                const elements = [...node.arguments[0].elements, ts.factory.createIdentifier(resourceName)];
+                // 返回更新后的数组属性节点
+                return ts.factory.updateCallExpression(node, node.expression, node.typeArguments, [ts.factory.createArrayLiteralExpression(elements)]);
+            }
+            return ts.visitEachChild(node, visitor, context);
+        }
+        return ts.visitNode(rootNode, visitor);
     };
 }
 // 此方法用于更新src/admin/admin.module.ts文件
@@ -53,13 +92,30 @@ function updateAdminModule(entityName) {
             const { classifiedName, dasherizeName } = getClassifiedAndDasherizeName(entityName);
             // 定义更新操作
             const updates = [
-                addImportToModule(`${classifiedName}Controller`, `./controllers/${dasherizeName}.Controller`),
-                // addToModuleArray(`controllers`,`${classifiedName}Controllers`)
+                addImportToModule(`${classifiedName}Controller`, `./controllers/${dasherizeName}.controller`),
+                addToModuleArray(`controllers`, `${classifiedName}Controller`)
             ];
             // 应用更新保存变更到AdminModule文件
             applyTransformationsAndSave(tree, adminModulePath, sourceFile, updates);
         }
         return tree;
+    };
+}
+function addToModuleArray(arrayName, itemName) {
+    return (context) => (rootNode) => {
+        // 定义一个访问者函数 用于遍历AST节点
+        function visitor(node) {
+            if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && node.name.text === arrayName) {
+                // 找到controllers数组
+                if (ts.isArrayLiteralExpression(node.initializer)) {
+                    const elements = [...node.initializer.elements.map(ele => ele.getText()), itemName];
+                    // 返回更新后的数组属性节点
+                    return ts.factory.updatePropertyAssignment(node, node.name, ts.factory.createArrayLiteralExpression(elements.map(ele => ts.factory.createIdentifier(ele))));
+                }
+            }
+            return ts.visitEachChild(node, visitor, context);
+        }
+        return ts.visitNode(rootNode, visitor);
     };
 }
 // 应用变更并保存文件
@@ -121,20 +177,4 @@ function getSourceFile(tree, filePath) {
  * apply 应用一系列的规则到文件树中 返回一个转换后的文件树
  * mergeWith 将生成的文件树与目标文件树合并 返回一个合并后的文件树
  * chain 将多个规则组按顺序进行串联执行
- */
-
-
-
-
-/**
- * 1.定义要修改的文件路径
- * 2.读取指定路径的文件内容，并转换为字符串
- * 3.根据源代码字符串创建对应AST抽象语法树 ts.SourceFile
- * 4.定义TS转换工厂函数 函数的参数就是AST语法树的根节点
- *   1.找到文件中的最后一个import语句
- *   2.创建新的import语句 import { RoleController } from "./controllers/role.Controller";
- *   3.创建新的语句数组，插入最后的import语句和新的import语句
- *   3.更新源文件中的statements数组 四条变五条
- * 5.应用更新并拿到更新后的源文件内容
- * 6.将更新后的文件内容写入指定的路径
  */

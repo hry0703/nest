@@ -43,10 +43,57 @@ export function generateFiles(options: GenerateFilesSchema): Rule {
     return chain([
       mergeWith(sourceTemplateRules),
       mergeWith(viewTemplateRules),
-      updateAdminModule(entityName)
+      updateAdminModule(entityName),
+      updateSharedModule(entityName)
     ]);
   };
 }
+// 此方法用于更新src/admin/admin.module.ts文件
+function updateSharedModule(entityName: string): Rule {
+  return (tree: Tree, _context: SchematicContext) => { // 此处返回的是一个schematics的规则函数
+    // 要修改的文件路径
+    const adminModulePath = 'src/shared/shared.module.ts';
+    // 读取并解析文件的内容为TS源文件
+    const sourceFile = getSourceFile(tree, adminModulePath);
+    // 如果成功找到了要修改的源文件
+    if(sourceFile) {
+        // 获取实体类的名称（用于代码）和名称的破折号形式（用于文件名）Role role
+      const {classifiedName,dasherizeName} = getClassifiedAndDasherizeName(entityName)
+      // 定义更新操作
+      const updates = [
+        addImportToModule(`${classifiedName}`,`./entities/${dasherizeName}.entity`),
+        addImportToModule(`${classifiedName}Service`,`./services/${dasherizeName}.service`),
+        addToModuleArray(`providers`,`${classifiedName}Service`),
+        addToModuleArray(`exports`,`${classifiedName}Service`),
+        addToMethodArray(`forFeature`,classifiedName)
+      ]
+      // 应用更新保存变更到AdminModule文件
+       applyTransformationsAndSave(tree,adminModulePath,sourceFile,updates)
+    }
+    return tree
+  }
+}
+function addToMethodArray(mothodName:string,resourceName:string):ts.TransformerFactory<ts.SourceFile>{
+    return ( context: ts.TransformationContext)=>(rootNode:ts.SourceFile) => {  
+        // 定义一个访问者函数 用于遍历AST节点
+        function visitor(node:ts.Node):ts.Node{
+            if( ts.isCallExpression(node) 
+                && ts.isPropertyAccessExpression(node.expression) 
+                && node.expression.name.text === mothodName
+                && node.arguments.length === 1
+                && ts.isArrayLiteralExpression(node.arguments[0])){
+                   // 找到forFeature方法
+                    const elements = [...node.arguments[0].elements,ts.factory.createIdentifier(resourceName)]
+                    // 返回更新后的数组属性节点
+                    return ts.factory.updateCallExpression(node,node.expression,node.typeArguments,[ts.factory.createArrayLiteralExpression(elements)])
+            }
+            return ts.visitEachChild(node,visitor,context)
+        }
+        return ts.visitNode(rootNode,visitor) as ts.SourceFile
+    }
+
+}
+
 // 此方法用于更新src/admin/admin.module.ts文件
 function updateAdminModule(entityName: string): Rule {
   return (tree: Tree, _context: SchematicContext) => { // 此处返回的是一个schematics的规则函数
@@ -61,14 +108,31 @@ function updateAdminModule(entityName: string): Rule {
       const {classifiedName,dasherizeName} = getClassifiedAndDasherizeName(entityName)
       // 定义更新操作
       const updates = [
-        addImportToModule(`${classifiedName}Controller`,`./controllers/${dasherizeName}.Controller`),
-        // addToModuleArray(`controllers`,`${classifiedName}Controllers`)
+        addImportToModule(`${classifiedName}Controller`,`./controllers/${dasherizeName}.controller`),
+        addToModuleArray(`controllers`,`${classifiedName}Controller`)
       ]
       // 应用更新保存变更到AdminModule文件
        applyTransformationsAndSave(tree,adminModulePath,sourceFile,updates)
     }
     return tree
   }
+}
+function addToModuleArray(arrayName:string,itemName:string):ts.TransformerFactory<ts.SourceFile>{
+    return ( context: ts.TransformationContext)=>(rootNode:ts.SourceFile) => {  
+        // 定义一个访问者函数 用于遍历AST节点
+        function visitor(node:ts.Node):ts.Node{
+            if( ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && node.name.text === arrayName){
+                // 找到controllers数组
+                if(ts.isArrayLiteralExpression(node.initializer)){
+                    const elements = [...node.initializer.elements.map(ele=>ele.getText()),itemName]
+                    // 返回更新后的数组属性节点
+                    return ts.factory.updatePropertyAssignment(node,node.name,ts.factory.createArrayLiteralExpression(elements.map(ele=>ts.factory.createIdentifier(ele))))
+                }
+            }
+            return ts.visitEachChild(node,visitor,context)
+        }
+        return ts.visitNode(rootNode,visitor) as ts.SourceFile
+    }
 }
 // 应用变更并保存文件
 function applyTransformationsAndSave(tree:Tree,filePath:string,sourceFile:ts.SourceFile,transformations:ts.TransformerFactory<ts.SourceFile>[]){
