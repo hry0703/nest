@@ -16,12 +16,17 @@ import {
   Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from 'src/shared/dto/user.dto';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UpdateUserRolesDto,
+} from 'src/shared/dto/user.dto';
 import { UserService } from 'src/shared/services/user.service';
 import { AdminExceptionFilter } from '../filters/admin-exception-filter';
 import { UtilityService } from 'src/shared/services/utility.service';
 import { query, Response } from 'express';
 import { ParseOptionalIntPipe } from 'src/shared/pipes/parse-optional-int.pipe';
+import { RoleService } from 'src/shared/services/role.service';
 @UseFilters(AdminExceptionFilter)
 @ApiTags('Admin')
 @Controller('admin/users')
@@ -29,6 +34,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly utilityService: UtilityService,
+    private readonly roleService: RoleService,
   ) {}
 
   @Get()
@@ -45,8 +51,8 @@ export class UserController {
     );
     const pageCount = Math.ceil(total / limit);
     console.log(users, keyword, page, limit, pageCount);
-
-    return { users, keyword, page, limit, pageCount };
+    const roles = await this.roleService.findAll();
+    return { users, keyword, page, limit, pageCount, roles };
   }
 
   @Get('create')
@@ -110,12 +116,35 @@ export class UserController {
   }
 
   @Get(':id')
-  @Render('user/user-detail')
-  async detail(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.userService.findOne({ where: { id } });
+  async detail(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+    @Headers('accept') accept: string,
+  ) {
+    const user = await this.userService.findOne({
+      where: { id },
+      relations: ['roles'],
+    });
+    console.log('user', user);
     if (!user) {
       throw new HttpException('用户不存在', 404);
     }
-    return { user };
+    if (accept === 'application/json') {
+      console.log('找到的校色', user, user.roles);
+
+      res.json({ user });
+    } else {
+      res.render('user/user-detail', { user });
+    }
+  }
+
+  @Put(':id/roles')
+  //   @Redirect('/admin/users')
+  async assignRoles(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserRolesDto: UpdateUserRolesDto,
+  ) {
+    await this.userService.updateRoles(id, updateUserRolesDto);
+    return { success: true };
   }
 }

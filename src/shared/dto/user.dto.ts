@@ -151,3 +151,7 @@ function IsSuperValidators() {
     Type(() => Boolean),
   );
 }
+
+export class UpdateUserRolesDto {
+  readonly roleIds: number[];
+}

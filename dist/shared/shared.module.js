@@ -19,14 +19,20 @@ const role_entity_1 = require("./entities/role.entity");
 const role_service_1 = require("./services/role.service");
 const access_entity_1 = require("./entities/access.entity");
 const access_service_1 = require("./services/access.service");
+const tag_entity_1 = require("./entities/tag.entity");
+const tag_service_1 = require("./services/tag.service");
+const article_entity_1 = require("./entities/article.entity");
+const article_service_1 = require("./services/article.service");
+const category_entity_1 = require("./entities/category.entity");
+const category_service_1 = require("./services/category.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
 exports.SharedModule = SharedModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
-        providers: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService],
-        exports: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService],
+        providers: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService, tag_service_1.TagService, article_service_1.ArticleService, category_service_1.CategoryService],
+        exports: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService, tag_service_1.TagService, article_service_1.ArticleService, category_service_1.CategoryService],
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
@@ -44,7 +50,7 @@ exports.SharedModule = SharedModule = __decorate([
                     };
                 },
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, role_entity_1.Role, access_entity_1.Access]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, role_entity_1.Role, access_entity_1.Access, tag_entity_1.Tag, article_entity_1.Article, category_entity_1.Category]),
         ],
     })
 ], SharedModule);

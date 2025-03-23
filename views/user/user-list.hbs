@@ -41,6 +41,7 @@
                 <a href="/admin/users/{{this.id}}" class="btn btn-primary btn-sm">查看</a>
                 <a href="/admin/users/{{this.id}}/edit" class="btn btn-warning btn-sm">修改</a>
                 <a class="btn btn-danger btn-sm" onclick="deleteUser({{this.id}})">删除</a>
+                <button class="btn btn-info btn-sm" onclick="assignRoles({{this.id}})">分配角色</button>
             </td>
         </tr>
         {{/each }}
@@ -71,7 +72,67 @@
         </li>
     </ul>
 </nav>
+<div class="modal fade" id="roleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">给用户分配角色</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="roleForm">
+                    {{#each roles}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{this.id}}" id="role_{{this.id}}" />
+                        <label class="form-check-label" for="role_{{this.id}}">{{this.name}}</label>
+                    </div>
+                    {{/each}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secodary" data-bs-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="saveRoles">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    let selectedUserId;
+    function assignRoles(userId) {
+       selectedUserId = userId
+       $.ajax({
+        url: `/admin/users/${userId}`,
+        type: 'GET', 
+        headers: { 'accept': 'application/json' },
+        success: function ({ user }) {
+            console.log('user', user)
+            const roleIds = user.roles.map(role => role.id);
+            $(`#roleForm input[type="checkbox"]`).each(function () {
+                $(this).prop('checked', roleIds.includes(parseInt($(this).val())));
+            })
+            $('#roleModal').modal('show');
+        }
+       })
+    }
+      $('#saveRoles').on('click', function () {
+            const roleIds = $(`#roleForm input[type="checkbox"]:checked`).map(function () {
+                return $(this).val();
+            }).get();
+            $.ajax({
+                url: `/admin/users/${selectedUserId}/roles`,
+                type: 'PUT',
+                headers: { 'accept': 'application/json' },
+                contentType: 'application/json',
+                data: JSON.stringify({ roleIds }),
+                success: function ({ user }) {
+                    $('#roleModal').modal('hide');
+                    alert('权限分配 成功');
+                },
+                error: function (error) {
+                    alert(error.responseJSON.message);
+                }
+            })
+        });
     function deleteUser(id) {
         if (confirm('确认删除用户吗？')) {
             $.ajax({

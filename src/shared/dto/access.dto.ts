@@ -46,5 +46,7 @@ export class UpdateAccessDto extends PartialTypeFromSwagger(
 export enum AccessType {
   MODULE = 'module', // 模块 父菜单
   MENU = 'menu', // 菜单
+  //   BUTTON ='button', // 按钮
+  //   PAGE = 'page', // 页面
   FEATURE = 'feature', // 功能
 }

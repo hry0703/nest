@@ -6,7 +6,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { Role } from './role.entity';
 
 // Entity 实体会映射为数据库中的一张表
 @Entity()
@@ -44,6 +47,10 @@ export class User {
   @ApiProperty({ description: '状态', example: 1 })
   @Column({ default: 1 }) // 是否生效 0 表示无效 1 表示有效
   status: number;
+
+  @ManyToMany(() => Role)
+  @JoinTable()
+  roles: Role[];
 
   @ApiProperty({ description: '是否超级管理员', example: true })
   @Column({ default: false }) // 是否超级管理员

@@ -5,27 +5,21 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
 } from 'typeorm';
-import { Access } from './access.entity';
+
 @Entity()
-export class Role {
+export class Article {
   @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'ID', example: 1 })
   id: number;
 
-  @Column({ length: 50, unique: true })
+  @Column({ length: 50 })
   @ApiProperty({ description: '名称', example: 'name' })
   name: string;
 
   @Column({ default: 1 })
   @ApiProperty({ description: '生效状态', example: 1 })
   status: number;
-
-  @ManyToMany(() => Access)
-  @JoinTable()
-  accesses: Access[];
 
   @Column({ default: 100 })
   @ApiProperty({ description: '排序号', example: 100 })

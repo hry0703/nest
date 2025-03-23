@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { Like, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { MySQLBaseService } from './mysql-base.service';
+import { Role } from '../entities/role.entity';
+import { UpdateUserRolesDto } from '../dto/user.dto';
 
 @Injectable()
 export class UserService extends MySQLBaseService<User> {
   constructor(
     // 一个User实体对应数据库中的一张表 也会对应一个UserRepository仓库
     @InjectRepository(User) protected repository: Repository<User>,
+    @InjectRepository(Role) protected roleRepository: Repository<Role>,
   ) {
     super(repository);
   }
@@ -30,5 +33,14 @@ export class UserService extends MySQLBaseService<User> {
       take: limit,
     });
     return { users, total };
+  }
+
+  async updateRoles(id: number, updateUserRolesDto: UpdateUserRolesDto) {
+    const user = await this.repository.findOneBy({ id });
+    const roles = await this.roleRepository.findBy({
+      id: In(updateUserRolesDto.roleIds),
+    });
+    user!.roles = roles;
+    await this.repository.save(user!);
   }
 }

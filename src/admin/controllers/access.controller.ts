@@ -30,8 +30,6 @@ export class AccessController {
   @Render('access/access-list')
   async findAll() {
     const accessTree = await this.accessService.findAll();
-    console.log('accessTree', accessTree);
-
     return { accessTree };
   }
 
@@ -52,14 +50,12 @@ export class AccessController {
   @Get(':id/edit')
   @Render('access/access-form')
   async editForm(@Param('id', ParseIntPipe) id: number) {
-    const accessTree = await this.accessService.findAll();
     const access = await this.accessService.findOne({
       where: { id },
       relations: ['parent', 'children'],
     });
-    console.log('access', access);
-    console.log('accessTree', accessTree);
     if (!access) throw new HttpException('Access not Found', 404);
+    const accessTree = await this.accessService.findAll();
     return { access, accessTree };
   }
 
@@ -70,7 +66,7 @@ export class AccessController {
     @Res({ passthrough: true }) res: Response,
     @Headers('accept') accept: string,
   ) {
-    await this.accessService.update(id, updateAccessDto);
+    await this.accessService.update(id, { ...updateAccessDto, id });
     if (accept === 'application/json') {
       return { success: true };
     } else {

@@ -10,10 +10,16 @@ import { Role } from "./entities/role.entity";
 import { RoleService } from "./services/role.service";
 import { Access } from "./entities/access.entity";
 import { AccessService } from "./services/access.service";
+import { Tag } from "./entities/tag.entity";
+import { TagService } from "./services/tag.service";
+import { Article } from "./entities/article.entity";
+import { ArticleService } from "./services/article.service";
+import { Category } from "./entities/category.entity";
+import { CategoryService } from "./services/category.service";
 @Global()
 @Module({
-    providers: [IsUserNameUniqueConstraint, ConfigurationService, UserService, UtilityService, RoleService, AccessService],
-    exports: [IsUserNameUniqueConstraint, ConfigurationService, UserService, UtilityService, RoleService, AccessService],
+    providers: [IsUserNameUniqueConstraint, ConfigurationService, UserService, UtilityService, RoleService, AccessService, TagService, ArticleService, CategoryService],
+    exports: [IsUserNameUniqueConstraint, ConfigurationService, UserService, UtilityService, RoleService, AccessService, TagService, ArticleService, CategoryService],
     imports: [
         // 从默认位置（项目根目录）加载并解析 .env 文件
         ConfigModule.forRoot({
@@ -32,7 +38,7 @@ import { AccessService } from "./services/access.service";
                 };
             },
         }),
-        TypeOrmModule.forFeature([User, Role, Access]), // 注册实体
+        TypeOrmModule.forFeature([User, Role, Access, Tag, Article, Category]), // 注册实体
     ],
 })
 export class SharedModule {
