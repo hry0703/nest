@@ -50,7 +50,6 @@ export class UserController {
       keyword,
     );
     const pageCount = Math.ceil(total / limit);
-    console.log(users, keyword, page, limit, pageCount);
     const roles = await this.roleService.findAll();
     return { users, keyword, page, limit, pageCount, roles };
   }
@@ -91,8 +90,6 @@ export class UserController {
     @Headers('accept') accept: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('updateUserDto', updateUserDto);
-
     if (updateUserDto.password) {
       updateUserDto.password = await this.utilityService.hashPassword(
         updateUserDto.password,

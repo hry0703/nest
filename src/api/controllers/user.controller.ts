@@ -62,7 +62,6 @@ export class UserController {
   @Post()
   @ApiCreate()
   async create(@Body() createUserDto: CreateUserDto) {
-    console.log('create', createUserDto);
     return this.userService.create(createUserDto);
   }
 
