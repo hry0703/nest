@@ -125,12 +125,10 @@ export class UserController {
       where: { id },
       relations: ['roles'],
     });
-    console.log('user', user);
     if (!user) {
       throw new HttpException('用户不存在', 404);
     }
     if (accept === 'application/json') {
-      console.log('找到的校色', user, user.roles);
 
       res.json({ user });
     } else {
