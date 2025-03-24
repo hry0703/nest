@@ -34,6 +34,7 @@
     "class-validator": "^0.14.1",
     "cms-resource": "^0.0.7",
     "cookie-parser": "^1.4.7",
+    "cos-nodejs-sdk-v5": "^2.14.7",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
     "mysql2": "^3.13.0",

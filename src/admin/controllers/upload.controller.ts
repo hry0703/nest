@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Render,
   Res,
   UploadedFile,
@@ -14,8 +15,10 @@ import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from 'express';
 import * as sharp from 'sharp';
+import { CosService } from 'src/shared/services/cos.service';
 @Controller('admin')
 export class UploadController {
+  constructor(private readonly cosService: CosService) {}
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('upload', {
@@ -55,5 +58,10 @@ export class UploadController {
       .toFile(outputFilePath); // 输出文件路径
     // fs.unlinkSync(file.path); // 删除原始文件
     return { url: `/uploads/${filename}` };
+  }
+
+  @Get('cos-signature')
+  async getCosSignature(@Query('key') key: string) {
+    return this.cosService.getAuth(key, 60);
   }
 }

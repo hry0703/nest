@@ -100,10 +100,11 @@
             this.editor.plugins.get('FileRepository').createUploadAdapter = (fileLoader) => new COSUploadAdaptor(fileLoader)
         }
     }
+   
     ClassicEditor
         .create(document.querySelector('#editor'), {
             plugins: [Essentials, Bold, Italic, Font, Paragraph, Image,
-                ImageToolbar, ImageResize, ImageStyle, ImageUpload, SimpleUploadAdapter], // COSUploadAdaptorPlugin
+                ImageToolbar, ImageResize, ImageStyle, ImageUpload, COSUploadAdaptorPlugin], //SimpleUploadAdapter 
             image: {
                 toolbar: ['imageTextAlternative', 'imageStyle:side', 'resizeImage:50', 'resizeImage:75', 'resizeImage:original']
             },
@@ -113,10 +114,13 @@
                     'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'insertImage'
                 ]
             },
-            simpleUpload: {
-                uploadUrl: '/admin/upload'
-            }
+            /***
+                simpleUpload: {
+                    uploadUrl: '/admin/upload'
+                }
+            ***/
         })
+            
         .then(editor => {
             const form = document.getElementById('articleForm');
             const contentInput = document.getElementById('contentInput');

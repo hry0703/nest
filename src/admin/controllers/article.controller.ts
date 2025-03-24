@@ -22,15 +22,51 @@ import { Response } from 'express';
 import { ParseOptionalIntPipe } from 'src/shared/pipes/parse-optional-int.pipe';
 import { TagService } from 'src/shared/services/tag.service';
 import { CategoryService } from 'src/shared/services/category.service';
-
+import { ArticleStateEnum } from 'src/shared/enums/article.enum';
+// import { EventEmitter2 } from '@nestjs/event-emitter';
 @UseFilters(AdminExceptionFilter)
 @Controller('admin/articles')
 export class ArticleController {
   constructor(
     private readonly articleService: ArticleService,
     private readonly tagService: TagService,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    // private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  @Put(':id/submit') //提交审核
+  async submitForReview(@Param('id', ParseIntPipe) id: number) {
+    await this.articleService.update(id, { state: ArticleStateEnum.PENDING });
+    // this.eventEmitter.emit('article.submitted', { articleId: id });
+    return { success: true };
+  }
+
+  @Put(':id/approve') //审核通过
+  async approveArtice(@Param('id', ParseIntPipe) id: number) {
+    await this.articleService.update(id, {
+      state: ArticleStateEnum.PUBLISHED,
+      rejectionReason: '',
+    });
+    return { success: true };
+  }
+
+  @Put(':id/reject') //审核不通过
+  async rejectArticle(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('rejectionReason') rejectionReason: string,
+  ) {
+    await this.articleService.update(id, {
+      state: ArticleStateEnum.REJECTED,
+      rejectionReason,
+    });
+    return { success: true };
+  }
+
+  @Put(':id/withdraw') //撤回已经发布的文章
+  async withdrawArticle(@Param('id', ParseIntPipe) id: number) {
+    await this.articleService.update(id, { state: ArticleStateEnum.WITHDRAWN });
+    return { success: true };
+  }
 
   @Get()
   @Render('article/article-list')
@@ -51,9 +87,9 @@ export class ArticleController {
   @Get('create')
   @Render('article/article-form')
   async createForm() {
-    const tags  = await this.tagService.findAll();
-    const categoryTree  = await this.categoryService.findAll();
-    return {tags, categoryTree,article: {tags:[],categories:[]} };
+    const tags = await this.tagService.findAll();
+    const categoryTree = await this.categoryService.findAll();
+    return { tags, categoryTree, article: { tags: [], categories: [] } };
   }
 
   @Post()
@@ -66,11 +102,14 @@ export class ArticleController {
   @Get(':id/edit')
   @Render('article/article-form')
   async editForm(@Param('id', ParseIntPipe) id: number) {
-    const article = await this.articleService.findOne({ where: { id },relations: ['tags', 'categories'] });
+    const article = await this.articleService.findOne({
+      where: { id },
+      relations: ['tags', 'categories'],
+    });
     if (!article) throw new HttpException('Article not Found', 404);
-    const tags  = await this.tagService.findAll();
-    const categoryTree  = await this.categoryService.findAll();
-    return { tags,article,categoryTree };
+    const tags = await this.tagService.findAll();
+    const categoryTree = await this.categoryService.findAll();
+    return { tags, article, categoryTree };
   }
 
   @Put(':id')
@@ -80,11 +119,11 @@ export class ArticleController {
     @Res({ passthrough: true }) res: Response,
     @Headers('accept') accept: string,
   ) {
-    await this.articleService.update(id, {...updateArticleDto,id});
+    await this.articleService.update(id, { ...updateArticleDto, id });
     if (accept === 'application/json') {
       return { success: true };
     } else {
-      return res .redirect(`/admin/articles`);
+      return res.redirect(`/admin/articles`);
     }
   }
 
@@ -97,8 +136,11 @@ export class ArticleController {
   @Get(':id')
   @Render('article/article-detail')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const article = await this.articleService.findOne({ where: { id },relations: ['tags', 'categories'] });
+    const article = await this.articleService.findOne({
+      where: { id },
+      relations: ['tags', 'categories'],
+    });
     if (!article) throw new HttpException('Article not Found', 404);
-    return { article }; 
-  } 
+    return { article };
+  }
 }

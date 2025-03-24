@@ -67,3 +67,8 @@ redis>mongodb>mysql
 npm i cms-resource
 
 nest g cms-resource role --collection=./node_modules/cms-resource
+
+
+nest-1258449979.cos.ap-shanghai.myqcloud.com
+	
+nest -1258449979 

@@ -25,14 +25,37 @@ const article_entity_1 = require("./entities/article.entity");
 const article_service_1 = require("./services/article.service");
 const category_entity_1 = require("./entities/category.entity");
 const category_service_1 = require("./services/category.service");
+const cos_service_1 = require("./services/cos.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
 exports.SharedModule = SharedModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
-        providers: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService, tag_service_1.TagService, article_service_1.ArticleService, category_service_1.CategoryService],
-        exports: [user_validator_1.IsUserNameUniqueConstraint, configuration_service_1.ConfigurationService, user_service_1.UserService, utility_service_1.UtilityService, role_service_1.RoleService, access_service_1.AccessService, tag_service_1.TagService, article_service_1.ArticleService, category_service_1.CategoryService],
+        providers: [
+            user_validator_1.IsUserNameUniqueConstraint,
+            configuration_service_1.ConfigurationService,
+            user_service_1.UserService,
+            utility_service_1.UtilityService,
+            role_service_1.RoleService,
+            access_service_1.AccessService,
+            tag_service_1.TagService,
+            article_service_1.ArticleService,
+            category_service_1.CategoryService,
+            cos_service_1.CosService,
+        ],
+        exports: [
+            user_validator_1.IsUserNameUniqueConstraint,
+            configuration_service_1.ConfigurationService,
+            user_service_1.UserService,
+            utility_service_1.UtilityService,
+            role_service_1.RoleService,
+            access_service_1.AccessService,
+            tag_service_1.TagService,
+            article_service_1.ArticleService,
+            category_service_1.CategoryService,
+            cos_service_1.CosService,
+        ],
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
