@@ -17,6 +17,7 @@ const logger_module_1 = require("./logger/logger.module");
 const nest_winston_1 = require("nest-winston");
 const winston = require("winston");
 const path = require("path");
+const serve_static_1 = require("@nestjs/serve-static");
 const nestjs_i18n_1 = require("nestjs-i18n");
 const methodOverride_1 = require("./shared/middleware/methodOverride");
 const { combine, timestamp, printf } = winston.format;
@@ -29,6 +30,10 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: path.join(__dirname, '..', 'uploads'),
+                serveRoot: '/uploads',
+            }),
             nestjs_i18n_1.I18nModule.forRoot({
                 fallbackLanguage: 'en',
                 loaderOptions: {

@@ -8,6 +8,7 @@ import { LoggerModule } from './logger/logger.module';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import * as path from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import {
   AcceptLanguageResolver,
   QueryResolver,
@@ -19,6 +20,9 @@ import methodOverride from './shared/middleware/methodOverride';
 const { combine, timestamp, printf } = winston.format;
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'uploads'), // 静态文件根目录
+      serveRoot: '/uploads',}), // 访问此静态文件时需要添加的前缀
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {

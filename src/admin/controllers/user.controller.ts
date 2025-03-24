@@ -89,7 +89,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Headers('accept') accept: string,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ) { 
     if (updateUserDto.password) {
       updateUserDto.password = await this.utilityService.hashPassword(
         updateUserDto.password,

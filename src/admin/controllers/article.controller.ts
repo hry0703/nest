@@ -84,7 +84,7 @@ export class ArticleController {
     if (accept === 'application/json') {
       return { success: true };
     } else {
-      return res.redirect(`/admin/articles`);
+      return res .redirect(`/admin/articles`);
     }
   }
 
