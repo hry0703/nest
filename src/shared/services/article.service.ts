@@ -55,7 +55,7 @@ export class ArticleService extends MySQLBaseService<Article> {
     return await this.repository.save(article);
   }
 
-   async update(id: number, updateArticleDto: UpdateArticleDto) {
+   async update(id: number, updateArticleDto: UpdateArticleDto) { 
     const { categoryIds, tagIds, ...articleDto } = updateArticleDto;
     const article = await this.repository.findOne({ where: { id }, relations: ['categories', 'tags'] });
     // if (article.state === ArticleStateEnum.REJECTED || article.state === ArticleStateEnum.WITHDRAWN) {

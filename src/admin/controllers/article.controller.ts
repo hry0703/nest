@@ -66,9 +66,11 @@ export class ArticleController {
   @Get(':id/edit')
   @Render('article/article-form')
   async editForm(@Param('id', ParseIntPipe) id: number) {
-    const article = await this.articleService.findOne({ where: { id } });
+    const article = await this.articleService.findOne({ where: { id },relations: ['tags', 'categories'] });
     if (!article) throw new HttpException('Article not Found', 404);
-    return { article };
+    const tags  = await this.tagService.findAll();
+    const categoryTree  = await this.categoryService.findAll();
+    return { tags,article,categoryTree };
   }
 
   @Put(':id')
@@ -78,7 +80,7 @@ export class ArticleController {
     @Res({ passthrough: true }) res: Response,
     @Headers('accept') accept: string,
   ) {
-    await this.articleService.update(id, updateArticleDto);
+    await this.articleService.update(id, {...updateArticleDto,id});
     if (accept === 'application/json') {
       return { success: true };
     } else {
@@ -95,8 +97,8 @@ export class ArticleController {
   @Get(':id')
   @Render('article/article-detail')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const article = await this.articleService.findOne({ where: { id } });
+    const article = await this.articleService.findOne({ where: { id },relations: ['tags', 'categories'] });
     if (!article) throw new HttpException('Article not Found', 404);
-    return { article };
+    return { article }; 
   } 
 }
