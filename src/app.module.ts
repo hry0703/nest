@@ -9,6 +9,7 @@ import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import * as path from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import {
   AcceptLanguageResolver,
   QueryResolver,
@@ -20,6 +21,11 @@ import methodOverride from './shared/middleware/methodOverride';
 const { combine, timestamp, printf } = winston.format;
 @Module({
   imports: [
+    EventEmitterModule.forRoot({
+        wildcard: true, //  启用通配符功能 允许 使用通配符来订阅事件
+        delimiter: '.', //  设置事件名的分隔符 这是使用.作为分隔符 article.xxx article.*
+        global:true // 设置为全局模块 意味着所有的模块都可以共享一个事件发射器的实例
+    }),
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', 'uploads'), // 静态文件根目录
       serveRoot: '/uploads',}), // 访问此静态文件时需要添加的前缀

@@ -23,7 +23,7 @@ import { ParseOptionalIntPipe } from 'src/shared/pipes/parse-optional-int.pipe';
 import { TagService } from 'src/shared/services/tag.service';
 import { CategoryService } from 'src/shared/services/category.service';
 import { ArticleStateEnum } from 'src/shared/enums/article.enum';
-// import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 @UseFilters(AdminExceptionFilter)
 @Controller('admin/articles')
 export class ArticleController {
@@ -31,13 +31,13 @@ export class ArticleController {
     private readonly articleService: ArticleService,
     private readonly tagService: TagService,
     private readonly categoryService: CategoryService,
-    // private readonly eventEmitter: EventEmitter2,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @Put(':id/submit') //提交审核
   async submitForReview(@Param('id', ParseIntPipe) id: number) {
     await this.articleService.update(id, { state: ArticleStateEnum.PENDING });
-    // this.eventEmitter.emit('article.submitted', { articleId: id });
+    this.eventEmitter.emit('article.submitted', { articleId: id });
     return { success: true };
   }
 

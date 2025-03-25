@@ -18,6 +18,7 @@ const nest_winston_1 = require("nest-winston");
 const winston = require("winston");
 const path = require("path");
 const serve_static_1 = require("@nestjs/serve-static");
+const event_emitter_1 = require("@nestjs/event-emitter");
 const nestjs_i18n_1 = require("nestjs-i18n");
 const methodOverride_1 = require("./shared/middleware/methodOverride");
 const { combine, timestamp, printf } = winston.format;
@@ -30,6 +31,11 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            event_emitter_1.EventEmitterModule.forRoot({
+                wildcard: true,
+                delimiter: '.',
+                global: true
+            }),
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: path.join(__dirname, '..', 'uploads'),
                 serveRoot: '/uploads',
