@@ -38,6 +38,7 @@
     "cos-nodejs-sdk-v5": "^2.14.7",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
+    "html-to-docx": "^1.8.0",
     "mysql2": "^3.13.0",
     "nest-winston": "^1.10.2",
     "nestjs-i18n": "^10.5.1",

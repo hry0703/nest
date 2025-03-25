@@ -28,6 +28,7 @@ const category_service_1 = require("./services/category.service");
 const cos_service_1 = require("./services/cos.service");
 const notification_service_1 = require("./services/notification.service");
 const mail_service_1 = require("./services/mail.service");
+const word_export_service_1 = require("./services/word-export.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
@@ -46,7 +47,8 @@ exports.SharedModule = SharedModule = __decorate([
             category_service_1.CategoryService,
             cos_service_1.CosService,
             notification_service_1.NotificationService,
-            mail_service_1.MailService
+            mail_service_1.MailService,
+            word_export_service_1.WordExportService,
         ],
         exports: [
             user_validator_1.IsUserNameUniqueConstraint,
@@ -60,7 +62,8 @@ exports.SharedModule = SharedModule = __decorate([
             category_service_1.CategoryService,
             cos_service_1.CosService,
             notification_service_1.NotificationService,
-            mail_service_1.MailService
+            mail_service_1.MailService,
+            word_export_service_1.WordExportService,
         ],
         imports: [
             config_1.ConfigModule.forRoot({

@@ -51,7 +51,7 @@
 <a href="/admin/articles/{{article.id}}/edit" class="btn btn-warning btn-sm">修改</a>
 <a href="/admin/articles" class="btn btn-secondary btn-sm">返回列表</a>
 <a href="/admin/articles/{{article.id}}/export-word" class="btn btn-primary btn-sm">导出Word</a>
-
+  
 {{#if (eq article.state 'draft')}}
 <button class="btn btn-warning btn-sm" onclick="submitForReview({{article.id}})">提交审核</button>
 {{/if}}

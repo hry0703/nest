@@ -19,6 +19,7 @@ import { CategoryService } from './services/category.service';
 import { CosService } from './services/cos.service';
 import { NotificationService } from './services/notification.service';
 import { MailService } from './services/mail.service';
+import { WordExportService } from './services/word-export.service';
 @Global()
 @Module({
   providers: [
@@ -33,7 +34,8 @@ import { MailService } from './services/mail.service';
     CategoryService,
     CosService,
     NotificationService,
-    MailService
+    MailService,
+    WordExportService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -47,7 +49,8 @@ import { MailService } from './services/mail.service';
     CategoryService,
     CosService,
     NotificationService,
-    MailService
+    MailService,
+    WordExportService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件
