@@ -22,6 +22,8 @@ import { MailService } from './services/mail.service';
 import { WordExportService } from './services/word-export.service';
 import { PptExportService } from './services/ppt-export.ervice';
 import { ExcelExportService } from './services/excel-export.service';
+import { SettingService } from './services/setting.service';
+import { MongooseModule } from '@nestjs/mongoose';
 @Global()
 @Module({
   providers: [
@@ -40,6 +42,7 @@ import { ExcelExportService } from './services/excel-export.service';
     WordExportService,
     PptExportService,
     ExcelExportService,
+    SettingService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -57,12 +60,21 @@ import { ExcelExportService } from './services/excel-export.service';
     WordExportService,
     PptExportService,
     ExcelExportService,
+    SettingService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件
     ConfigModule.forRoot({
       isGlobal: true, // 表示全局使用模块
       envFilePath: '.env', // 配置文件位置 默认是.env
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigurationService],
+      useFactory: (configurationService: ConfigurationService) => {
+        return {
+          uri: configurationService.mongodbConfig.uri,
+        };
+      },
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigurationService],

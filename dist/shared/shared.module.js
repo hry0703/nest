@@ -31,6 +31,8 @@ const mail_service_1 = require("./services/mail.service");
 const word_export_service_1 = require("./services/word-export.service");
 const ppt_export_ervice_1 = require("./services/ppt-export.ervice");
 const excel_export_service_1 = require("./services/excel-export.service");
+const setting_service_1 = require("./services/setting.service");
+const mongoose_1 = require("@nestjs/mongoose");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
@@ -53,6 +55,7 @@ exports.SharedModule = SharedModule = __decorate([
             word_export_service_1.WordExportService,
             ppt_export_ervice_1.PptExportService,
             excel_export_service_1.ExcelExportService,
+            setting_service_1.SettingService,
         ],
         exports: [
             user_validator_1.IsUserNameUniqueConstraint,
@@ -70,11 +73,20 @@ exports.SharedModule = SharedModule = __decorate([
             word_export_service_1.WordExportService,
             ppt_export_ervice_1.PptExportService,
             excel_export_service_1.ExcelExportService,
+            setting_service_1.SettingService,
         ],
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: '.env',
+            }),
+            mongoose_1.MongooseModule.forRootAsync({
+                inject: [configuration_service_1.ConfigurationService],
+                useFactory: (configurationService) => {
+                    return {
+                        uri: configurationService.mongodbConfig.uri,
+                    };
+                },
             }),
             typeorm_1.TypeOrmModule.forRootAsync({
                 inject: [configuration_service_1.ConfigurationService],
