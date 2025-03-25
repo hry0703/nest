@@ -44,74 +44,74 @@ export class ConfigurationService {
   }
 
   get smtpHost(): string {
-        return this.configService.get<string>('SMTP_HOST')?? '';
-    }
-    get smtpPort(): string {
-        return this.configService.get<string>('SMTP_PORT')?? '';
-    }
-    get smtpUser(): string {
-        return this.configService.get<string>('SMTP_USER')?? '';
-    }
-    get smtpPass(): string {
-        return this.configService.get<string>('SMTP_PASS')?? '';
-    }
-    get mongodbHost(): string {
-        return this.configService.get<string>('MONGO_HOST')?? '';
-    }
-    get mongodbPort(): string {
-        return this.configService.get<string>('MONGO_PORT')?? '';
-    }
-    get mongodbDB(): string {
-        return this.configService.get<string>('MONGO_DB')?? '';
-    }
-    get mongodbUser(): string {
-        return this.configService.get<string>('MONGO_USER')?? '';
-    }
-    get mongodbPassword(): string {
-        return this.configService.get<string>('MONGO_PASSWORD')?? '';
-    }
-    get mongodbConfig() {
-        return {
-            uri: `mongodb://${this.mongodbHost}:${this.mongodbPort}/${this.mongodbDB}`
-        }
-    }
-    get ipApiUrl(): string {
-        return this.configService.get<string>('IP_API_URL')?? '';
-    }
-    get weatherApiKey(): string {
-        return this.configService.get<string>('WEATHER_API_KEY')?? '';
-    }
-    get weatherApiUrl(): string {
-        return this.configService.get<string>('WEATHER_API_URL')?? '';
-    }
-    get redisHost(): string {
-        return this.configService.get<string>('REDIS_HOST')?? '';
-    }
-    get redisPort(): number {
-        return this.configService.get<number>('REDIS_PORT') as number;
-    }
-    get redisPassword(): string {
-        return this.configService.get<string>('REDIS_PASSWORD')?? '';
-    }
-    get jwtSecret(): string {
-        return this.configService.get<string>('JWT_SECRET')?? '';
-    }
-    get tencentCloudSecretId(): string {
-        return this.configService.get<string>('TENCENTCLOUD_SECRET_ID')?? '';
-    }
-    get tencentCloudSecretKey(): string {
-        return this.configService.get<string>('TENCENTCLOUD_SECRET_KEY')?? '';
-    }
-    get tencentCloudSmsRegion(): string {
-        return this.configService.get<string>('TENCENTCLOUD_SMS_REGION')?? '';
-    }
-    get tencentCloudSmsSdkAppId(): string {
-        return this.configService.get<string>('TENCENTCLOUD_SMS_SDK_APP_ID')?? '';
-    }
-    get tencentCloudSmsSignName(): string {
-        return this.configService.get<string>('TENCENTCLOUD_SMS_SIGN_NAME')?? '';
-    }
-    get tencentCloudSmsTemplateId(): string {
-        return this.configService.get<string>('TENCENTCLOUD_SMS_TEMPLATE_ID')?? '';
-    }
+    return this.configService.get<string>('SMTP_HOST') ?? '';
+  }
+  get smtpPort(): string {
+    return this.configService.get<string>('SMTP_PORT') ?? '';
+  }
+  get smtpUser(): string {
+    return this.configService.get<string>('SMTP_USER') ?? '';
+  }
+  get smtpPass(): string {
+    return this.configService.get<string>('SMTP_PASS') ?? '';
+  }
+  get mongodbHost(): string {
+    return this.configService.get<string>('MONGO_HOST') ?? '';
+  }
+  get mongodbPort(): string {
+    return this.configService.get<string>('MONGO_PORT') ?? '';
+  }
+  get mongodbDB(): string {
+    return this.configService.get<string>('MONGO_DB') ?? '';
+  }
+  get mongodbUser(): string {
+    return this.configService.get<string>('MONGO_USER') ?? '';
+  }
+  get mongodbPassword(): string {
+    return this.configService.get<string>('MONGO_PASSWORD') ?? '';
+  }
+  get mongodbConfig() {
+    return {
+      uri: `mongodb://${this.mongodbHost}:${this.mongodbPort}/${this.mongodbDB}`,
+    };
+  }
+  get ipApiUrl(): string {
+    return this.configService.get<string>('IP_API_URL') ?? '';
+  }
+  get weatherApiKey(): string {
+    return this.configService.get<string>('WEATHER_API_KEY') ?? '';
+  }
+  get weatherApiUrl(): string {
+    return this.configService.get<string>('WEATHER_API_URL') ?? '';
+  }
+  get redisHost(): string {
+    return this.configService.get<string>('REDIS_HOST') ?? '';
+  }
+  get redisPort(): number {
+    return this.configService.get<number>('REDIS_PORT') as number;
+  }
+  get redisPassword(): string {
+    return this.configService.get<string>('REDIS_PASSWORD') ?? '';
+  }
+  get jwtSecret(): string {
+    return this.configService.get<string>('JWT_SECRET') ?? '';
+  }
+  get tencentCloudSecretId(): string {
+    return this.configService.get<string>('TENCENTCLOUD_SECRET_ID') ?? '';
+  }
+  get tencentCloudSecretKey(): string {
+    return this.configService.get<string>('TENCENTCLOUD_SECRET_KEY') ?? '';
+  }
+  get tencentCloudSmsRegion(): string {
+    return this.configService.get<string>('TENCENTCLOUD_SMS_REGION') ?? '';
+  }
+  get tencentCloudSmsSdkAppId(): string {
+    return this.configService.get<string>('TENCENTCLOUD_SMS_SDK_APP_ID') ?? '';
+  }
+  get tencentCloudSmsSignName(): string {
+    return this.configService.get<string>('TENCENTCLOUD_SMS_SIGN_NAME') ?? '';
+  }
+  get tencentCloudSmsTemplateId(): string {
+    return this.configService.get<string>('TENCENTCLOUD_SMS_TEMPLATE_ID') ?? '';
+  }
 }

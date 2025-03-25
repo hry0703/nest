@@ -24,13 +24,14 @@ async function bootstrap() {
   });
 
   // fallbackOnErrors: true 失败时 返回错误信息
+  // 作用是让自定义校验器支持依赖注入
   useContainer(app.select(AppModule), { fallbackOnErrors: true }); // 使用class-validator 的注入容器 否则无法使用class-validator的注入容器-》  IsUserNameUniqueConstraint中无法使用userRepository问题
 
   //   console.log('app.get(LOGGER_CONFIG)',app.get('LOGGER_CONFIG')); // 获取provide_token对应的服务 即注入的依赖
   //   app.useLogger(app.get(MyLogger)) // 和 bufferLogs:true 搭配使用
   // 配置静态文件根目录 该目录下文件可直接访问  http://localhost:3000/1.txt
   app.useStaticAssets(join(__dirname, '..', 'public'));
-//   app.useStaticAssets(join(__dirname, '..', 'uploads')); // 业务逻辑写在全局不合适 所有在appModule中配置ServeStaticModule
+  //   app.useStaticAssets(join(__dirname, '..', 'uploads')); // 业务逻辑写在全局不合适 所有在appModule中配置ServeStaticModule
   // 配置模版根目录
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   // 配置handlebars模版引擎
