@@ -20,6 +20,8 @@ import { CosService } from './services/cos.service';
 import { NotificationService } from './services/notification.service';
 import { MailService } from './services/mail.service';
 import { WordExportService } from './services/word-export.service';
+import { PptExportService } from './services/ppt-export.ervice';
+import { ExcelExportService } from './services/excel-export.service';
 @Global()
 @Module({
   providers: [
@@ -36,6 +38,8 @@ import { WordExportService } from './services/word-export.service';
     NotificationService,
     MailService,
     WordExportService,
+    PptExportService,
+    ExcelExportService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -51,6 +55,8 @@ import { WordExportService } from './services/word-export.service';
     NotificationService,
     MailService,
     WordExportService,
+    PptExportService,
+    ExcelExportService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件

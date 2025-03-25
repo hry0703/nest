@@ -29,6 +29,8 @@ const cos_service_1 = require("./services/cos.service");
 const notification_service_1 = require("./services/notification.service");
 const mail_service_1 = require("./services/mail.service");
 const word_export_service_1 = require("./services/word-export.service");
+const ppt_export_ervice_1 = require("./services/ppt-export.ervice");
+const excel_export_service_1 = require("./services/excel-export.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
@@ -49,6 +51,8 @@ exports.SharedModule = SharedModule = __decorate([
             notification_service_1.NotificationService,
             mail_service_1.MailService,
             word_export_service_1.WordExportService,
+            ppt_export_ervice_1.PptExportService,
+            excel_export_service_1.ExcelExportService,
         ],
         exports: [
             user_validator_1.IsUserNameUniqueConstraint,
@@ -64,6 +68,8 @@ exports.SharedModule = SharedModule = __decorate([
             notification_service_1.NotificationService,
             mail_service_1.MailService,
             word_export_service_1.WordExportService,
+            ppt_export_ervice_1.PptExportService,
+            excel_export_service_1.ExcelExportService,
         ],
         imports: [
             config_1.ConfigModule.forRoot({
