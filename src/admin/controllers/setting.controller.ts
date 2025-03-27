@@ -9,8 +9,6 @@ export class SettingController {
   @Get()
   @Render('settings')
   async getSetting() {
-    console.log('getSetting');
-
     let settings = await this.settingService.findFirst();
     if (!settings) {
       settings = await this.settingService.create({

@@ -12,9 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashboardController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const dashboard_service_1 = require("../../shared/services/dashboard.service");
+const weather_service_1 = require("../../shared/services/weather.service");
 let DashboardController = class DashboardController {
-    dashboard() {
-        return { title: 'dashboard title' };
+    dashboardService;
+    weatherService;
+    constructor(dashboardService, weatherService) {
+        this.dashboardService = dashboardService;
+        this.weatherService = weatherService;
+    }
+    async dashboard() {
+        return await this.dashboardService.getDashboardData();
+    }
+    async getWeather() {
+        const weather = await this.weatherService.getWeather();
+        return weather;
     }
 };
 exports.DashboardController = DashboardController;
@@ -23,10 +35,18 @@ __decorate([
     (0, common_1.Render)('dashboard'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "dashboard", null);
+__decorate([
+    (0, common_1.Get)('weather'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DashboardController.prototype, "getWeather", null);
 exports.DashboardController = DashboardController = __decorate([
     (0, swagger_1.ApiTags)('报表'),
-    (0, common_1.Controller)('admin')
+    (0, common_1.Controller)('admin'),
+    __metadata("design:paramtypes", [dashboard_service_1.DashboardService,
+        weather_service_1.WeatherService])
 ], DashboardController);
 //# sourceMappingURL=dashboard.controller.js.map

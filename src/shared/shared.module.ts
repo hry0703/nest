@@ -25,6 +25,8 @@ import { ExcelExportService } from './services/excel-export.service';
 import { SettingService } from './services/setting.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Setting, SettingSchema } from './schemas/setting.schema';
+import { DashboardService } from './services/dashboard.service';
+import { WeatherService } from './services/weather.service';
 @Global()
 @Module({
   providers: [
@@ -44,6 +46,8 @@ import { Setting, SettingSchema } from './schemas/setting.schema';
     PptExportService,
     ExcelExportService,
     SettingService,
+    DashboardService,
+    WeatherService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -62,6 +66,8 @@ import { Setting, SettingSchema } from './schemas/setting.schema';
     PptExportService,
     ExcelExportService,
     SettingService,
+    DashboardService,
+    WeatherService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件

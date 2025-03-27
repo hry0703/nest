@@ -43,5 +43,28 @@ export abstract class MySQLBaseService<T extends ObjectLiteral> {
     }
   }
 
-  //
+  async count() {
+    return this.repository.count();
+  }
+
+  async findLatest(limit: number) {
+    return this.repository.find({
+      order: { createdAt: 'DESC' } as any,
+      take: limit,
+    });
+  }
+
+  async getTrend(tableName: string) {
+    // const queryBuilder = this.repository.createQueryBuilder('entity');
+    // queryBuilder.select('entity.createdAt', 'date');
+    // queryBuilder.addSelect('COUNT(entity.id)', 'count');
+    // queryBuilder.groupBy('entity.createdAt');
+    // return queryBuilder.getRawMany();
+    const result = await this.repository.query(
+      `SELECT DATE_FORMAT(createdAt, '%Y-%m-%d') AS date, COUNT(*) AS count FROM ${tableName} GROUP BY date ORDER BY date DESC`,
+    );
+    const dates = result.map((item) => item.date);
+    const counts = result.map((item) => item.count);
+    return { dates, counts };
+  }
 }

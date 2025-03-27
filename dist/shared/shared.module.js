@@ -34,6 +34,8 @@ const excel_export_service_1 = require("./services/excel-export.service");
 const setting_service_1 = require("./services/setting.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const setting_schema_1 = require("./schemas/setting.schema");
+const dashboard_service_1 = require("./services/dashboard.service");
+const weather_service_1 = require("./services/weather.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
@@ -57,6 +59,8 @@ exports.SharedModule = SharedModule = __decorate([
             ppt_export_ervice_1.PptExportService,
             excel_export_service_1.ExcelExportService,
             setting_service_1.SettingService,
+            dashboard_service_1.DashboardService,
+            weather_service_1.WeatherService,
         ],
         exports: [
             user_validator_1.IsUserNameUniqueConstraint,
@@ -75,6 +79,8 @@ exports.SharedModule = SharedModule = __decorate([
             ppt_export_ervice_1.PptExportService,
             excel_export_service_1.ExcelExportService,
             setting_service_1.SettingService,
+            dashboard_service_1.DashboardService,
+            weather_service_1.WeatherService,
         ],
         imports: [
             config_1.ConfigModule.forRoot({
