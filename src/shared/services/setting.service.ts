@@ -1,12 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { MongodbBaseService } from './mongodb-base.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Setting, SettingDocument } from '../schemas/setting.schema';
+import { Model } from 'mongoose';
+import { CreateSettingDto, UpdateSettingDto } from '../dto/setting.dto';
 
 @Injectable()
-export class SettingService {
-  getSetting() {
-    return {
-      title: '博客设置',
-      description: '博客描述',
-      keywords: '博客关键词',
-    };
+export class SettingService extends MongodbBaseService<
+  SettingDocument,
+  CreateSettingDto,
+  UpdateSettingDto
+> {
+  constructor(
+    @InjectModel(Setting.name)
+    private readonly settingModel: Model<SettingDocument>,
+  ) {
+    super(settingModel);
+  }
+
+  async findFirst() {
+    return await this.settingModel.findOne().exec();
   }
 }

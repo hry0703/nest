@@ -33,6 +33,7 @@ const ppt_export_ervice_1 = require("./services/ppt-export.ervice");
 const excel_export_service_1 = require("./services/excel-export.service");
 const setting_service_1 = require("./services/setting.service");
 const mongoose_1 = require("@nestjs/mongoose");
+const setting_schema_1 = require("./schemas/setting.schema");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
@@ -88,6 +89,7 @@ exports.SharedModule = SharedModule = __decorate([
                     };
                 },
             }),
+            mongoose_1.MongooseModule.forFeature([{ name: setting_schema_1.Setting.name, schema: setting_schema_1.SettingSchema }]),
             typeorm_1.TypeOrmModule.forRootAsync({
                 inject: [configuration_service_1.ConfigurationService],
                 useFactory: (configurationService) => {

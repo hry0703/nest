@@ -14,7 +14,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 let DashboardController = class DashboardController {
     dashboard() {
-        return { title: "dashboard title" };
+        return { title: 'dashboard title' };
     }
 };
 exports.DashboardController = DashboardController;
@@ -27,6 +27,6 @@ __decorate([
 ], DashboardController.prototype, "dashboard", null);
 exports.DashboardController = DashboardController = __decorate([
     (0, swagger_1.ApiTags)('报表'),
-    (0, common_1.Controller)('dashboard')
+    (0, common_1.Controller)('admin')
 ], DashboardController);
 //# sourceMappingURL=dashboard.controller.js.map

@@ -24,6 +24,7 @@ import { PptExportService } from './services/ppt-export.ervice';
 import { ExcelExportService } from './services/excel-export.service';
 import { SettingService } from './services/setting.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Setting, SettingSchema } from './schemas/setting.schema';
 @Global()
 @Module({
   providers: [
@@ -76,6 +77,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         };
       },
     }),
+    MongooseModule.forFeature([{ name: Setting.name, schema: SettingSchema }]), // 注册操作数据库模型的名称和对应的schema
     TypeOrmModule.forRootAsync({
       inject: [ConfigurationService],
       useFactory: (configurationService: ConfigurationService) => {
