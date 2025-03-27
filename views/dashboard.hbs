@@ -347,6 +347,7 @@
         eventSource.onmessage = function (event) {
             //将接收到的JSOn字符串转成JSON对象
             const systemInfo = JSON.parse(event.data);
+            console.log('systemInfo', systemInfo);
             //使用渲染方法把对象转化成HTML源代码
             const systemInfoHtml = render(systemInfo);
             //将生成的HTML内容替换#systemInfo容器里的内容

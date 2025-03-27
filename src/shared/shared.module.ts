@@ -27,6 +27,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Setting, SettingSchema } from './schemas/setting.schema';
 import { DashboardService } from './services/dashboard.service';
 import { WeatherService } from './services/weather.service';
+import { SystemService } from './services/system.service';
 @Global()
 @Module({
   providers: [
@@ -48,6 +49,7 @@ import { WeatherService } from './services/weather.service';
     SettingService,
     DashboardService,
     WeatherService,
+    SystemService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -68,6 +70,7 @@ import { WeatherService } from './services/weather.service';
     SettingService,
     DashboardService,
     WeatherService,
+    SystemService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件

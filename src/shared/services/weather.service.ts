@@ -22,8 +22,7 @@ export class WeatherService {
     const ip = '13.251.50.61'; // await this.getExternalIP();
     const geo = geoip.lookup(ip);
     const location = geo ? `${geo.city},${geo.country}` : 'Unknown';
-    console.log('location', ip, geo, location);
-
+    // console.log('location', ip, geo, location);
     let weather = '无法获取当地的天气信息';
     try {
       const weatherApiKey = this.configurationService.weatherApiKey;
