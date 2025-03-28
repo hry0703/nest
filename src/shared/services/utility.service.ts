@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import * as svgCaptcha from 'svg-captcha';
 @Injectable()
 export class UtilityService {
   async hashPassword(password: string): Promise<string> {
@@ -13,5 +14,9 @@ export class UtilityService {
   async comparePassword(password: string, hash: string): Promise<boolean> {
     // 使用bcrypt库的compare方法 比较密码和哈希
     return bcrypt.compare(password, hash);
+  }
+
+  generateCaptcha(options) {
+    return svgCaptcha.create(options);
   }
 }

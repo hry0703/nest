@@ -17,12 +17,13 @@ const article_controller_1 = require("./controllers/article.controller");
 const category_controller_1 = require("./controllers/category.controller");
 const upload_controller_1 = require("./controllers/upload.controller");
 const setting_controller_1 = require("./controllers/setting.controller");
+const auth_controller_1 = require("./controllers/auth.controller");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
 exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
-        controllers: [dashboard_controller_1.DashboardController, user_controller_1.UserController, role_controller_1.RoleController, access_controller_1.AccessController, tag_controller_1.TagController, article_controller_1.ArticleController, category_controller_1.CategoryController, upload_controller_1.UploadController, setting_controller_1.SettingController],
+        controllers: [dashboard_controller_1.DashboardController, user_controller_1.UserController, role_controller_1.RoleController, access_controller_1.AccessController, tag_controller_1.TagController, article_controller_1.ArticleController, category_controller_1.CategoryController, upload_controller_1.UploadController, setting_controller_1.SettingController, auth_controller_1.AuthController],
     })
 ], AdminModule);
 //# sourceMappingURL=admin.module.js.map

@@ -8,8 +8,9 @@ import { ArticleController } from "./controllers/article.controller";
 import { CategoryController } from "./controllers/category.controller";
 import { UploadController } from "./controllers/upload.controller";
 import { SettingController } from './controllers/setting.controller';
+import { AuthController } from './controllers/auth.controller';
 @Module({
-    controllers: [DashboardController, UserController, RoleController, AccessController, TagController, ArticleController, CategoryController, UploadController, SettingController],
+    controllers: [DashboardController, UserController, RoleController, AccessController, TagController, ArticleController, CategoryController, UploadController, SettingController, AuthController],
 })
 export class AdminModule {
 }

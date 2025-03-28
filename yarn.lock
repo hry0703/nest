@@ -6080,6 +6080,13 @@
   dependencies:
     "mimic-fn" "^2.1.0"
 
+"opentype.js@^0.7.3":
+  "integrity" "sha512-Veui5vl2bLonFJ/SjX/WRWJT3SncgiZNnKUyahmXCc2sa1xXW15u3R/3TN5+JFiP7RsjK5ER4HA5eWaEmV9deA=="
+  "resolved" "https://mirrors.tencent.com/npm/opentype.js/-/opentype.js-0.7.3.tgz"
+  "version" "0.7.3"
+  dependencies:
+    "tiny-inflate" "^1.0.2"
+
 "optionator@^0.9.3":
   "integrity" "sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g=="
   "resolved" "https://mirrors.tencent.com/npm/optionator/-/optionator-0.9.4.tgz"
@@ -7259,6 +7266,13 @@
   "resolved" "https://mirrors.tencent.com/npm/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   "version" "1.0.0"
 
+"svg-captcha@^1.4.0":
+  "integrity" "sha512-/fkkhavXPE57zRRCjNqAP3txRCSncpMx3NnNZL7iEoyAtYwUjPhJxW6FQTQPG5UPEmCrbFoXS10C3YdJlW7PDg=="
+  "resolved" "https://mirrors.tencent.com/npm/svg-captcha/-/svg-captcha-1.4.0.tgz"
+  "version" "1.4.0"
+  dependencies:
+    "opentype.js" "^0.7.3"
+
 "swagger-ui-dist@5.19.0":
   "integrity" "sha512-bSVZeYaqanMFeW5ZY3+EejFbsjkjazYxm1I7Lz3xayYz5XU3m2aUzvuPC0jI95WCQdduszHYV3ER4buQoy8DXA=="
   "resolved" "https://mirrors.tencent.com/npm/swagger-ui-dist/-/swagger-ui-dist-5.19.0.tgz"
@@ -7367,6 +7381,11 @@
   "integrity" "sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg=="
   "resolved" "https://mirrors.tencent.com/npm/through/-/through-2.3.8.tgz"
   "version" "2.3.8"
+
+"tiny-inflate@^1.0.2":
+  "integrity" "sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw=="
+  "resolved" "https://mirrors.tencent.com/npm/tiny-inflate/-/tiny-inflate-1.0.3.tgz"
+  "version" "1.0.3"
 
 "tmp@^0.0.33":
   "integrity" "sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw=="
