@@ -15,6 +15,10 @@ export class CreateAccessDto {
   @ApiProperty({ description: '名称', example: 'name' })
   name: string;
 
+  @IsString()
+  @ApiProperty({ description: '权限编码', example: 'code' })
+  code: string;
+
   @ApiProperty({ description: '类型', example: '菜单' })
   type: AccessType;
 

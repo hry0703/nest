@@ -24,7 +24,7 @@ export class AuthMiddleware implements NestMiddleware {
       ? accessTree
       : this.getUserMenuTree(accessTree, userAccessIds);
     const userAccessCodes = this.getUserAccessCodes(user);
-    console.log('userAccessCodes', userAccessCodes);
+    // console.log('userAccessCodes', user, userAccessCodes);
     //把此用户有权限的路径放在了userAccessUrls
     res.locals.userAccessCodes = userAccessCodes;
     //获取菜单树并且放在模板对象的上下文中，可以在渲染模板的时候使用
@@ -52,7 +52,11 @@ export class AuthMiddleware implements NestMiddleware {
   }
   private getUserAccessCodes(user): string[] {
     return user.roles
-      .flatMap((role) => role.accesses.map((access) => access.code))
+      .flatMap((role) => {
+        console.log('role.accesses', role);
+
+        return role.accesses.map((access) => access.code);
+      })
       .filter(Boolean);
   }
   private getUserAccessIds(user): number[] {
