@@ -53,7 +53,7 @@ export class AuthController {
       (await this.utilityService.comparePassword(password, user.password))
     ) {
       session.user = user;
-      return res.redirect('/admin');
+      return res.redirect('/admin/welcome');
     } else {
       res.render('auth/login', { message: '用户名或密码错误', layout: false });
     }

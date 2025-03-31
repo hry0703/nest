@@ -105,7 +105,6 @@
         type: 'GET', 
         headers: { 'accept': 'application/json' },
         success: function ({ user }) {
-            console.log('user', user)
             const roleIds = user.roles.map(role => role.id);
             $(`#roleForm input[type="checkbox"]`).each(function () {
                 $(this).prop('checked', roleIds.includes(parseInt($(this).val())));

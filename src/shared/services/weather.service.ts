@@ -9,8 +9,6 @@ export class WeatherService {
     //获取本机的外网的IP
     try {
       const ipApiUrl = this.configurationService.ipApiUrl;
-      console.log('axios', axios);
-
       const response = await axios.get(ipApiUrl);
       return response.data.ip;
     } catch (error) {

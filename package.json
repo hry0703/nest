@@ -44,6 +44,7 @@
     "geoip-lite": "^1.4.10",
     "html-pptxgenjs": "^0.0.15",
     "html-to-docx": "^1.8.0",
+    "htmx": "^0.0.2",
     "mongoose": "^8.13.0",
     "mysql2": "^3.13.0",
     "nest-winston": "^1.10.2",

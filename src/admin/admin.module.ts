@@ -26,9 +26,9 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 })
 export class AdminModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // consumer
-    //   .apply(AuthMiddleware)
-    //   .exclude('/admin/login', '/admin/captcha', '/admin/logout') //排除掉登录\验证码和退出的这三个路径
-    //   .forRoutes('/admin/*'); //针对/admin开头的路径使用此中间件
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('/admin/login', '/admin/captcha', '/admin/logout') //排除掉登录\验证码和退出的这三个路径
+      .forRoutes('/admin/*'); //针对/admin开头的路径使用此中间件
   }
 }
