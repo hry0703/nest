@@ -12,6 +12,8 @@ import { ExtendedConsoleLogger } from './extended-console-logger';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
 import * as helpers from 'src/shared/helpers';
+import RedisStore from 'connect-redis';
+import { RedisService } from './shared/services/redis.service';
 async function bootstrap() {
   // NestExpressApplication 表示 底层用的是express
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -53,8 +55,12 @@ async function bootstrap() {
   app.set('view engine', 'hbs');
 
   app.use(cookieParser());
+
+  const redisService = app.get(RedisService);
+  const redisClient = redisService.getClient();
   app.use(
     session({
+      store: new RedisStore({ client: redisClient }),
       secret: 'secret-key', //用于签名 session ID 的密钥
       resave: true, // 是否在每次请求时保存 session，即使 session 没有更改
       saveUninitialized: true, // 是否为尚未初始化的 session 创建新的 session 对象

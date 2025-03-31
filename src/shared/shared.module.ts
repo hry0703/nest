@@ -28,6 +28,7 @@ import { Setting, SettingSchema } from './schemas/setting.schema';
 import { DashboardService } from './services/dashboard.service';
 import { WeatherService } from './services/weather.service';
 import { SystemService } from './services/system.service';
+import { RedisService } from './services/redis.service';
 @Global()
 @Module({
   providers: [
@@ -50,6 +51,7 @@ import { SystemService } from './services/system.service';
     DashboardService,
     WeatherService,
     SystemService,
+    RedisService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -71,6 +73,7 @@ import { SystemService } from './services/system.service';
     DashboardService,
     WeatherService,
     SystemService,
+    RedisService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件

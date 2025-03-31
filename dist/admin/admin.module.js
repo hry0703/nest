@@ -24,7 +24,7 @@ let AdminModule = class AdminModule {
         consumer
             .apply(auth_middleware_1.AuthMiddleware)
             .exclude('/admin/login', '/admin/captcha', '/admin/logout')
-            .forRoutes('/admin/*');
+            .forRoutes('/*');
     }
 };
 exports.AdminModule = AdminModule;

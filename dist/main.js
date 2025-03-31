@@ -10,6 +10,8 @@ const swagger_1 = require("@nestjs/swagger");
 const nestjs_i18n_1 = require("nestjs-i18n");
 const class_validator_1 = require("class-validator");
 const helpers = require("./shared/helpers");
+const connect_redis_1 = require("connect-redis");
+const redis_service_1 = require("./shared/services/redis.service");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
     (0, class_validator_1.useContainer)(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
@@ -25,7 +27,10 @@ async function bootstrap() {
     }));
     app.set('view engine', 'hbs');
     app.use(cookieParser());
+    const redisService = app.get(redis_service_1.RedisService);
+    const redisClient = redisService.getClient();
     app.use(session({
+        store: new connect_redis_1.default({ client: redisClient }),
         secret: 'secret-key',
         resave: true,
         saveUninitialized: true,
