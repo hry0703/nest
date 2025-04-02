@@ -9,12 +9,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiModule = void 0;
 const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./controllers/user.controller");
+const auth_controller_1 = require("./controllers/auth.controller");
+const jwt_1 = require("@nestjs/jwt");
 let ApiModule = class ApiModule {
 };
 exports.ApiModule = ApiModule;
 exports.ApiModule = ApiModule = __decorate([
     (0, common_1.Module)({
-        controllers: [user_controller_1.UserController],
+        controllers: [user_controller_1.UserController, auth_controller_1.AuthController],
+        imports: [
+            jwt_1.JwtModule.register({
+                secret: process.env.JWT_SECRET,
+                signOptions: { expiresIn: '7d' },
+            }),
+        ],
     })
 ], ApiModule);
 //# sourceMappingURL=api.module.js.map

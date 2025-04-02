@@ -75,7 +75,7 @@ export class IsUserNameUniqueConstraint
     return !result;
   };
   defaultMessage(validationArguments?: ValidationArguments): string {
-    console.log('defaultMessage', validationArguments);
+    // console.log('defaultMessage', validationArguments);
     return `${validationArguments?.property} is aready exist`;
   }
 }

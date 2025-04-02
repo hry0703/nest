@@ -16,6 +16,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
     (0, class_validator_1.useContainer)(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
+    app.useStaticAssets((0, path_1.join)(__dirname, '..', 'front'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'views'));
     app.engine('hbs', (0, express_handlebars_1.engine)({
         extname: '.hbs',

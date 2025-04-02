@@ -22,7 +22,7 @@ export class AdminExceptionFilter implements ExceptionFilter {
     if (exception instanceof BadRequestException) {
       const exceptionBody: any = exception.getResponse();
       if (typeof exceptionBody === 'object' && exceptionBody.message) {
-        console.log('exceptionBody', exceptionBody);
+        // console.log('exceptionBody', exceptionBody);
         message = exceptionBody.message.join(',');
         status = exceptionBody.statusCode;
       }

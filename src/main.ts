@@ -33,6 +33,7 @@ async function bootstrap() {
   //   app.useLogger(app.get(MyLogger)) // 和 bufferLogs:true 搭配使用
   // 配置静态文件根目录 该目录下文件可直接访问  http://localhost:3000/1.txt
   app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(__dirname, '..', 'front'));
   //   app.useStaticAssets(join(__dirname, '..', 'uploads')); // 业务逻辑写在全局不合适 所有在appModule中配置ServeStaticModule
   // 配置模版根目录
   app.setBaseViewsDir(join(__dirname, '..', 'views'));

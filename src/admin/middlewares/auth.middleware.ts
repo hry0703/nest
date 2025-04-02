@@ -53,7 +53,7 @@ export class AuthMiddleware implements NestMiddleware {
   private getUserAccessCodes(user): string[] {
     return user.roles
       .flatMap((role) => {
-        console.log('role.accesses', role);
+        // console.log('role.accesses', role);
 
         return role.accesses.map((access) => access.code);
       })
