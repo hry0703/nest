@@ -1,10 +1,19 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { HttpStatusCode } from 'axios';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { UserService } from 'src/shared/services/user.service';
 import { UtilityService } from 'src/shared/services/utility.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigurationService } from 'src/shared/services/configuration.service';
+import { AuthGuard } from '../guards/auth.guard';
 @Controller('api/auth')
 export class AuthController {
   constructor(
@@ -17,7 +26,7 @@ export class AuthController {
   async login(@Body() body: any, @Res() res: Response) {
     const { username, password } = body;
     const user = await this.validateUser(username, password);
-    console.log('user', user);
+    // console.log('user', user);
     if (user) {
       const tokens = await this.createJwtTokens(user);
       return res.json({ success: true, ...tokens });
@@ -26,6 +35,14 @@ export class AuthController {
       .status(HttpStatusCode.Unauthorized)
       .json({ success: false, message: '用户名或密码错误' });
   }
+
+  @Get('profile')
+  @UseGuards(AuthGuard)
+  async getProfile(@Req() req: Request, @Res() res: Response) {
+    const user = req.user;
+    return res.json({ success: true, user });
+  }
+
   async validateUser(username: string, password: string) {
     const existUser = await this.userService.findOne({
       where: { username },
