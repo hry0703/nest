@@ -14,6 +14,8 @@ import { UtilityService } from 'src/shared/services/utility.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigurationService } from 'src/shared/services/configuration.service';
 import { AuthGuard } from '../guards/auth.guard';
+import { RedisService } from 'src/shared/services/redis.service';
+import { MailService } from 'src/shared/services/mail.service';
 @Controller('api/auth')
 export class AuthController {
   constructor(
@@ -21,6 +23,8 @@ export class AuthController {
     private readonly utilityService: UtilityService,
     private readonly jwtService: JwtService,
     private readonly configurationService: ConfigurationService,
+    private readonly redisService: RedisService,
+    private readonly mailService: MailService,
   ) {}
   @Post('login')
   async login(@Body() body: any, @Res() res: Response) {
@@ -43,12 +47,64 @@ export class AuthController {
     return res.json({ success: true, user });
   }
 
+  @Post('refresh-token')
+  async refreshToken(@Body() body, @Res() res: Response) {
+    const { refreshToken } = body;
+    try {
+      const user = this.jwtService.verify(refreshToken, {
+        secret: this.configurationService.jwtSecret,
+      });
+      const tokens = await this.createJwtTokens(user);
+      return res.json({ success: true, ...tokens });
+    } catch (error) {
+      return res
+        .status(HttpStatusCode.Unauthorized)
+        .json({ success: false, message: '刷新token无效或过期' });
+    }
+  }
+
+  @Post('send-email-code')
+  async sendEmailCode(@Body() body, @Res() res: Response) {
+    const { email } = body;
+    const code = this.utilityService.generateVerificationCode();
+    await this.redisService.set(email, code, 300); //把邮件和验证码保存到redis中 过期时间五分钟
+    await this.mailService.sendEmail(
+      email,
+      `邮件登录验证码`,
+      `你的邮件登录验证码为${code}`,
+      `你的邮件登录验证码为${code}`,
+    );
+    return res.json({ success: true, message: `邮件验证码已经发送给${email}` });
+  }
+
+  @Post('login-email-code')
+  async loginEmailCode(@Body() body, @Res() res: Response) {
+    const { email, code } = body;
+    const storedCode = await this.redisService.get(email);
+    if (code === storedCode) {
+      const existUser = await this.userService.findOne({
+        where: { email },
+        relations: ['roles', 'roles.accesses'],
+      });
+
+      if (existUser) {
+        const tokens = await this.createJwtTokens(existUser);
+        console.log('existUser', existUser, tokens);
+
+        return res.json({ success: true, ...tokens });
+      }
+      return res
+        .status(HttpStatusCode.Unauthorized)
+        .json({ success: false, message: '邮件或验证码不正确' });
+    }
+  }
+
   async validateUser(username: string, password: string) {
     const existUser = await this.userService.findOne({
       where: { username },
       relations: ['roles', 'roles.accesses'],
     });
-    console.log('existUser', existUser);
+    // console.log('existUser', existUser);
     if (
       existUser &&
       (await this.utilityService.comparePassword(password, existUser.password))
@@ -69,6 +125,16 @@ export class AuthController {
         expiresIn: '30m',
       },
     );
-    return { access_token };
+    const refresh_token = this.jwtService.sign(
+      {
+        id: user.id,
+        username: user.username,
+      },
+      {
+        secret: this.configurationService.jwtSecret,
+        expiresIn: '7d',
+      },
+    );
+    return { access_token, refresh_token };
   }
 }
