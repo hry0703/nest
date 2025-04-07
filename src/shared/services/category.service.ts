@@ -13,6 +13,12 @@ export class CategoryService extends MySQLBaseService<Category> {
     super(repository);
   }
 
+  async findAllList() {
+    return await this.repository.find({
+      relations: ['children', 'parent'],
+    });
+  }
+
   async findAll() {
     const categoryTree = await this.repository.findTrees({
       relations: ['children', 'parent'],

@@ -11,12 +11,15 @@ const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./controllers/user.controller");
 const auth_controller_1 = require("./controllers/auth.controller");
 const jwt_1 = require("@nestjs/jwt");
+const category_controller_1 = require("./controllers/category.controller");
+const article_controller_1 = require("./controllers/article.controller");
+const tag_controller_1 = require("./controllers/tag.controller");
 let ApiModule = class ApiModule {
 };
 exports.ApiModule = ApiModule;
 exports.ApiModule = ApiModule = __decorate([
     (0, common_1.Module)({
-        controllers: [user_controller_1.UserController, auth_controller_1.AuthController],
+        controllers: [user_controller_1.UserController, auth_controller_1.AuthController, category_controller_1.CategoryController, article_controller_1.ArticleController, tag_controller_1.TagController],
         imports: [
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET,

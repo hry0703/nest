@@ -31,6 +31,7 @@ export class CategoryController {
   @Render('category/category-list')
   async findAll() {
     const categoryTree = await this.categoryService.findAll();
+    console.log('categoryTree', categoryTree);
     return { categoryTree };
   }
 

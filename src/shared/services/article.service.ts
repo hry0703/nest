@@ -21,6 +21,28 @@ export class ArticleService extends MySQLBaseService<Article> {
     super(repository);
   }
 
+  async findAllList(categoryId?: string, tagId?: string, keyword?: string) {
+    const queryBuilder = this.repository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.categories', 'category')
+      .leftJoinAndSelect('article.tags', 'tag');
+    if (keyword) {
+      queryBuilder.andWhere('article.title LIKE :keyword', {
+        keyword: `%${keyword}%`,
+      });
+    }
+    if (categoryId) {
+      queryBuilder.andWhere('category.id=:categoryId', {
+        categoryId: Number(categoryId),
+      });
+    }
+    if (tagId) {
+      queryBuilder.andWhere('tag.id=:tagId', { tagId: Number(tagId) });
+    }
+    const articles = await queryBuilder.getMany();
+    return articles;
+  }
+
   async findAll(keyword?: string) {
     const where = keyword
       ? [{ title: Like(`%${keyword}%`) }, { content: Like(`%${keyword}%`) }]
