@@ -70,7 +70,7 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   @ApiPropertyOptional() // 文档中标注该参数非必填
-  mobile: string;
+  phone: string;
 
   @ApiProperty({ description: '邮箱', example: '1@qq.com' })
   @IsEmail()

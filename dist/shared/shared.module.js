@@ -38,6 +38,7 @@ const dashboard_service_1 = require("./services/dashboard.service");
 const weather_service_1 = require("./services/weather.service");
 const system_service_1 = require("./services/system.service");
 const redis_service_1 = require("./services/redis.service");
+const phone_service_1 = require("./services/phone.service");
 let SharedModule = class SharedModule {
 };
 exports.SharedModule = SharedModule;
@@ -65,6 +66,7 @@ exports.SharedModule = SharedModule = __decorate([
             weather_service_1.WeatherService,
             system_service_1.SystemService,
             redis_service_1.RedisService,
+            phone_service_1.PhoneService,
         ],
         exports: [
             user_validator_1.IsUserNameUniqueConstraint,
@@ -87,6 +89,7 @@ exports.SharedModule = SharedModule = __decorate([
             weather_service_1.WeatherService,
             system_service_1.SystemService,
             redis_service_1.RedisService,
+            phone_service_1.PhoneService,
         ],
         imports: [
             config_1.ConfigModule.forRoot({

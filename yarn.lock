@@ -2443,6 +2443,11 @@
   "resolved" "https://mirrors.tencent.com/npm/big-integer/-/big-integer-1.6.52.tgz"
   "version" "1.6.52"
 
+"bignumber.js@^9.0.0":
+  "integrity" "sha512-JocpCSOixzy5XFJi2ub6IMmV/G9i8Lrm2lZvwBv9xPdglmZM0ufDVBbjbrfU/zuLvBfD7Bv2eYxz9i+OHTgkew=="
+  "resolved" "https://mirrors.tencent.com/npm/bignumber.js/-/bignumber.js-9.2.0.tgz"
+  "version" "9.2.0"
+
 "bin-version-check@^5.1.0":
   "integrity" "sha512-bYsvMqJ8yNGILLz1KP9zKLzQ6YpljV3ln1gqhuLkUtyfGi3qXKGuK2p+U4NAvjVFzDFiBBtOpCOSFNuYYEGZ5g=="
   "resolved" "https://mirrors.tencent.com/npm/bin-version-check/-/bin-version-check-5.1.0.tgz"
@@ -4146,6 +4151,16 @@
   "resolved" "https://mirrors.tencent.com/npm/form-data-encoder/-/form-data-encoder-2.1.4.tgz"
   "version" "2.1.4"
 
+"form-data@^3.0.0":
+  "integrity" "sha512-q5YBMeWy6E2Un0nMGWMgI65MAKtaylxfNJGJxpGh45YDciZB4epbWpaAfImil6CPAPTYB4sh0URQNDRIZG5F2w=="
+  "resolved" "https://mirrors.tencent.com/npm/form-data/-/form-data-3.0.3.tgz"
+  "version" "3.0.3"
+  dependencies:
+    "asynckit" "^0.4.0"
+    "combined-stream" "^1.0.8"
+    "es-set-tostringtag" "^2.1.0"
+    "mime-types" "^2.1.35"
+
 "form-data@^4.0.0":
   "integrity" "sha512-hGfm/slu0ZabnNt4oaRZ6uREyfCj6P4fT/n6A1rGV+Z0VdGXjfOhVUpkn6qVQONHGIFwmveGXyDs75+nr6FM8w=="
   "resolved" "https://mirrors.tencent.com/npm/form-data/-/form-data-4.0.2.tgz"
@@ -5406,6 +5421,13 @@
   "resolved" "https://mirrors.tencent.com/npm/jsesc/-/jsesc-3.1.0.tgz"
   "version" "3.1.0"
 
+"json-bigint@^1.0.0":
+  "integrity" "sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ=="
+  "resolved" "https://mirrors.tencent.com/npm/json-bigint/-/json-bigint-1.0.0.tgz"
+  "version" "1.0.0"
+  dependencies:
+    "bignumber.js" "^9.0.0"
+
 "json-buffer@3.0.1":
   "integrity" "sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ=="
   "resolved" "https://mirrors.tencent.com/npm/json-buffer/-/json-buffer-3.0.1.tgz"
@@ -6198,7 +6220,7 @@
   dependencies:
     "lodash" "^4.17.21"
 
-"node-fetch@^2.6.0", "node-fetch@^2.6.7":
+"node-fetch@^2.2.0", "node-fetch@^2.6.0", "node-fetch@^2.6.7":
   "integrity" "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A=="
   "resolved" "https://registry.npmmirror.com/node-fetch/-/node-fetch-2.7.0.tgz"
   "version" "2.7.0"
@@ -7591,6 +7613,20 @@
     "mkdirp" "^1.0.3"
     "yallist" "^4.0.0"
 
+"tencentcloud-sdk-nodejs@^4.1.12":
+  "integrity" "sha512-+5ytatWvboUTtoxX3agbDw9nJi7kKsx8zklHU/bfuL4zDzgEXpSPDkHyyumf7CafdF5zARJnyqkZNWuSZ3TGZg=="
+  "resolved" "https://mirrors.tencent.com/npm/tencentcloud-sdk-nodejs/-/tencentcloud-sdk-nodejs-4.1.12.tgz"
+  "version" "4.1.12"
+  dependencies:
+    "form-data" "^3.0.0"
+    "get-stream" "^6.0.0"
+    "https-proxy-agent" "^5.0.0"
+    "is-stream" "^2.0.0"
+    "json-bigint" "^1.0.0"
+    "node-fetch" "^2.2.0"
+    "tslib" "1.13.0"
+    "uuid" "^9.0.1"
+
 "terser-webpack-plugin@^5.3.11":
   "integrity" "sha512-JG3pBixF6kx2o0Yfz2K6pqh72DpwTI08nooHd06tcj5WyIt5SsSiUYqRT+kemrGUNSuSzVhwfZ28aO8gogajNQ=="
   "resolved" "https://mirrors.tencent.com/npm/terser-webpack-plugin/-/terser-webpack-plugin-5.3.13.tgz"
@@ -7795,6 +7831,11 @@
   "integrity" "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="
   "resolved" "https://mirrors.tencent.com/npm/tslib/-/tslib-2.8.1.tgz"
   "version" "2.8.1"
+
+"tslib@1.13.0":
+  "integrity" "sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q=="
+  "resolved" "https://mirrors.tencent.com/npm/tslib/-/tslib-1.13.0.tgz"
+  "version" "1.13.0"
 
 "tunnel-agent@^0.6.0":
   "integrity" "sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w=="
@@ -8002,6 +8043,11 @@
   "integrity" "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg=="
   "resolved" "https://mirrors.tencent.com/npm/uuid/-/uuid-8.3.2.tgz"
   "version" "8.3.2"
+
+"uuid@^9.0.1":
+  "integrity" "sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA=="
+  "resolved" "https://mirrors.tencent.com/npm/uuid/-/uuid-9.0.1.tgz"
+  "version" "9.0.1"
 
 "uuid@9.0.1":
   "integrity" "sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA=="

@@ -32,7 +32,7 @@ export class User {
   @Transform(({ value }: any) =>
     value?.replace(/(\d{3})(\d{3})(\d{4})/, '$1****$3'),
   )
-  mobile: string;
+  phone: string;
 
   @Expose() // 向外暴露一个不存在属性 数据库中没有的
   @ApiProperty({ description: '联系方式', example: '邮箱：1@qq.com' })

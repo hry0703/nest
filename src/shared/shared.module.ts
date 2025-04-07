@@ -29,6 +29,7 @@ import { DashboardService } from './services/dashboard.service';
 import { WeatherService } from './services/weather.service';
 import { SystemService } from './services/system.service';
 import { RedisService } from './services/redis.service';
+import { PhoneService } from './services/phone.service';
 @Global()
 @Module({
   providers: [
@@ -52,6 +53,7 @@ import { RedisService } from './services/redis.service';
     WeatherService,
     SystemService,
     RedisService,
+    PhoneService,
   ],
   exports: [
     IsUserNameUniqueConstraint,
@@ -74,6 +76,7 @@ import { RedisService } from './services/redis.service';
     WeatherService,
     SystemService,
     RedisService,
+    PhoneService,
   ],
   imports: [
     // 从默认位置（项目根目录）加载并解析 .env 文件

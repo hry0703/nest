@@ -16,6 +16,7 @@ import { ConfigurationService } from 'src/shared/services/configuration.service'
 import { AuthGuard } from '../guards/auth.guard';
 import { RedisService } from 'src/shared/services/redis.service';
 import { MailService } from 'src/shared/services/mail.service';
+import { PhoneService } from 'src/shared/services/phone.service';
 @Controller('api/auth')
 export class AuthController {
   constructor(
@@ -25,6 +26,7 @@ export class AuthController {
     private readonly configurationService: ConfigurationService,
     private readonly redisService: RedisService,
     private readonly mailService: MailService,
+    private readonly phoneService: PhoneService,
   ) {}
   @Post('login')
   async login(@Body() body: any, @Res() res: Response) {
@@ -96,6 +98,37 @@ export class AuthController {
       return res
         .status(HttpStatusCode.Unauthorized)
         .json({ success: false, message: '邮件或验证码不正确' });
+    }
+  }
+
+  @Post('send-phone-code')
+  async sendPhoneCode(@Body() body, @Res() res: Response) {
+    const { phone } = body;
+    try {
+      await this.phoneService.sendVerificationCode(phone);
+      return res.json({ success: true, message: '手机验证码发送成功' });
+    } catch (error) {
+      return res
+        .status(HttpStatusCode.InternalServerError)
+        .json({ success: false, message: '手机验证码发送失败' });
+    }
+  }
+  @Post('login-phone-code')
+  async loginPhoneCode(@Body() body, @Res() res: Response) {
+    const { phone, phoneCode } = body;
+    const isCodeValid = await this.phoneService.verifyCode(phone, phoneCode);
+    if (isCodeValid) {
+      const existUser = await this.userService.findOne({
+        where: { phone },
+        relations: ['roles', 'roles.accesses'],
+      } as any);
+      if (existUser) {
+        const tokens = this.createJwtTokens(existUser);
+        return res.json({ success: true, ...tokens });
+      }
+      return res
+        .status(HttpStatusCode.Unauthorized)
+        .json({ success: false, message: '手机号或验证码不正确' });
     }
   }
 
