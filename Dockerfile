@@ -12,7 +12,7 @@ RUN npm config set registry https://registry.npmmirror.com
 # 安装依赖
 RUN  npm ci
 
-# 将本地目录下的所有的 文件复制到容器的工作目录内
+# 将本地目录下的所有的文件复制到容器的工作目录内
 COPY . .
 
 # 运行构建命令，构建项目 
