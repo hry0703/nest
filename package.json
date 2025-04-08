@@ -1,23 +1,16 @@
 {
-  "name": "nest",
+  "name": "18.grpc",
   "version": "1.0.0",
-  "description": "",
-  "main": ".eslintrc.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hry0703/nest.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/hry0703/nest/issues"
-  },
-  "homepage": "https://github.com/hry0703/nest#readme",
+  "description": "",
   "dependencies": {
-    "etcd3": "^1.1.2"
+    "@grpc/grpc-js": "^1.12.2",
+    "@grpc/proto-loader": "^0.7.13"
   }
 }
