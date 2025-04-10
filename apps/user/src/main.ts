@@ -1,15 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { UserModule } from './user.module';
-import { Transport } from '@nestjs/microservices'
+import { Transport, MicroserviceOptions } from '@nestjs/microservices'
+import { join } from 'path'
 async function bootstrap() {
-  //创建一个TCP协议通信的微服务，监听 8877端口
-  const app = await NestFactory.createMicroservice(UserModule, {
-    transport: Transport.TCP,
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(UserModule, {
+    transport: Transport.GRPC,// 通信方式为gRPC
     options: {
-      host: "127.0.0.1",//微服务监听的主机
-      port: 8877//微服务监听的端口
+      package: 'hello',//包名是hello
+      protoPath: join(__dirname, 'hello.proto'),//proto文件的路径
+      url: '0.0.0.0:50051'//监听的端口号
     }
   });
   await app.listen();
+  console.log('微服务已经启动在50051端口');
 }
 bootstrap();
